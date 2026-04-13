@@ -1,0 +1,147 @@
+:root {
+  --neutral-900: hsl(0, 0%, 7%);
+  --neutral-800: hsl(0, 0%, 15%);
+  --neutral-700: hsl(0, 0%, 23%);
+  --neutral-600: hsl(0, 0%, 51%);
+  --neutral-500: hsl(240, 3%, 46%);
+  --neutral-400: hsl(240, 1%, 59%);
+  --neutral-300: hsl(0, 0%, 93%);
+  --neutral-200: hsl(0, 0%, 98%);
+  --neutral-0: hsl(0, 0%, 100%);
+
+  --blue-600: hsl(214, 100%, 55%);
+  --blue-400: hsl(210, 100%, 65%);
+}
+
+/* Table of content:
+    1. Reset
+    2. General styles
+    3. Utility classes
+    4. Layout
+      4.1 Header
+      4.2 Search bar
+      4.3 Navigation
+*/
+
+/* 1. Reset *******************************************************************************
+*******************************************************************************************/
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: system-ui;
+}
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* 2. General styles **********************************************************************
+*******************************************************************************************/
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* 3. Utility classes ********************************************************************
+*******************************************************************************************/
+.visually-hidden {
+  position: absolute;       /* Remove from the normal document flow */
+  width: 1px;               /* Set to a minimum size for screen reader detection */
+  height: 1px;
+  padding: 0;
+  margin: -1px;             /* Offset the 1px size to avoid affecting layout */
+  overflow: hidden;         /* Hide anything that overflows the 1px box */
+  clip: rect(0, 0, 0, 0);   /* Legacy clipping for older browsers */
+  clip-path: inset(50%);    /* Modern clipping method */
+  white-space: nowrap;      /* Prevent words from wrapping weirdly */
+  border: 0;
+}
+.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* 4. Layout ******************************************************************************
+*******************************************************************************************/
+.container {
+  width: min(90%, 75rem);
+  margin: 0 auto;
+}
+
+/* 4.1 Header *****************************************************************************
+*******************************************************************************************/
+header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
+  padding: 1em;
+  margin-block: 1.5em;
+  background-color: var(--neutral-300);
+  border-radius: 8px;
+
+  color: var(--neutral-700);
+}
+
+/* 4.2 Search bar ***************************************************************************
+*********************************************************************************************/
+form {
+  flex: 1;
+}
+.search-input {
+  width: 100%;
+  padding: 0.5em 1em;
+  padding-left: 1.75em; /* Space for the search icon */
+  border-radius: 8px;
+  background-color: var(--neutral-200);
+  border: none;
+  font-size: 1.1rem;
+  anchor-name: --search-input;
+
+  &::placeholder {
+    color: var(--neutral-400);
+  }
+}
+.search-icon {
+  position-anchor: --search-input;
+  position: absolute;
+  left: calc(anchor(left) + 0.5em);
+  align-self: anchor-center;
+  color: var(--neutral-400);
+  pointer-events: none;
+}
+
+/* 4.3 Navigation ***************************************************************************
+*********************************************************************************************/
+nav ul {
+  display: flex;
+  gap: 1.5em;
+}
+.service-link {
+  @media (min-width: 600px) {
+    padding: 0.5em 1em;
+    background-color: var(--neutral-200);
+    border-radius: 8px;
+  }
+}
+
+nav span {
+  display: none;
+  @media (min-width: 600px) {
+    display: inline;
+  }
+}
+
+nav img {
+  width: 25px;
+  @media (min-width: 600px) {
+    display: none;
+  }
+}
