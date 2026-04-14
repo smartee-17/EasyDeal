@@ -5,6 +5,22 @@
   --logo-url: url('../assets/images/logos/logo-dark-rect.png');
 }
 
+/* Utility classes */
+/* Visually hidden but still accessible to screen readers */
+.u-visually-hidden {
+  position: absolute;       /* Remove from the normal document flow */
+  width: 1px;               /* Set to a minimum size for screen reader detection */
+  height: 1px;
+  padding: 0;
+  margin: -1px;             /* Offset the 1px size to avoid affecting layout */
+  overflow: hidden;         /* Hide anything that overflows the 1px box */
+  clip: rect(0, 0, 0, 0);   /* Legacy clipping for older browsers */
+  clip-path: inset(50%);    /* Modern clipping method */
+  white-space: nowrap;      /* Prevent words from wrapping weirdly which changes how screen readers announce content */
+  border: 0;
+}
+
+/* Component styles */
 .page {
   display: grid;
   place-items: center;
