@@ -1,9 +1,15 @@
+:root {
+  --logo-url: url('../assets/images/logos/logo-light-rect.png');
+}
+[data-theme="dark"] {
+  --logo-url: url('../assets/images/logos/logo-dark-rect.png');
+}
+
 .page {
   display: grid;
   place-items: center;
   min-height: 100vh;
 }
-
 .signin {
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -14,9 +20,15 @@
   align-items: center;
   gap: 2rem;
 }
-
 .signin__form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+.signin__logo {
+  width: 200px;
+  height: 50px;
+  background-image: var(--logo-url);
+  background-size: contain;
+  background-repeat: no-repeat;
 }
