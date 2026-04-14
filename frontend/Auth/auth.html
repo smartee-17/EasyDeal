@@ -14,8 +14,10 @@
   <main class="signin">
     <div class="signin__logo"></div>
     <form class="signin__form">
-      <input type="text" placeholder="Username" class="signin__form__username-input">
-      <input type="password" placeholder="Password" class="signin__form__password-input">
+      <label for="username" class="u-visually-hidden">Username</label>
+      <input type="text" id="username" name="username" placeholder="Username" class="signin__form__username-input">
+      <label for="password" class="u-visually-hidden">Password</label>
+      <input type="password" id="password" name="password" placeholder="Password" class="signin__form__password-input">
       <button type="submit" class="signin__form__submit-button">Login</button>
     </form>
   </main>
