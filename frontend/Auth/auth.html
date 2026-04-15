@@ -14,10 +14,14 @@
   <main class="login">
     <div class="login__logo"></div>
     <form class="login__form">
-      <label for="username" class="u-visually-hidden">Username</label>
-      <input type="text" id="username" name="username" placeholder="Username" class="login__form__username-input">
-      <label for="password" class="u-visually-hidden">Password</label>
-      <input type="password" id="password" name="password" placeholder="Password" class="login__form__password-input">
+      <div class="login__form__field">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Username" class="login__form__username-input">
+      </div>
+      <div class="login__form__field">
+        <label for="password" class="u-visually-hidden">Password</label>
+        <input type="password" id="password" name="password" placeholder="Password" class="login__form__password-input">
+      </div>
       <button type="submit" class="login__form__submit-button">Login</button>
       <p class="login__error-msg"></p>
     </form>
