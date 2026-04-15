@@ -1,8 +1,8 @@
 :root {
-  --logo-url: url('../assets/images/logos/logo-light-rect.svg');
+  --logo-url: url('/frontend/assets/images/logos/logo-light-rect.svg');
 }
 [data-theme="dark"] {
-  --logo-url: url('../assets/images/logos/logo-dark-rect.svg');
+  --logo-url: url('/frontend/assets/images/logos/logo-dark-rect.svg');
 }
 
 /* Component styles */

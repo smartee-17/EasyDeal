@@ -20,7 +20,7 @@ loginForm.addEventListener('submit', async (e) => {
     localStorage.setItem('token', data.token);
 
     // TODO: Implement proper redirection logic based on user role and redirect to the appropriate dashboard
-    window.location.href = '../index.html';
+    window.location.href = '/frontend/index.html';
   } catch (err) {
     // UI Error Handling
     document.querySelector('.login__error-msg').textContent = err.message;
