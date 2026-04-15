@@ -1,5 +1,10 @@
+/* Reset Styles */
 * {
   box-sizing: border-box;
+}
+img {
+  display: block;
+  max-width: 100%;
 }
 
 :root {
@@ -36,12 +41,6 @@
 
   --color-text: #F5F5F5;
   --color-text-secondary: #9CA3AF;
-
-  --color-accent: #6366F1;
-
-  --color-success: #22C55E;
-  --color-error: #EF4444;
-  --color-warning: #FACC15;
 }
 
 /* Base styles */
