@@ -1,0 +1,35 @@
+body {
+  font-family: sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+.table {
+  width: 80%;
+  margin-top: 20px;
+}
+.row {
+  display: flex;
+}
+.cell {
+  padding: 15px;
+  flex: 1;
+}
+.header {
+  background: black;
+  color: white;
+  font-weight: bold;
+}
+.user {
+  flex: 1;
+}
+.actions {
+  flex: 1;
+}
+
+button {
+  margin-right: 5px;
+  border-radius: 15px;
+}
