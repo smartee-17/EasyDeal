@@ -9,6 +9,11 @@ const loginForm = document.querySelector('.login__form');
 loginForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
+  // If the form is already submitting, do nothing
+	if (loginForm.hasAttribute('data-submitting')) return;
+
+  loginForm.setAttribute('data-submitting', 'true');
+
   const formData = new FormData(loginForm);
   const credentials = Object.fromEntries(formData);
 
@@ -18,6 +23,8 @@ loginForm.addEventListener('submit', async (e) => {
     
     // Success: Store the JWT and redirect
     localStorage.setItem('token', data.token);
+
+	  loginForm.removeAttribute('data-submitting');
 
     // TODO: Implement proper redirection logic based on user role and redirect to the appropriate dashboard
     window.location.href = '/frontend/index.html';

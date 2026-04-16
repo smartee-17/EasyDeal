@@ -45,3 +45,7 @@
   font-size: 0.875rem;
   height: 1rem; /* Reserve space for error messages to prevent layout shift */
 }
+/* Disabled state */
+[data-submitting] button {
+	opacity: 0.8;
+}
