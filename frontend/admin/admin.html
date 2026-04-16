@@ -3,133 +3,146 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>admin</title>
-    <link rel="stylesheet" href="admin.css" />
-    <link rel="stylesheet" href="../shared/global.css">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="./admin.css" />
+    <link rel="stylesheet" href="../shared/global.css" />
   </head>
   <body>
-    <!-- <h2>USER MANAGEMENT</h2> -->
-    <div class="table">
-      <div class="row header">
-        <div class="cell user">User</div>
-        <div class="cell">Role</div>
-        <div class="cell">Status</div>
-        <div class="cell">Joined</div>
-        <div class="cell actions">Actions</div>
+    <section class="admin__overview">
+      <div class="marketplace__overview">
+        <h3>Marketplace Overview</h3>
+        <p>Total number of active products: 2</p>
+        <p>Total number of registered buyers: 4</p>
+        <p>Total number of sellers: 3</p>
       </div>
-      <div class="row">
-        <div class="cell user">Arjun mehta</div>
-        <div class="cell">seller</div>
-        <div class="cell">verified</div>
-        <div class="cell">Jan 2024</div>
-        <div class="cell actions">
-          <button>Ban</button>
-          <button>Delete</button>
-        </div>
-      </div>
-      <div class="row">
-        <div class="cell user">Priya das</div>
-        <div class="cell">buyer</div>
-        <div class="cell">active</div>
-        <div class="cell">Mar 2024</div>
-        <div class="cell actions">
-          <button>Ban</button>
-          <button>Delete</button>
-        </div>
-      </div>
-      <div class="row">
-        <div class="cell user">rajiv ghos</div>
-        <div class="cell">buyer</div>
-        <div class="cell">pending</div>
-        <div class="cell">Mar 2024</div>
-        <div class="cell actions">
-          <button>Ban</button>
-          <button>Delete</button>
-          <button>verify</button>
-        </div>
-      </div>
-      <div class="row">
-        <div class="cell user">Rahul Modi</div>
-        <div class="cell">seller</div>
-        <div class="cell">active</div>
-        <div class="cell">Mar 2024</div>
-        <div class="cell actions">
-          <button>Ban</button>
-          <button>Delete</button>
-        </div>
-      </div>
-      <div class="row">
-        <div class="cell user">Ram Singh</div>
-        <div class="cell">buyer</div>
-        <div class="cell">pending</div>
-        <div class="cell">Mar 2024</div>
-        <div class="cell actions">
-          <button>Ban</button>
-          <button>Delete</button>
-          <button>verify</button>
-        </div>
-        </div>
-        <div class="row">
-        <div class="cell user">Ranjan Kumar</div>
-        <div class="cell">seller</div>
-        <div class="cell">banned</div>
-        <div class="cell">Mar 2024</div>
-        <div class="cell actions">
-          <button>unban</button>
-          <button>Delete</button>
-        </div>
-        </div>
-        <div class="row">
-        <div class="cell user">Mohit Das</div>
-        <div class="cell">buyer</div>
-        <div class="cell">verified</div>
-        <div class="cell">Mar 2024</div>
-        <div class="cell actions">
-          <button>Ban</button>
-          <button>Delete</button>
-          <button>verify</button>
-        </div>
-    </div>
-    <h2>PRODUCT MODERATION</h2>
-    <div class="table_two">
-      <div class="row header">
-        <div class="cell user">product</div>
-        <div class="cell">seller</div>
-        <div class="cell">price</div>
-        <div class="cell">cetagory</div>
-        <div class="cell ">status</div>
-        <div class="cell ">Action</div>
-      </div>
-    </div>
-       <div class="row">
-        <div class="cell">iPhone 14 Pro Max 256GB</div>
-        <div class="cell user">Arjun Mehta</div>
-        <div class="cell">₹62,000</div>
-        <div class="cell">Electronics</div>
-       <div class="cell">active</div>
-        <div class="cell actions">
-          <button>Delete</button>
-        </div>
-        </div>
-      <div class="row">
-        <div class="cell">Handmade Pottery Se</div>
-        <div class="cell user">Vikram Das</div>
-        <div class="cell">₹1,800</div>
-        <div class="cell">Home & Decor</div>
-       <div class="cell">active</div>
-        <div class="cell actions">
-          <button>Delete</button>
-          </div>
-       </div>
-        <div class="row">
-        <div class="cell">Fake Nike Air Max (replica)</div>
-        <div class="cell user">Nisha Roy</div>
-        <div class="cell">₹999</div>
-        <div class="cell">Footwearr</div>
-       <div class="cell">active</div>
-        <div class="cell actions">
-          <button>Delete</button>
-        </div>
-        </div>
+    </section>
+    <section class="user__management--table">
+      <h2>USER MANAGEMENT</h2>
+      <table class="table">
+        <thead>
+          <tr class="row header">
+            <th class="cell user">User</th>
+            <th class="cell">Role</th>
+            <th class="cell">Status</th>
+            <th class="cell">Joined</th>
+            <th class="cell actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="row">
+            <td class="cell user">Sandip</td>
+            <td class="cell">seller</td>
+            <td class="cell">verified</td>
+            <td class="cell">Jan 2024</td>
+            <td class="cell actions">
+              <button>Ban</button>
+              <button>Delete</button>
+            </td>
+          </tr>
+          <tr class="row">
+            <td class="cell user">Kazzy</td>
+            <td class="cell">buyer</td>
+            <td class="cell">active</td>
+            <td class="cell">Mar 2024</td>
+            <td class="cell actions">
+              <button>Ban</button>
+              <button>Delete</button>
+            </td>
+          </tr>
+          <tr class="row">
+            <td class="cell user">Somaia</td>
+            <td class="cell">buyer</td>
+            <td class="cell">pending</td>
+            <td class="cell">Mar 2024</td>
+            <td class="cell actions">
+              <button>Ban</button>
+              <button>Delete</button>
+              <button>verify</button>
+            </td>
+          </tr>
+          <tr class="row">
+            <td class="cell user">Rajiv</td>
+            <td class="cell">seller</td>
+            <td class="cell">active</td>
+            <td class="cell">Mar 2024</td>
+            <td class="cell actions">
+              <button>Ban</button>
+              <button>Delete</button>
+            </td>
+          </tr>
+          <tr class="row">
+            <td class="cell user">Nathan</td>
+            <td class="cell">buyer</td>
+            <td class="cell">pending</td>
+            <td class="cell">Mar 2024</td>
+            <td class="cell actions">
+              <button>Ban</button>
+              <button>Delete</button>
+              <button>verify</button>
+            </td>
+          </tr>
+          <tr class="row">
+            <td class="cell user">Sunless</td>
+            <td class="cell">seller</td>
+            <td class="cell">banned</td>
+            <td class="cell">Mar 2024</td>
+            <td class="cell actions">
+              <button>unban</button>
+              <button>Delete</button>
+            </td>
+          </tr>
+          <tr class="row">
+            <td class="cell user">Starlore</td>
+            <td class="cell">buyer</td>
+            <td class="cell">verified</td>
+            <td class="cell">Mar 2024</td>
+            <td class="cell actions">
+              <button>Ban</button>
+              <button>Delete</button>
+              <button>verify</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="product__moderation--table">
+      <h2>PRODUCT MANAGEMENT</h2>
+      <table class="table">
+        <thead>
+          <tr class="row header">
+            <th class="cell">Product</th>
+            <th class="cell">Seller</th>
+            <th class="cell">Category</th>
+            <th class="cell">Price</th>
+            <th class="cell">Status</th>
+            <th class="cell">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="row">
+            <td class="cell">Iphone 14</td>
+            <td class="cell">Rajiv</td>
+            <td class="cell">Electronics</td>
+            <td class="cell">45,000</td>
+            <td class="cell">pending</td>
+            <td class="cell actions">
+              <button>approve</button>
+              <button>reject</button>
+            </td>
+          </tr>
+          <tr class="row">
+            <td class="cell">Iphone 17 pro max</td>
+            <td class="cell">Somaia</td>
+            <td class="cell">Electronics</td>
+            <td class="cell">65,000</td>
+            <td class="cell">approved</td>
+            <td class="cell actions">
+              <button>reject</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
   </body>
 </html>

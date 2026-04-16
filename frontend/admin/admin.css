@@ -1,30 +1,45 @@
 body {
   font-family: sans-serif;
   display: flex;
+  flex-direction: column;
+  height: 100vh;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  margin: 0;
 }
-.table {
+
+.user__management--table {
   width: 80%;
   margin-top: 20px;
 }
+
+.product__moderation--table {
+  width: 80%;
+  margin-top: 20px;
+}
+
+.table {
+  width: 100%;
+}
+
 .row {
   display: flex;
 }
+
 .cell {
   padding: 15px;
   flex: 1;
 }
+
 .header {
   background: black;
   color: white;
   font-weight: bold;
 }
+
 .user {
   flex: 1;
 }
+
 .actions {
   flex: 1;
 }
