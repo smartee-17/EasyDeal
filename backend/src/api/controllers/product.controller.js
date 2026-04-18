@@ -73,3 +73,38 @@ export const createProduct = async (req, res) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+export const updateProduct = async (req, res) => {
+  try {
+    const { _id } = req.user;
+    const { id } = req.params;
+    const { title, description, category, images, price } = req.body;
+
+    const product = await Product.findByIdAndUpdate(
+      id,
+      {
+        title,
+        description,
+        category,
+        images,
+        price,
+      },
+      { returnDocument: 'after' },
+    );
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    return sendResponse(
+      res,
+      200,
+      true,
+      'Product updated successfully',
+      product,
+    );
+  } catch (error) {
+    console.error(`Error in updateProduct: ${error.message}`);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
