@@ -12,4 +12,6 @@ router.post('/', protect, controller.createProduct);
 
 router.put('/:id', protect, controller.updateProduct);
 
+router.delete('/:id', protect, controller.deleteProduct);
+
 export default router;
