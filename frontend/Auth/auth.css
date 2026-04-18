@@ -38,6 +38,15 @@
   flex-direction: column;
   font-size: 0.875rem;
   gap: 0.25rem;
+  position: relative;
+}
+.login__form__toggle-password {
+  padding: 0;
+  background: none;
+  border: none;
+  position: absolute;
+  right: 0.5rem;
+  bottom: 0;
 }
 .login__error-msg {
   color: var(--color-error);
@@ -45,7 +54,10 @@
   font-size: 0.875rem;
   height: 1rem; /* Reserve space for error messages to prevent layout shift */
 }
-/* Disabled state */
-[data-submitting] button {
-	opacity: 0.8;
+.login__form__submit-button {
+  cursor: pointer;
+  [data-submitting] & {
+    opacity: 0.8;
+    cursor: initial;
+  }	
 }
