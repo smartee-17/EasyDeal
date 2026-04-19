@@ -43,8 +43,11 @@ loginForm.addEventListener('submit', async (e) => {
 
 	  loginForm.removeAttribute('data-submitting');
 
-    // TODO: Implement proper redirection logic based on user role and redirect to the appropriate dashboard
-    window.location.href = '/frontend/index.html';
+    if (data.user.role === 'admin') {
+      window.location.href = '/frontend/Admin/admin.html';
+    } else {
+      window.location.href = '/frontend/index.html';
+    }
   } catch (err) {
     // UI Error Handling
     document.querySelector('.login__error-msg').textContent = err.message;
