@@ -1,6 +1,8 @@
+/* ------------------ */
+/* General Styles */
+/* ------------------ */
+
 body {
-  margin: 0;
-  padding: 0;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -8,7 +10,38 @@ body {
   justify-content: center;
 }
 
-#main-content {
+button {
+  margin-right: 5px;
+  padding: 6px 15px;
+  border-radius: 15px;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: bold;
+}
+
+button:hover {
+  background: #000;
+  color: #fff;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+ul li {
+  padding: 8px 0;
+  border-bottom: 1px dashed #ddd;
+}
+
+/* ------------------ */
+/* Layout */
+/* ------------------ */
+
+.main-content {
   width: 80%;
   display: flex;
   flex-direction: column;
@@ -16,15 +49,7 @@ body {
   padding: 40px 0;
 }
 
-.admin__overview,
-.user__management--table,
-.product__moderation--table {
-  width: 100%;
-  background: white;
-  padding: 25px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
+/* Table Styles */
 
 .table {
   width: 100%;
@@ -47,28 +72,33 @@ body {
   font-weight: bold;
 }
 
-button {
-  margin-right: 5px;
-  padding: 6px 15px;
-  border-radius: 15px;
-  border: 1px solid #ccc;
-  background: white;
-  cursor: pointer;
-  transition: 0.3s;
+/* ------------------ */
+/* Components */
+/* ------------------ */
+
+/* Overview Section */
+.admin__overview {
+  background: var(--color-surface);
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: var(--color-text);
 }
 
-button:hover {
-  background: #000;
-  color: #fff;
+/* User Management */
+.user__management--table {
+  background: var(--color-surface);
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: var(--color-text);
 }
 
-ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-ul li {
-  padding: 8px 0;
-  border-bottom: 1px dashed #ddd;
+/* Product Moderation */
+.product__moderation--table {
+  background: var(--color-surface);
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: var(--color-text);
 }
