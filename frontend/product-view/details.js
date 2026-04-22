@@ -7,10 +7,10 @@ async function loadProducts() {
 
     if (!res.ok) throw new Error("API not responding");
 
-    const data = await res.json();
+    const response = await res.json();
 
-    products = data;
-    currentProduct = products?.[0];
+    products = response.data || [];
+    currentProduct = products[0];
 
     if (!currentProduct) throw new Error("No product in API");
 
@@ -21,8 +21,8 @@ async function loadProducts() {
 
     const module = await import("./mockData.js");
 
-    products = module.products;
-    currentProduct = products?.[0];
+    products = module.products || [];
+    currentProduct = products[0];
 
     if (!currentProduct) {
       console.error("❌ No product found in mock data");
@@ -67,7 +67,6 @@ function initProductPage() {
 
   const thumbs = document.querySelectorAll(".gallery__thumb");
 
-  // dots
   dotsContainer.innerHTML = "";
 
   images.forEach((_, i) => {
@@ -104,7 +103,6 @@ function initProductPage() {
     updateGallery();
   });
 
-  // thumb click
   thumbs.forEach((t, i) => {
     t.addEventListener("click", () => {
       index = i;
@@ -182,7 +180,6 @@ function initProductPage() {
     });
   });
 
-
   const themeToggle = document.getElementById("themeToggle");
   const savedTheme = localStorage.getItem("theme");
 
@@ -201,7 +198,6 @@ function initProductPage() {
       localStorage.setItem("theme", "dark");
     }
   });
-
 
   window.addEventListener("load", () => {
     document.getElementById("loader")?.classList.add("is-hidden");
