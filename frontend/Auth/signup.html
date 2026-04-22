@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/frontend/assets/images/favicons/favicon-32.png">
+  <link rel="stylesheet" href="/frontend/shared/global.css">
+  <link rel="stylesheet" href="/frontend/Auth/signup.css">
+  <!-- <script defer src="/frontend/Auth/signup.js" type="module"></script> -->
+  <title>Sign Up</title>
+</head>
+<body class="page">
+  <main class="signup">
+    <div class="signup__logo" role="img" aria-label="Easy Deal Logo"></div>
+    <h1 class="signup__title">Sign Up</h1>
+    <form class="signup__form">
+      <section class="signup__form__field">
+        <label for="name">Name</label>
+        <input type="text"
+               id="name"
+               name="name"
+               placeholder="Name"
+               autocomplete="name"
+               autofocus
+               required
+               class="signup__form__name-input">
+      </section>
+
+      <section class="signup__form__field">
+        <label for="email">Email</label>
+        <input type="email"
+               id="email"
+               name="email"
+               placeholder="Email"
+               autocomplete="email"
+               required
+               class="signup__form__email-input">
+      </section>
+
+      <section class="signup__form__field">
+        <label for="phone">Phone Number</label>
+        <input type="tel"
+               id="phone"
+               name="phone"
+               placeholder="Phone Number"
+               autocomplete="tel"
+               required
+               class="signup__form__phone-input">
+      </section>
+
+      <section class="signup__form__field">
+        <label for="role">Role</label>
+        <select id="role" name="role" required class="signup__form__role-select">
+          <option value="" hidden>Select your role</option>
+          <option value="buyer">Buyer</option>
+          <option value="seller">Seller</option>
+        </select>
+      </section>
+      
+      <section class="signup__form__field">
+        <label for="password">Password</label>
+        <input type="password" 
+               id="password"
+               name="password"
+               placeholder="Password"
+               autocomplete="current-password"
+               required
+               class="signup__form__password-input">
+        <button type="button" class="signup__form__toggle-password" aria-label="Show password as plain text. Warning: this will display your password on the screen.">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
+            <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+          </svg>
+        </button>
+      </section>
+      <button type="submit" class="signup__form__submit-button">Sign Up</button>
+      <p class="signup__error-msg" aria-live="polite"></p>
+    </form>
+  </main>
+</body>
+</html>
