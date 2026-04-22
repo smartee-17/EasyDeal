@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Product Detail</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans&family=DM+Serif+Display&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../shared/global.css">
+  <link rel="stylesheet" href="./details.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+<div class="page-loader" id="loader">
+  <div class="page-loader__spinner"></div>
+</div>
+
+<header class="navbar">
+  <div class="container navbar__inner">
+    <div class="navbar__logo">Easy<span>Deals</span></div>
+
+    <div class="navbar__actions">
+      <button class="navbar__icon-btn" id="themeToggle">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="product-detail container">
+
+  <div class="product-detail__grid">
+
+    <div class="gallery">
+
+      <div class="gallery__main">
+        <div class="gallery__track" id="galleryTrack"></div>
+
+        <button class="gallery__btn gallery__btn--prev" id="prev">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+
+        <button class="gallery__btn gallery__btn--next" id="next">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+
+      <div class="gallery__dots" id="dots"></div>
+
+      <div class="gallery__thumbs"></div>
+
+    </div>
+
+    <div class="product-info">
+
+      <h1 class="product-info__title"></h1>
+
+      <div class="product-info__price">
+        <span class="price__current"></span>
+        <span class="price__original"></span>
+      </div>
+
+      <div class="qty-stepper">
+        <div class="qty-stepper__label">Quantity</div>
+
+        <div class="qty-stepper__control">
+          <button class="qty-stepper__btn qty-stepper__btn--minus" id="minus">
+            <i class="fa-solid fa-minus"></i>
+          </button>
+
+          <span class="qty-stepper__value" id="qty">1</span>
+
+          <button class="qty-stepper__btn qty-stepper__btn--plus" id="plus">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="product-info__ctas">
+        <button class="btn-chat" id="chatSellerBtn">
+          <i class="fa-brands fa-whatsapp"></i> Chat Seller
+        </button>
+
+        <button class="btn-wishlist" id="wishlist">
+          <i class="fa-regular fa-heart"></i> Save
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <section class="product-tabs">
+
+    <div class="tabs__nav">
+      <button class="tabs__btn is-active" data-tab="desc">Description</button>
+      <button class="tabs__btn" data-tab="reviews">Reviews</button>
+    </div>
+
+    <div class="tabs__panel is-active" id="desc">
+      <p id="productDescription"></p>
+    </div>
+
+    <div class="tabs__panel" id="reviews">
+      <p>No reviews yet.</p>
+    </div>
+
+  </section>
+
+  <section class="similar-products container">
+
+    <div class="similar-products__header">
+      <h2 class="similar-products__title">Similar Products</h2>
+      <a href="#" class="similar-products__link">View more →</a>
+    </div>
+
+    <div class="similar-products__grid"></div>
+
+  </section>
+
+  <footer class="footer-placeholder">
+    <div class="container footer-placeholder__inner">
+
+      <div class="footer-placeholder__brand">
+        <h2>Brand<span>.</span></h2>
+        <p>A simple placeholder footer section for layout structure.</p>
+      </div>
+
+      <div class="footer-placeholder__links">
+        <h4>Quick Links</h4>
+        <a href="#">Home</a>
+        <a href="#">Products</a>
+        <a href="#">Categories</a>
+        <a href="#">Support</a>
+      </div>
+
+      <div class="footer-placeholder__links">
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="#">Careers</a>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+      </div>
+
+      <div class="footer-placeholder__newsletter">
+        <h4>Stay Updated</h4>
+        <p>Get updates on new products and offers.</p>
+
+        <div class="footer-placeholder__input">
+          <input type="email" placeholder="Enter email">
+          <button>Join</button>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer-placeholder__bottom">
+      <p>© 2026 All rights reserved.</p>
+    </div>
+  </footer>
+
+</main>
+
+<script type="module" src="details.js"></script>
+
+</body>
+</html>
