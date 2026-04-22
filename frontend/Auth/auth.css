@@ -11,7 +11,7 @@
   place-items: center;
   min-height: 100vh;
 }
-.signup {
+.main {
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   padding: 2rem;
@@ -21,26 +21,26 @@
   align-items: center;
   gap: 2rem;
 }
-.signup__form {
+.form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
-.signup__logo {
+.logo {
   width: 200px;
   height: 50px;
   background-image: var(--logo-url);
   background-size: contain;
   background-repeat: no-repeat;
 }
-.signup__form__field {
+.form__field {
   display: flex;
   flex-direction: column;
   font-size: 0.875rem;
   gap: 0.25rem;
   position: relative;
 }
-.signup__form__toggle-password {
+.form__toggle-password {
   padding: 0;
   background: none;
   border: none;
@@ -48,13 +48,13 @@
   right: 0.5rem;
   bottom: 0;
 }
-.signup__error-msg {
+.error-msg {
   color: var(--color-error);
   margin: 0;
   font-size: 0.875rem;
   height: 1rem; /* Reserve space for error messages to prevent layout shift */
 }
-.signup__form__submit-button {
+.form__submit-button {
   cursor: pointer;
   [data-submitting] & {
     opacity: 0.8;
