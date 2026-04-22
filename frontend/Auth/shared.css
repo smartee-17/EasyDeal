@@ -48,7 +48,7 @@
   right: 0.5rem;
   bottom: 0;
 }
-.error-msg {
+.form__error-msg {
   color: var(--color-error);
   margin: 0;
   font-size: 0.875rem;

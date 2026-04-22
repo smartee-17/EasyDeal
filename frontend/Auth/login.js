@@ -1,28 +1,7 @@
 import { loginUser } from "./authService.js"; 
-import { eyeIcon, eyeSlashIcon } from "./icons.js";
-
-/* Handle dark mode based on system preference */
-const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-document.documentElement.setAttribute('data-theme', systemDark ? 'dark' : 'light');
-
-/* Password visibility toggle */
-const togglePasswordBtn = document.querySelector('.login__form__toggle-password');
-const passwordInput = document.querySelector('.login__form__password-input');
-togglePasswordBtn.addEventListener('click', () => {
-  const isPasswordVisible = passwordInput.type === 'text';
-  if (isPasswordVisible) {
-    passwordInput.type = 'password';
-    togglePasswordBtn.setAttribute('aria-label', 'Show password as plain text. Warning: this will display your password on the screen.');
-    togglePasswordBtn.innerHTML = eyeIcon;
-  } else {
-    passwordInput.type = 'text';
-    togglePasswordBtn.setAttribute('aria-label', 'Hide password');
-    togglePasswordBtn.innerHTML = eyeSlashIcon;
-  }
-});
 
 /* Login form submission */
-const loginForm = document.querySelector('.login__form');
+const loginForm = document.querySelector('.form');
 loginForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -31,14 +10,23 @@ loginForm.addEventListener('submit', async (e) => {
 
   loginForm.setAttribute('data-submitting', 'true');
 
+  // Clear any previous error messages
+  document.querySelector('.form__error-msg').textContent = '';
+
   const formData = new FormData(loginForm);
   const credentials = Object.fromEntries(formData);
+
+  
+  
+  // TODO: Add client-side validation here (e.g., check for empty fields, validate email format) before making the API call
 
 
   try {
     const data = await loginUser(credentials);
     
     // Success: Store the JWT and redirect
+    // TODO: Consider using HttpOnly cookies for better security instead of localStorage, which is vulnerable to XSS attacks. If using cookies, the backend should set the cookie with the token and the frontend can just redirect without handling the token directly.
+    // TODO: Store user role and other necessary info in a secure way (e.g., HttpOnly cookies, or if using localStorage, ensure it's encrypted and has proper expiration handling).
     localStorage.setItem('token', data.token);
 
 	  loginForm.removeAttribute('data-submitting');
@@ -50,7 +38,7 @@ loginForm.addEventListener('submit', async (e) => {
     }
   } catch (err) {
     // UI Error Handling
-    document.querySelector('.login__error-msg').textContent = err.message;
+    document.querySelector('.form__error-msg').textContent = err.message;
   }
 });
 
