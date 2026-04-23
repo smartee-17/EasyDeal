@@ -33,5 +33,5 @@ jobs:
         run: |
           # If you have tests, use: npm test
           # To just check if it starts without crashing:
-          node server.js & sleep 10 && kill $!
+          node src/server.js & sleep 10 && kill $!
         working-directory: ./backend
