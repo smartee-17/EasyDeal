@@ -30,8 +30,5 @@ jobs:
           # These pull from the Secrets/Variables you added in the UI
           MONGO_URI: ${{ secrets.MONGO_URI }}
           PORT: ${{ vars.PORT }}
-        run: |
-          # If you have tests, use: npm test
-          # To just check if it starts without crashing:
-          node src/server.js & sleep 10 && kill $!
+        run: npm test
         working-directory: ./backend
