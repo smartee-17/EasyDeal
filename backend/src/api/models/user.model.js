@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import bcryptjs from "bcryptjs";
+import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema({
     // Auth 
@@ -24,7 +24,6 @@ const userSchema = new mongoose.Schema({
 
     // Contact Seller
     whatsappNumber: {type: String},
-    whatsappLink: {type: String},
 
     // Trust system
     ratingAverage: {type: Number, default: 0},
@@ -32,10 +31,7 @@ const userSchema = new mongoose.Schema({
 
     // Admin
     isBlocked: { type: Boolean, default: false},
-
-    createdAt: {type: Date, default: Date.now}
-
-});
+}, { timestamps: true});
 
 userSchema.index(
     {email: 1, phone: 1, username: 1},
@@ -55,6 +51,6 @@ userSchema.methods.matchPassword = async function(password) {
 };
 
 
-const User = mongoose.model(User, userSchema);
+const User = mongoose.model('User', userSchema);
 
 export default User;
