@@ -25,7 +25,7 @@ jobs:
         run: npm install
         working-directory: ./backend
 
-      - name: Run App or Tests
+      - name: Test database connection
         env:
           # These pull from the Secrets/Variables you added in the UI
           MONGO_URI: ${{ secrets.MONGO_URI }}
