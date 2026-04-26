@@ -10,6 +10,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      mongodb:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -27,8 +38,8 @@ jobs:
 
       - name: Test database connection and Product CRUD
         env:
-          # These pull from the Secrets/Variables you added in the UI
           MONGO_URI: ${{ secrets.MONGO_URI }}
+          MONGO_TEST_URI: mongodb://127.0.0.1:27017/easydeal_test
           PORT: ${{ vars.PORT }}
         run: npm test
         working-directory: ./backend
