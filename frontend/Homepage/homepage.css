@@ -1,0 +1,163 @@
+.header {
+    display: flex;
+    width: 100%;
+    padding: 20px;
+    flex-wrap: wrap;
+    height: auto;
+    min-height: 80px;
+    gap: 15px;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 11px 99px 156px -72px rgba(173, 173, 173, 1);
+}
+.header__img {
+    width: 150px;
+    height: auto;
+}
+.header__search {
+    width: 100%;
+    max-width: 400px;
+    height: 45px;
+    font-size: 1rem;
+    border-radius: 50px;
+    border: 1px solid var(--color-border);
+    padding: 10px;
+    outline: none;
+}
+.main {
+    max-width: 100%;
+}
+.hero {
+    min-height: 60vh;
+    background: url("Assets/images/maxim-hopman-Hin-rzhOdWs-unsplash.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    color: var(--color-bg);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+.hero::before {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.hero__latest {
+    z-index: 2;
+    text-align: center;
+    max-width: 90%;
+}
+.hero__heading {
+    font-size: 3rem;
+}
+.hero__btn {
+    padding: 10px 5px;
+    width: 150px;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.96rem;
+    transition: 0.5s ease-in-out;
+    margin-top: 20px;
+}
+.hero__btn:active {
+    background-color: white;
+    color: black;
+}
+.category-bar__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    padding: 0;
+    list-style: none;
+    gap: 1rem;
+    justify-content: center;
+    overflow-x: scroll;
+}
+.category-bar__item {
+    border: 1px solid var(--color-border);
+    border-radius: 7px;
+    padding: 10px 20px;
+    transition: 0.5s ease;
+}
+
+.category-bar__item:active {
+    background-color: var(--color-accent);
+    color: white;
+}
+.active {
+    color: white;
+    background-color: var(--color-accent);
+}
+.products {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    justify-items: center;
+}
+.product-card {
+    width: 100%;
+    max-width: 320px;
+    min-height: 400px;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 11px 99px 156px -72px rgba(173, 173, 173, 1);
+    flex: 1;
+}
+.product-card__image {
+    height: 300px;
+    width: 100%;
+    border-radius: 8px;
+}
+.product-card__title {
+    font-size: 0.9rem;
+}
+.product-card__price {
+    font-size: 1.7rem;
+    font-weight: 600;
+}
+.product-card__button {
+    border: none;
+    background-color: var(--color-accent);
+    color: var(--color-bg);
+    width: 100%;
+    padding: 10px 5px;
+    font-weight: 600;
+    border-radius: 8px;
+}
+@media (max-width: 780px) {
+    .header {
+        justify-content: center;
+        padding: 15px;
+    }
+
+    .hero__heading {
+        font-size: 1.8rem;
+    }
+
+    .category-bar__list {
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 10px;
+    }
+
+    /* Optional: Hide the ugly scrollbar on mobile */
+    .category-bar__list::-webkit-scrollbar {
+        display: none;
+    }
+
+    .product-card {
+        max-width: 90%; /* Center narrow cards on mobile */
+    }
+}
