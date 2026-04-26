@@ -1,36 +1,53 @@
 let products = [];
 let currentProduct = null;
 
-const API_URL = "http://localhost:3000/api/products";
+const params = new URLSearchParams(window.location.search);
+const productID = params.get("id");
+
+const API_URL = `http://localhost:3000/api/products/${productID}`;
 
 document.addEventListener("DOMContentLoaded", loadProducts);
 
 async function loadProducts() {
   try {
+    if (!productID || productID === "String") {
+       document.body.innerHTML = `
+         <div style="padding:20px;text-align:center;font-family:sans-serif">
+             Invalid product link
+         </div>
+      `;
+  throw new Error("Invalid product ID");
+}
+
     const res = await fetch(API_URL);
     if (!res.ok) throw new Error("API not responding");
 
     const response = await res.json();
-
-    products = response.data || [];
-    currentProduct = products[0];
+    currentProduct = response.data;
 
     if (!currentProduct) throw new Error("No product in API");
+    
+     const res2 = await fetch("http://localhost:3000/api/products");
+     if (!res2.ok) throw new Error("Failed to load similar products");
+
+      const data2 = await res2.json();
+      products = data2.data || [];
 
     document.getElementById("loader")?.classList.add("is-hidden");
 
     initProductPage();
 
   } catch (err) {
-    console.error("API failed:", err);
+      console.error("FULL ERROR:", err);
+      console.log("API URL:", API_URL);
 
     document.body.innerHTML = `
       <div style="padding:20px;text-align:center;font-family:sans-serif">
         ⚠️ Failed to load products. Please check backend or refresh page.
       </div>
-    `;
-  }
-}
+     `;
+    }
+ }
 
 function initProductPage() {
   const titleEl = document.querySelector(".product-info__title");
@@ -49,7 +66,7 @@ function initProductPage() {
   setupInteractions();
 }
 
-/* ---------------- PRODUCT INFO ---------------- */
+/* -- PRODUCT INFO -- */
 function renderProductInfo(titleEl, priceEl, descEl) {
   if (titleEl) titleEl.textContent = currentProduct.title;
   if (priceEl) priceEl.textContent = `$${Number(currentProduct.price).toLocaleString()}`;
@@ -120,7 +137,7 @@ function renderGallery(track, dotsContainer, thumbsContainer) {
   });
 }
 
-/* ---------------- SIMILAR PRODUCTS ---------------- */
+/* --- SIMILAR PRODUCTS ---- */
 function renderSimilarProducts() {
   const grid = document.querySelector(".similar-products__grid");
   if (!grid) return;
@@ -142,7 +159,7 @@ function renderSimilarProducts() {
   `).join("");
 }
 
-/* ---------------- INTERACTIONS ---------------- */
+/* -- INTERACTIONS ----- */
 function setupInteractions() {
   let qty = 1;
   const qtyEl = document.getElementById("qty");
@@ -168,7 +185,7 @@ function setupInteractions() {
     openWA(btn.dataset.phone, btn.dataset.title);
   });
 
-  /* ---------------- WISHLIST ---------------- */
+  /* ---- WISHLIST ---- */
   const wishlist = document.getElementById("wishlist");
 
   wishlist?.addEventListener("click", () => {
@@ -190,7 +207,6 @@ function setupInteractions() {
     });
   });
 
-  /* ---------------- THEME TOGGLE (SUN / MOON FIXED) ---------------- */
   const themeToggle = document.getElementById("themeToggle");
   const sun = themeToggle?.querySelector(".sun");
   const moon = themeToggle?.querySelector(".moon");
@@ -219,7 +235,6 @@ function setupInteractions() {
   });
 }
 
-/* ---------------- WHATSAPP (FIXED) ---------------- */
 function openWA(phone, title) {
   if (!phone) {
     console.warn("No WhatsApp number found for this seller");
