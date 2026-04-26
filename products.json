@@ -1,0 +1,86 @@
+[
+  {
+    "id": 1,
+    "name": "MacBook Pro 14",
+    "price": "1,999.00",
+    "category": "Electronics",
+    "image": "Assets/images/product images/macbook pro.jpg"
+  },
+  {
+    "id": 2,
+    "name": "Mechanical Keyboard",
+    "price": "120.00",
+    "category": "Electronics",
+    "image": "Assets/images/product images/mechanical keyboard.jpg"
+  },
+  {
+    "id": 3,
+    "name": "Wireless Gaming Mouse",
+    "price": "59.99",
+    "category": "Electronics",
+    "image": "Assets/images/product images/gaming mouse.jpg"
+  },
+  {
+    "id": 4,
+    "name": "Ergonomic Office Chair",
+    "price": "249.00",
+    "category": "Furniture",
+    "image": "Assets/images/product images/chair.jpg"
+  },
+  {
+    "id": 5,
+    "name": "Standing Desk",
+    "price": "450.00",
+    "category": "Furniture",
+    "image": "Assets/images/product images/desk.png"
+  },
+  {
+    "id": 6,
+    "name": "Stainless Steel Water Bottle",
+    "price": "25.00",
+    "category": "Lifestyle",
+    "image": "Assets/images/product images/water bottle.jpg"
+  },
+  {
+    "id": 7,
+    "name": "Yoga Mat",
+    "price": "35.00",
+    "category": "Fitness",
+    "image": "Assets/images/product images/yoga mat.jpg"
+  },
+  {
+    "id": 8,
+    "name": "Adjustable Dumbbells",
+    "price": "199.99",
+    "category": "Fitness",
+    "image": "Assets/images/product images/dumbells.jpg"
+  },
+  {
+    "id": 9,
+    "name": "Air Fryer",
+    "price": "89.00",
+    "category": "Kitchen",
+    "image": "Assets/images/product images/air fryer.jpg"
+  },
+  {
+    "id": 10,
+    "name": "Electric Kettle",
+    "price": "45.00",
+    "category": "Kitchen",
+    "image": "Assets/images/product images/electric kettle.jpg"
+  },
+  {
+    "id": 11,
+    "name": "Leather Backpack",
+    "price": "75.00",
+    "category": "Fashion",
+    "image": "Assets/images/product images/leather backpack.jpg"
+  },
+  {
+    "id": 12,
+    "name": "Noise Cancelling Headphones",
+    "price": "349.00",
+    "category": "Electronics",
+    "image": "Assets/images/product images/headphones.jpg"
+  }
+]
