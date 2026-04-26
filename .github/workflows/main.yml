@@ -1,0 +1,37 @@
+name: Backend CI
+
+on:
+  push:
+    branches: ["main", "setup-github-actions"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: "./backend/package.json"
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./backend
+
+      - name: Test database connection
+        env:
+          # These pull from the Secrets/Variables you added in the UI
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          PORT: ${{ vars.PORT }}
+        run: |
+          # If you have tests, use: npm test
+          # To just check if it starts without crashing:
+          node src/server.js & sleep 10 && kill $!
+        working-directory: ./backend
