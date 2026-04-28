@@ -1,4 +1,5 @@
 const categories = document.querySelector(".category-bar__list");
+const products = document.querySelector(".products");
 
 async function fetchData() {
   let res = await fetch("products.json");
@@ -72,7 +73,7 @@ async function fetchData() {
             <div class="product-card" id = ${d._id}>
           <img
             class="product-card__image"
-            src= "${d.images}"
+            src= "${d.images[0]}"
             alt="${d.altText}"
           />
           <h3 class="product-card__title">${d.title}</h3>
