@@ -8,21 +8,21 @@ async function fetchData() {
   products.innerHTML = "";
   data.map((a) => {
     products.innerHTML += `
-            <div class="product-card" id = ${a._id}>
-          <img
-            class="product-card__image"
-            src= "${a.images[0]}"
-            alt="${a.altText}"
-          />
-          <h3 class="product-card__title">${a.title}</h3>
+  <div class="product-card" id = ${a._id}>
+ <img
+  class="product-card__image"
+  src= "${a.images[0]}"
+  alt="${a.altText}"
+ />
+ <h3 class="product-card__title">${a.title}</h3>
 
-          <p class="product-card__price product-card__price--sale">${a.price}</p>
+ <p class="product-card__price product-card__price--sale">${a.price}</p>
 
-          <button class="product-card__button product-card__button--primary">
-            Add to Cart
-          </button>
-        </div>
-    `;
+ <button class="product-card__button product-card__button--primary">
+  Add to Cart
+ </button>
+    </div>
+  `;
   });
   let category = [...new Set(data.map((items) => items.category))];
   category.unshift("All Products");
@@ -50,41 +50,41 @@ async function fetchData() {
       if (a.textContent === "All Products") {
         data.map((a) => {
           products.innerHTML += `
-            <div class="product-card" id = ${a._id}>
-          <img
-            class="product-card__image"
-            src= "${a.images[0]}"
-            alt="${a.altText}"
-          />
-          <h3 class="product-card__title">${a.title}</h3>
+  <div class="product-card" id = ${a._id}>
+ <img
+  class="product-card__image"
+  src= "${a.images[0]}"
+  alt="${a.altText}"
+ />
+ <h3 class="product-card__title">${a.title}</h3>
 
-          <p class="product-card__price product-card__price--sale">${a.price}</p>
+ <p class="product-card__price product-card__price--sale">${a.price}</p>
 
-          <button class="product-card__button product-card__button--primary">
-            Add to Cart
-          </button>
-        </div>
-    `;
+ <button class="product-card__button product-card__button--primary">
+ Add to Cart
+ </button>
+</div>
+`;
         });
       }
       data.map((d) => {
         if (d.category === a.textContent) {
           products.innerHTML += `
-            <div class="product-card" id = ${d._id}>
-          <img
-            class="product-card__image"
-            src= "${d.images[0]}"
-            alt="${d.altText}"
-          />
-          <h3 class="product-card__title">${d.title}</h3>
+ <div class="product-card" id = ${d._id}>
+ <img
+ class="product-card__image"
+ src= "${d.images[0]}"
+ alt="${d.altText}"
+ />
+ <h3 class="product-card__title">${d.title}</h3>
 
-          <p class="product-card__price product-card__price--sale">${d.price}</p>
+ <p class="product-card__price product-card__price--sale">${d.price}</p>
 
-          <button class="product-card__button product-card__button--primary">
-            Add to Cart
-          </button>
-        </div>
-    `;
+ <button class="product-card__button product-card__button--primary">
+ Add to Cart
+ </button>
+</div>
+`;
         }
       });
     });

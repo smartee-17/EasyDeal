@@ -7,7 +7,7 @@
       "title": "MacBook Pro 14",
       "price": "1,999.00",
       "category": "Electronics",
-      "images": ["Assets/images/product images/macbook pro.jpg"],
+      "images": ["Assets/images/product images/macbook pro.webp"],
       "description": "The new MacBook Pro. Supercharged by M3.",
       "altText": "Silver MacBook Pro 14-inch on a wooden desk"
     },
@@ -16,7 +16,7 @@
       "title": "Mechanical Keyboard",
       "price": "120.00",
       "category": "Electronics",
-      "images": ["Assets/images/product images/mechanical keyboard.jpg"],
+      "images": ["Assets/images/product images/mechanical keyboard.webp"],
       "description": "High-performance RGB mechanical switches.",
       "altText": "Backlit mechanical gaming keyboard"
     },
@@ -25,7 +25,7 @@
       "title": "Wireless Gaming Mouse",
       "price": "59.99",
       "category": "Electronics",
-      "images": ["Assets/images/product images/gaming mouse.jpg"],
+      "images": ["Assets/images/product images/gaming mouse.webp"],
       "description": "Low-latency wireless performance.",
       "altText": "Ergonomic black wireless gaming mouse"
     },
@@ -34,7 +34,7 @@
       "title": "Ergonomic Office Chair",
       "price": "249.00",
       "category": "Furniture",
-      "images": ["Assets/images/product images/chair.jpg"],
+      "images": ["Assets/images/product images/chair.webp"],
       "description": "All-day comfort with lumbar support.",
       "altText": "Black mesh ergonomic office chair"
     },
@@ -43,7 +43,7 @@
       "title": "Standing Desk",
       "price": "450.00",
       "category": "Furniture",
-      "images": ["Assets/images/product images/desk.png"],
+      "images": ["Assets/images/product images/desk.webp"],
       "description": "Electric height-adjustable workspace.",
       "altText": "White motorized standing desk in a home office"
     },
@@ -52,7 +52,7 @@
       "title": "Stainless Steel Water Bottle",
       "price": "25.00",
       "category": "Lifestyle",
-      "images": ["Assets/images/product images/water bottle.jpg"],
+      "images": ["Assets/images/product images/water bottle.webp"],
       "description": "Vacuum insulated, keeps drinks cold for 24h.",
       "altText": "Blue stainless steel reusable water bottle"
     },
@@ -61,7 +61,7 @@
       "title": "Yoga Mat",
       "price": "35.00",
       "category": "Fitness",
-      "images": ["Assets/images/product images/yoga mat.jpg"],
+      "images": ["Assets/images/product images/yoga mat.webp"],
       "description": "Eco-friendly non-slip grip mat.",
       "altText": "Purple rolled out yoga mat on a floor"
     },
@@ -70,7 +70,7 @@
       "title": "Adjustable Dumbbells",
       "price": "199.99",
       "category": "Fitness",
-      "images": ["Assets/images/product images/dumbells.jpg"],
+      "images": ["Assets/images/product images/dumbells.webp"],
       "description": "Space-saving weight set.",
       "altText": "Pair of black adjustable dumbbells"
     },
@@ -79,7 +79,7 @@
       "title": "Air Fryer",
       "price": "89.00",
       "category": "Kitchen",
-      "images": ["Assets/images/product images/air fryer.jpg"],
+      "images": ["Assets/images/product images/air fryer.webp"],
       "description": "Healthy frying with 90% less oil.",
       "altText": "Digital air fryer on a kitchen counter"
     },
@@ -88,7 +88,7 @@
       "title": "Electric Kettle",
       "price": "45.00",
       "category": "Kitchen",
-      "images": ["Assets/images/product images/electric kettle.jpg"],
+      "images": ["Assets/images/product images/electric kettle.webp"],
       "description": "Rapid boil with auto-shutoff.",
       "altText": "Stainless steel electric kettle pouring tea"
     },
@@ -97,7 +97,7 @@
       "title": "Leather Backpack",
       "price": "75.00",
       "category": "Fashion",
-      "images": ["Assets/images/product images/leather backpack.jpg"],
+      "images": ["Assets/images/product images/leather backpack.webp"],
       "description": "Premium full-grain leather.",
       "altText": "Vintage style brown leather backpack"
     },
@@ -106,7 +106,7 @@
       "title": "Noise Cancelling Headphones",
       "price": "349.00",
       "category": "Electronics",
-      "images": ["Assets/images/product images/headphones.jpg"],
+      "images": ["Assets/images/product images/headphones.webp"],
       "description": "Industry leading noise cancellation.",
       "altText": "Over-ear wireless headphones in black"
     }
