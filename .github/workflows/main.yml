@@ -40,6 +40,7 @@ jobs:
         env:
           MONGO_URI: ${{ secrets.MONGO_URI }}
           MONGO_TEST_URI: mongodb://127.0.0.1:27017/easydeal_test
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
           PORT: ${{ vars.PORT }}
         run: npm test
         working-directory: ./backend
