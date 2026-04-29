@@ -1,7 +1,7 @@
-import User from "../models/user.model";
-import { generateToken, setAuthCookie} from "../library/generateJwtToken";
-import bcrypt from "bcryptjs";
-import { sendResponse } from "../library/utils";
+import User from '../models/user.model.js';
+import { generateToken, setAuthCookie } from '../library/generateJwtToken.js';
+import bcrypt from 'bcryptjs';
+import { sendResponse } from '../library/utils.js';
 
 export const register = async (req, res) => {
   try {
@@ -13,46 +13,48 @@ export const register = async (req, res) => {
       username,
       bio,
       whatsappNumber,
-      rememberMe
+      rememberMe,
     } = req.body;
 
-
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
+    if (!name || !email || !password || !phone) {
+      return res
+        .status(400)
+        .json({ message: 'Please fill all required fields' });
     }
 
-    // Upload avatar when cloudinary is set up and create it then too
-
+    const existingUser = await User.findOne({
+      $or: [{ email }, { username }, { phone }],
+    });
+    if (existingUser) {
+      const field =
+        existingUser.email === email
+          ? 'Email'
+          : existingUser.username === username
+            ? 'Username'
+            : 'Phone';
+      return res.status(400).json({ message: `${field} already in use` });
+    }
 
     const user = await User.create({
       name,
       email,
-      password, 
+      password,
       phone,
       username,
       bio,
       whatsappNumber,
-      role: 'user', 
+      role: 'user',
     });
 
-    const token = generateToken(user, rememberMe);
+    const token = generateToken(user, rememberMe === true);
+    setAuthCookie(res, token, rememberMe === true);
 
-    setAuthCookie(res, token, rememberMe);
+    const userObj = user.toObject();
+    delete userObj.password;
 
-    sendResponse(
-        res,
-        201,
-        true,
-        'Account created',
-        user
-    );
-
+    sendResponse(res, 201, true, 'Account created', { token, user: userObj });
   } catch (error) {
     console.error(error);
-    res.status(500).json({
-      message: 'Server error',
-      error: error.message
-    });
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
