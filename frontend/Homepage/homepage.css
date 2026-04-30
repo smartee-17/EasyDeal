@@ -78,12 +78,11 @@
 }
 .category-bar__list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   padding: 0;
   list-style: none;
-  gap: 0.5rem;
+  gap: 0.3rem;
   justify-content: center;
-  overflow-x: scroll;
 }
 
 .category-bar__item-btn {
@@ -91,6 +90,7 @@
   border-radius: 7px;
   padding: 10px 20px;
   transition: 0.5s ease;
+  cursor: pointer;
 }
 .category-bar__item-btn:active {
   background-color: var(--color-accent);
@@ -148,18 +148,10 @@
   }
 
   .category-bar__list {
-    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-    overflow-x: auto;
     white-space: nowrap;
-    padding-bottom: 10px;
-  }
-
-  /* Optional: Hide the ugly scrollbar on mobile */
-  .category-bar__list::-webkit-scrollbar {
-    display: none;
   }
 
   .product-card {
-    max-width: 90%; /* Center narrow cards on mobile */
+    max-width: 90%;
   }
 }
