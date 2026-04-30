@@ -1,93 +1,67 @@
-const categories = document.querySelector(".category-bar__list");
-const products = document.querySelector(".products");
+const productsContainer = document.querySelector(".products");
+const categoriesContainer = document.querySelector(".category-bar__list");
+
+let allProductsData = [];
 
 async function fetchData() {
-  let res = await fetch("products.json");
-  let result = await res.json();
-  let data = result.data;
-  products.innerHTML = "";
-  data.map((a) => {
-    products.innerHTML += `
-  <div class="product-card" id = ${a._id}>
- <img
-  class="product-card__image"
-  src= "${a.images[0]}"
-  alt="${a.altText}"
- />
- <h3 class="product-card__title">${a.title}</h3>
+  try {
+    let res = await fetch("products.json");
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
 
- <p class="product-card__price product-card__price--sale">${a.price}</p>
+    let result = await res.json();
+    allProductsData = result.data;
 
- <button class="product-card__button product-card__button--primary">
-  Add to Cart
- </button>
-    </div>
-  `;
-  });
-  let category = [...new Set(data.map((items) => items.category))];
-  category.unshift("All Products");
+    renderCategories(allProductsData);
+    renderProducts("All Products");
+  } catch (error) {
+    console.error("Fetch failed:", error);
+    productsContainer.innerHTML = "<p>Error loading products.</p>";
+  }
+}
 
-  const categoryHTML = category
-    .map((cat) => {
-      return ` <li class="category-bar__item">${cat}</li>`;
-    })
+function renderCategories(data) {
+  let categories = [
+    "All Products",
+    ...new Set(data.map((item) => item.category)),
+  ];
+
+  categoriesContainer.innerHTML = categories
+    .map(
+      (cat) =>
+        `<li class="category-bar__item "><button class="category-bar__item-btn ${cat === "All Products" ? "active" : ""}">${cat}</button></li>`,
+    )
     .join("");
-  categories.innerHTML += categoryHTML;
 
-  let categoryList = document.querySelectorAll(".category-bar__item");
-  categoryList.forEach((a) => {
-    if (a.textContent === "All Products") {
-      a.classList.add("active");
-    }
-    a.addEventListener("click", () => {
-      categoryList.forEach((btn) => {
-        btn.classList.remove("active");
-      });
+  document.querySelectorAll(".category-bar__item-btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      document
+        .querySelectorAll(".category-bar__item-btn")
+        .forEach((b) => b.classList.remove("active"));
+      e.target.classList.add("active");
 
-      a.classList.add("active");
-
-      products.innerHTML = "";
-      if (a.textContent === "All Products") {
-        data.map((a) => {
-          products.innerHTML += `
-  <div class="product-card" id = ${a._id}>
- <img
-  class="product-card__image"
-  src= "${a.images[0]}"
-  alt="${a.altText}"
- />
- <h3 class="product-card__title">${a.title}</h3>
-
- <p class="product-card__price product-card__price--sale">${a.price}</p>
-
- <button class="product-card__button product-card__button--primary">
- Add to Cart
- </button>
-</div>
-`;
-        });
-      }
-      data.map((d) => {
-        if (d.category === a.textContent) {
-          products.innerHTML += `
- <div class="product-card" id = ${d._id}>
- <img
- class="product-card__image"
- src= "${d.images[0]}"
- alt="${d.altText}"
- />
- <h3 class="product-card__title">${d.title}</h3>
-
- <p class="product-card__price product-card__price--sale">${d.price}</p>
-
- <button class="product-card__button product-card__button--primary">
- Add to Cart
- </button>
-</div>
-`;
-        }
-      });
+      renderProducts(e.target.textContent);
     });
   });
 }
+
+function renderProducts(categoryFilter) {
+  productsContainer.innerHTML = "";
+
+  const filtered =
+    categoryFilter === "All Products"
+      ? allProductsData
+      : allProductsData.filter((p) => p.category === categoryFilter);
+
+  filtered.forEach((product) => {
+    productsContainer.innerHTML += `
+      <div class="product-card" id="${product._id}">
+        <img class="product-card__image" src="${product.images[0]}" alt="${product.altText}" />
+        <h3 class="product-card__title">${product.title}</h3>
+        <p class="product-card__price">${product.price}</p>
+        <button class="product-card__button">Add to Cart</button>
+      </div>
+    `;
+  });
+}
+
 fetchData();
