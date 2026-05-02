@@ -4,50 +4,56 @@ let currentProduct = null;
 const params = new URLSearchParams(window.location.search);
 const productID = params.get("id");
 
-const API_URL = `http://localhost:3000/api/products/${productID}`;
+const BASE_URL = "https://easydeal.onrender.com/api/products";
+const API_URL = `${BASE_URL}/${productID}`;
 
 document.addEventListener("DOMContentLoaded", loadProducts);
 
 async function loadProducts() {
   try {
     if (!productID || productID === "String") {
-       document.body.innerHTML = `
-         <div style="padding:20px;text-align:center;font-family:sans-serif">
-             Invalid product link
-         </div>
+      document.body.innerHTML = `
+        <div style="padding:40px;text-align:center;font-family:sans-serif">
+          <h2> Invalid product link</h2>
+          <p>Please go back to the home page and select a product.</p>
+        </div>
       `;
-  throw new Error("Invalid product ID");
-}
+      return;
+    }
 
     const res = await fetch(API_URL);
-    if (!res.ok) throw new Error("API not responding");
+    if (!res.ok) throw new Error("Backend is asleep or not responding");
 
     const response = await res.json();
     currentProduct = response.data;
 
-    if (!currentProduct) throw new Error("No product in API");
-    
-     const res2 = await fetch("http://localhost:3000/api/products");
-     if (!res2.ok) throw new Error("Failed to load similar products");
+    if (!currentProduct) throw new Error("No product found in database");
 
+    const res2 = await fetch(BASE_URL); 
+    if (res2.ok) {
       const data2 = await res2.json();
       products = data2.data || [];
+    }
 
     document.getElementById("loader")?.classList.add("is-hidden");
-
     initProductPage();
 
   } catch (err) {
-      console.error("FULL ERROR:", err);
-      console.log("API URL:", API_URL);
-
+    console.error("FULL ERROR:", err);
+    
+    document.getElementById("loader")?.classList.add("is-hidden");
     document.body.innerHTML = `
-      <div style="padding:20px;text-align:center;font-family:sans-serif">
-        ⚠️ Failed to load products. Please check backend or refresh page.
+      <div style="padding:40px;text-align:center;font-family:sans-serif">
+        <p> <strong>Waking up the server...</strong></p>
+        <p>This usually takes 2-3 minutes on the first load. Stay on this page!</p>
+        <div class="page-loader__spinner" style="margin: 20px auto;"></div>
       </div>
-     `;
-    }
- }
+    `;
+
+    setTimeout(() => window.location.reload(), 10000);
+  }
+}
+
 
 function initProductPage() {
   const titleEl = document.querySelector(".product-info__title");
@@ -73,11 +79,10 @@ function renderProductInfo(titleEl, priceEl, descEl) {
   if (descEl) descEl.textContent = currentProduct.description || "";
 }
 
-/* ---------------- GALLERY ---------------- */
+/* ---GALLERY ----- */
 function renderGallery(track, dotsContainer, thumbsContainer) {
   let images = currentProduct.images || [];
   
-  // FORCE 3 IMAGES FOR TESTING (As requested by team)
   if (images.length === 1) {
     images = [images[0], images[0], images[0]];
   }
@@ -87,7 +92,6 @@ function renderGallery(track, dotsContainer, thumbsContainer) {
   let index = 0;
   let dots = [];
 
-  // FIX: Added inline styles to gallery__slide to stop "ghosting"
   track.innerHTML = images.map(img => `
     <div class="gallery__slide" style="min-width: 100%; flex: 0 0 100%; box-sizing: border-box;">
       <img src="${img}" alt="${currentProduct.title}" style="width: 100%; display: block; object-fit: cover;">
@@ -111,7 +115,7 @@ function renderGallery(track, dotsContainer, thumbsContainer) {
   });
 
   function update() {
-    // Exact 100% translation prevents the next image from showing
+
     track.style.transform = `translateX(-${index * 100}%)`;
 
     dots.forEach(d => d.classList.remove("is-active"));
@@ -121,7 +125,6 @@ function renderGallery(track, dotsContainer, thumbsContainer) {
     thumbs[index]?.classList.add("is-active");
   }
 
-  // Use .onclick to ensure clean listeners
   document.getElementById("next").onclick = () => {
     index = (index + 1) % images.length;
     update();
@@ -147,22 +150,24 @@ function renderSimilarProducts() {
 
   grid.innerHTML = products.map(p => `
     <div class="product-card">
-      <img src="${p.images?.[0] || ""}" />
-      <div>
-        <h4>${p.title}</h4>
-        <p>$${Number(p.price).toLocaleString()}</p>
+      <div class="product-card__image">
+        <img src="${p.images?.[0] || ""}" alt="${p.title}" />
+      </div>
+      
+      <div class="product-card__body">
+        <h4 class="product-card__name">${p.title}</h4>
+        <p class="product-card__price">$${Number(p.price).toLocaleString()}</p>
 
         <button class="product-card__chat-btn"
           data-phone="${p.seller?.whatsapp || ""}"
           data-title="${p.title}">
-          Chat Seller
+          <i class="fa-brands fa-whatsapp"></i> Chat Seller
         </button>
       </div>
     </div>
   `).join("");
 }
 
-/* -- INTERACTIONS ----- */
 function setupInteractions() {
   let qty = 1;
   const qtyEl = document.getElementById("qty");
@@ -188,7 +193,6 @@ function setupInteractions() {
     openWA(btn.dataset.phone, btn.dataset.title);
   });
 
-  /* ---- WISHLIST ---- */
   const wishlist = document.getElementById("wishlist");
 
   wishlist?.addEventListener("click", () => {
@@ -199,7 +203,7 @@ function setupInteractions() {
       : `<i class="fa-regular fa-heart"></i> Save`;
   });
 
-  /* ---------------- TABS ---------------- */
+  /* --- TABS ---- */
   document.querySelectorAll(".tabs__btn").forEach(btn => {
     btn.addEventListener("click", () => {
       document.querySelectorAll(".tabs__btn").forEach(b => b.classList.remove("is-active"));

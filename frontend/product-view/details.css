@@ -665,18 +665,24 @@
   opacity: 0.8;
 }
 
-/* Product card grid */
 .similar-products__grid {
   display: grid;
+  gap: 16px;
   grid-template-columns: repeat(2, 1fr);
-  gap: clamp(12px, 2.5vw, 20px);
 }
-@media (max-width: 400px) {
+
+@media (max-width: 350px) {
   .similar-products__grid {
-    gap: 12px;
+    grid-template-columns: 1fr;
   }
 }
-  
+
+@media (min-width: 768px) {
+  .similar-products__grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
 .product-card {
   border-radius: 14px;
   overflow: hidden;
@@ -687,7 +693,7 @@
   transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
   display: flex;
   flex-direction: column;
-  padding: 1rem;
+  padding: 10px; 
 }
 
 .product-card:hover {
@@ -696,17 +702,22 @@
   border-color: var(--color-accent);
 }
 
-/* Card image */
 .product-card__image {
-  height: clamp(120px, 22vw, 180px);
+  height: 150px;
+  width: 100%;
   overflow: hidden;
   position: relative;
   background: var(--color-border);
   flex-shrink: 0;
+  border-radius: 10px;
 }
+
 @media (max-width: 400px) {
   .product-card__image {
     height: 150px;
+  }
+   .product-card {
+    padding: 10px;
   }
 }
   
@@ -738,32 +749,12 @@
   transform: scale(1.06);
 }
 
-/* Card badge */
-.product-card__badge {
-  position: absolute;
-  top: 9px;
-  left: 9px;
-  font-size: 0.62rem;
-  font-weight: 700;
-  padding: 3px 9px;
-  border-radius: 999px;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-}
 
-.product-card__badge--new  { background: var(--color-text); color: var(--color-bg); }
-.product-card__badge--sale { 
-  background: color-mix(in srgb, var(--color-error) 12%, transparent);
-  color: var(--color-error);
-  border: 1px solid color-mix(in srgb, var(--color-error) 25%, transparent);
-}
-
-/* Card body */
 .product-card__body {
-  padding: clamp(10px, 2vw, 14px) clamp(10px, 2vw, 14px) clamp(12px, 2.5vw, 16px);
+ padding: clamp(10px, 2vw, 14px) clamp(10px, 2vw, 14px) clamp(12px, 2.5vw, 16px);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
   flex: 1;
 }
 
@@ -795,8 +786,8 @@
   font-size: clamp(1rem, 2.5vw, 1.1rem);
   color: var(--color-text);
   letter-spacing: -0.2px;
-  margin-top: auto;
-  padding-top: 4px;
+  margin-top: 4px;
+  padding-top: 0;
 }
 @media (max-width: 400px) {
   .product-card__price {
