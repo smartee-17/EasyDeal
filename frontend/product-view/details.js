@@ -75,15 +75,22 @@ function renderProductInfo(titleEl, priceEl, descEl) {
 
 /* ---------------- GALLERY ---------------- */
 function renderGallery(track, dotsContainer, thumbsContainer) {
-  const images = currentProduct.images || [];
+  let images = currentProduct.images || [];
+  
+  // FORCE 3 IMAGES FOR TESTING (As requested by team)
+  if (images.length === 1) {
+    images = [images[0], images[0], images[0]];
+  }
+
   if (!images.length) return;
 
   let index = 0;
   let dots = [];
 
+  // FIX: Added inline styles to gallery__slide to stop "ghosting"
   track.innerHTML = images.map(img => `
-    <div class="gallery__slide">
-      <img src="${img}" alt="${currentProduct.title}">
+    <div class="gallery__slide" style="min-width: 100%; flex: 0 0 100%; box-sizing: border-box;">
+      <img src="${img}" alt="${currentProduct.title}" style="width: 100%; display: block; object-fit: cover;">
     </div>
   `).join("");
 
@@ -92,24 +99,19 @@ function renderGallery(track, dotsContainer, thumbsContainer) {
   `).join("");
 
   const thumbs = document.querySelectorAll(".gallery__thumb");
-
   dotsContainer.innerHTML = "";
 
   images.forEach((_, i) => {
     const dot = document.createElement("button");
     dot.className = "gallery__dot";
     if (i === 0) dot.classList.add("is-active");
-
-    dot.onclick = () => {
-      index = i;
-      update();
-    };
-
+    dot.onclick = () => { index = i; update(); };
     dotsContainer.appendChild(dot);
     dots.push(dot);
   });
 
   function update() {
+    // Exact 100% translation prevents the next image from showing
     track.style.transform = `translateX(-${index * 100}%)`;
 
     dots.forEach(d => d.classList.remove("is-active"));
@@ -119,21 +121,22 @@ function renderGallery(track, dotsContainer, thumbsContainer) {
     thumbs[index]?.classList.add("is-active");
   }
 
-  document.getElementById("next")?.addEventListener("click", () => {
+  // Use .onclick to ensure clean listeners
+  document.getElementById("next").onclick = () => {
     index = (index + 1) % images.length;
     update();
-  });
+  };
 
-  document.getElementById("prev")?.addEventListener("click", () => {
+  document.getElementById("prev").onclick = () => {
     index = (index - 1 + images.length) % images.length;
     update();
-  });
+  };
 
   thumbs.forEach((t, i) => {
-    t.addEventListener("click", () => {
+    t.onclick = () => {
       index = i;
       update();
-    });
+    };
   });
 }
 
