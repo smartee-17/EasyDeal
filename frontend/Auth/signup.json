@@ -1,0 +1,13 @@
+{
+  "token": "jwt_token_here",
+  "user": {
+    "_id": "64fa2b3c1e0000abc1234567",
+    "name": "Ravi Kumar",
+    "email": "ravi@gmail.com",
+    "role": "seller",
+    "phone": "9800000000",
+    "whatsapp": "9800000000",
+    "isVerified": false,
+    "createdAt": "2024-09-01T10:00:00Z"
+  }
+}

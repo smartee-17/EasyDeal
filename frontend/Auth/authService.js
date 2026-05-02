@@ -1,11 +1,30 @@
-export async function loginUser(credentials) {
-  // TODO: Replace the URL with the actual backend endpoint for authentication '/api/auth/login'
-  const response = await fetch('auth.json', {
+export async function registerUser(credentials) {
+  // TODO: Replace the URL with the actual backend endpoint for authentication '/api/auth/signup'
+  const response = await fetch('signup.json', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(credentials)
   });
 
+  checkResponseStatus(response);
+  const data = await response.json();
+  return data
+}
+
+export async function loginUser(credentials) {
+  // TODO: Replace the URL with the actual backend endpoint for authentication '/api/auth/login'
+  const response = await fetch('login.json', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(credentials)
+  });
+
+  checkResponseStatus(response);
+  const data = await response.json();
+  return data
+}
+
+function checkResponseStatus(response) {
   // If the response is not 200-299 range
   if (!response.ok) {
     if (response.status === 401) {
@@ -17,7 +36,4 @@ export async function loginUser(credentials) {
     // Fallback for other errors (404, 403, etc.)
     throw new Error('Something went wrong. Error code: ' + response.status);
   }
-
-  const data = await response.json();
-  return data
 }
