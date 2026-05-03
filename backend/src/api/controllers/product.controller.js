@@ -1,5 +1,6 @@
 import { sendResponse } from '../library/utils.js';
 import Product from '../models/product.model.js';
+import cloudinary from '../../config/cloudinary.js';
 
 export const getAllProducts = async (req, res) => {
   try {
@@ -48,17 +49,23 @@ export const getProductById = async (req, res) => {
 export const createProduct = async (req, res) => {
   try {
     const { _id } = req.user;
-    // TODO: Images should be uploaded to cloudinary before saving
-    const { title, description, category, images, price } = req.body;
+    const { title, description, category, price } = req.body;
+
+    // Multiple images from Cloudinary
+    const images = req.files?.map((file) => ({
+      url: file.path, // Cloudinary URL
+      publicId: file.filename, // for deletion later
+    }));
 
     const product = new Product({
       title,
       description,
       category,
-      images,
       price,
+      images,
       seller: _id,
     });
+
     await product.save();
 
     return sendResponse(
@@ -117,6 +124,10 @@ export const deleteProduct = async (req, res) => {
 
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
+    }
+
+    if (product.imagePublicId) {
+      await cloudinary.uploader.destroy(product.imagePublicId);
     }
 
     return sendResponse(
