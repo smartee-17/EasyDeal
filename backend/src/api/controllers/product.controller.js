@@ -6,7 +6,6 @@ export const getAllProducts = async (req, res) => {
   try {
     // TODO: We use populate after user model is defined
     // const products = await Product.find().populate('seller', 'name');
-    console.log('getProducts hit'); // add this
     const products = await Product.find();
 
     return sendResponse(
