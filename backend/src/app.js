@@ -3,6 +3,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
 import apiRoutes from './api/routes/index.js';
+import errorMiddleware from './api/middlewares/error.middleware.js';
 
 const app = express();
 
@@ -35,5 +36,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use('/api', apiRoutes);
+
+app.use(errorMiddleware);
 
 export default app;

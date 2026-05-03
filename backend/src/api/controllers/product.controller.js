@@ -6,6 +6,7 @@ export const getAllProducts = async (req, res) => {
   try {
     // TODO: We use populate after user model is defined
     // const products = await Product.find().populate('seller', 'name');
+    console.log('getProducts hit'); // add this
     const products = await Product.find();
 
     return sendResponse(
@@ -107,7 +108,6 @@ export const updateProduct = async (req, res) => {
       }));
     }
 
-    // Update other fields
     product.title = title || product.title;
     product.description = description || product.description;
     product.category = category || product.category;
@@ -139,8 +139,10 @@ export const deleteProduct = async (req, res) => {
       return res.status(404).json({ message: 'Product not found' });
     }
 
-    if (product.imagePublicId) {
-      await cloudinary.uploader.destroy(product.imagePublicId);
+    if (product.images && product.images.length > 0) {
+      for (const image of product.images) {
+        await cloudinary.uploader.destroy(image.publicId);
+      }
     }
 
     return sendResponse(
