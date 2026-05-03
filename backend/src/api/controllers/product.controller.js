@@ -85,23 +85,36 @@ export const updateProduct = async (req, res) => {
   try {
     const { _id } = req.user;
     const { id } = req.params;
-    const { title, description, category, images, price } = req.body;
+    const { title, description, category, price, isAvailable } = req.body;
 
-    const product = await Product.findByIdAndUpdate(
-      id,
-      {
-        title,
-        description,
-        category,
-        images,
-        price,
-      },
-      { returnDocument: 'after' },
-    );
+    const product = await Product.findById(id);
 
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
+
+    // If new images are uploaded
+    if (req.files && req.files.length > 0) {
+      // Delete old images from Cloudinary
+      for (const image of product.images) {
+        await cloudinary.uploader.destroy(image.publicId);
+      }
+
+      // Set new images
+      product.images = req.files.map((file) => ({
+        url: file.path,
+        publicId: file.filename,
+      }));
+    }
+
+    // Update other fields
+    product.title = title || product.title;
+    product.description = description || product.description;
+    product.category = category || product.category;
+    product.price = price || product.price;
+    product.isAvailable = isAvailable ?? product.isAvailable;
+
+    await product.save();
 
     return sendResponse(
       res,
