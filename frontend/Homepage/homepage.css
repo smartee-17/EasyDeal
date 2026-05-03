@@ -19,7 +19,7 @@
   font-size: 1rem;
   border-radius: 50px;
   border: 1px solid var(--color-border);
-  padding: 10px;
+  padding: 12px 20px;
   outline: none;
 }
 
@@ -80,6 +80,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   padding: 0;
+  margin: 10px;
   list-style: none;
   gap: 0.3rem;
   justify-content: center;
@@ -91,6 +92,7 @@
   padding: 10px 20px;
   transition: 0.5s ease;
   cursor: pointer;
+  width: 150px;
 }
 .category-bar__item-btn:active {
   background-color: var(--color-accent);
@@ -113,7 +115,6 @@
   padding: 10px;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-  flex: 1;
 }
 .product-card__image {
   height: 300px;
@@ -145,10 +146,6 @@
 
   .hero__heading {
     font-size: 1.8rem;
-  }
-
-  .category-bar__list {
-    white-space: nowrap;
   }
 
   .product-card {

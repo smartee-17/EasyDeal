@@ -5,7 +5,7 @@ let allProductsData = [];
 
 async function fetchData() {
   try {
-    let res = await fetch("products.json");
+    let res = await fetch("https://easydeal.onrender.com/api/products");
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
 
     let result = await res.json();
