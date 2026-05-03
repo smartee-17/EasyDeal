@@ -52,6 +52,10 @@ export const createProduct = async (req, res) => {
     const { title, description, category, price } = req.body;
 
     // Multiple images from Cloudinary
+    if (req.files && req.files.length > 5) {
+      return res.status(400).json({ message: 'Maximum of 5 images allowed' });
+    }
+
     const images = req.files?.map((file) => ({
       url: file.path, // Cloudinary URL
       publicId: file.filename, // for deletion later
@@ -94,6 +98,10 @@ export const updateProduct = async (req, res) => {
     }
 
     // If new images are uploaded
+    if (req.files && req.files.length > 5) {
+      return res.status(400).json({ message: 'Maximum of 5 images allowed' });
+    }
+
     if (req.files && req.files.length > 0) {
       // Delete old images from Cloudinary
       for (const image of product.images) {
