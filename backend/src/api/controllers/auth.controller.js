@@ -10,18 +10,20 @@ import { sendEmail }  from '../library/email/emailService/index.js';
 import EMAIL_TYPES from '../library/email/emailTypes/index.js';
 
 // Used incase of later update
-const sendVerifictionComms = async ({ email, phone, subject, html, rawToken}) => {
-  try{
-    // await sendEmail({to: email, subject, html});
+const sendVerifictionComms = async ({ email, subject, type, payload }) => {
+  try {
+    if (process.env.NODE_ENV === "test") return;
 
-    // 🔐 DEBUG — token/OTP visible in server console for testing
-    console.log("🔐 DEBUG Token/OTP :", rawToken);
-    console.log("📡 Delivery Target :", email || phone);
+    await sendEmail({
+      to: email,
+      type,
+      payload
+    });
 
-  } catch(err){
-       console.error("[Auth]  email failed:", err.message);
+  } catch (err) {
+    console.error("[Auth] email failed:", err.message);
   }
-} 
+};
 
 // Register controller
 export const register = async (req, res) => {
@@ -84,12 +86,13 @@ export const register = async (req, res) => {
       emailVerificationTokenExpire: Date.now() + 30 * 60 * 1000, // 30 mins expiration time
     });
 
-    await sendVerifictionComms({
+    sendVerifictionComms({
       email: user.email,
-      phone: user.phone,
-      subject: "Verify your email address",
-      html: EMAIL_TYPES.EMAIL_VERIFICATION,
-      rawToken: rawEmailToken
+      type: EMAIL_TYPES.EMAIL_VERIFICATION,
+      payload: {
+        username: user.username,
+        verifyUrl: `${process.env.CLIENT_URL}/verify-email/${rawEmailToken}`
+      }
     });
 
     
@@ -102,8 +105,7 @@ export const register = async (req, res) => {
       201, 
       true, 
       'Account created', 
-      // delete token after test
-      { token, user: user.toPublic() });
+      { user: user.toPublic() });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -150,11 +152,10 @@ export const login = async (req, res) => {
 
     return sendResponse(
       res, 
-      201,
+      200,
       true,
       "Login Successful",
-      // delete token after test
-      { token, user: user.toPublic()}
+      { user: user.toPublic() }
     );
 
  } catch (error){
@@ -182,7 +183,7 @@ export const verifyEmail = async (req, res) => {
     user.emailVerificationTokenExpire = undefined;
     await user.save({ validateBeforeSave: false });
 
-    return res.json({ message: "Email verified successfully" });
+    return res.status(200).json({ message: "Email verified successfully" });
 
   } catch (error) {
     console.error("[Auth] verifyEmail error:", error.message);
@@ -201,7 +202,7 @@ export const resendVerification = async (req, res) => {
     const user = await User.findOne({ email: email.toLowerCase() });
 
     if(!user){
-      return res.json({ message: "if an account exists, a new code has  been sent"});
+      return res.status(200).json({ message: "if an account exists, a new code has been sent"});
     }
 
     if (user.isEmailVerified) {
@@ -215,22 +216,26 @@ export const resendVerification = async (req, res) => {
 
     await user.save({ validateBeforeSave: false });
 
-    await sendVerifictionComms({
+    sendVerifictionComms({
       email: user.email,
-      phone: user.phone,
-      subject: "Verify your email address",
-      html: EMAIL_TYPES.EMAIL_VERIFICATION,
-      rawToken: rawEmailToken
+      type: EMAIL_TYPES.EMAIL_VERIFICATION,
+      payload: {
+        username: user.username,
+        verifyUrl: `${process.env.CLIENT_URL}/verify-email/${rawEmailToken}`
+      }
     });
 
     return sendResponse(
       res,
-      201,
+      200,
       true,
       "Verification email sent",
-      // delete token after test
-      { token, user: user.toPublic()}
-    )
+      {
+        resendKeyLoaded: !!process.env.RESEND_API_KEY
+      }
+    );
+
+    console.log("RESEND KEY:", process.env.RESEND_API_KEY);
   } catch (error) {
     console.error("[Auth] resendVerification error:", error.message);
     return res.status(500).json({ message: "Server error" });

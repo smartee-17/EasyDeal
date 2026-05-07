@@ -9,11 +9,15 @@ POST {{baseURl}}/auth/register
 Content-Type: application/json
 
 {
-   "name": "Israel",
-   "email": "israel@gmail.com",
-   "password": "12345678",
-   "phone": "09012345678",
-   "username": "dobbermanx"
+  "name": "Rajiv Kumar",
+  "email": "rajivkumar8163@gmail.com",
+  "password": "Test@12345",
+  "phone": "08098765432",
+  "username": "rajiv_{{$timestamp}}",
+  "bio": "Testing registration via REST client",
+  "whatsappNumber": "08012345678",
+  "role": "user",
+  "rememberMe": false
 }
 
 ###
@@ -39,5 +43,5 @@ POST {{baseURl}}/auth/resend-verification
 Content-Type: application/json
 
 {
-   "email": "israel@gmail.com"
+   "email": "darengabriel490@gmail.com"
 }
