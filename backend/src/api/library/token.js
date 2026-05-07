@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import crypto from 'cyrpto';
 
-export const generatAccessToken = (user, rememberMe) => {
+export const generateAccessToken = (user, rememberMe) => {
     return jwt.sign(
         { id: user._id},
         process.env.JWT_SECRET,

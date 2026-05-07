@@ -1,6 +1,6 @@
 import User from '../models/user.model.js';
 import { 
-  generatAccessToken, 
+  generateAccessToken, 
   setAuthCookie, 
   generateSecureToken, 
   hashToken } from '../library/token.js';
@@ -48,8 +48,8 @@ export const register = async (req, res) => {
       return res.status(403).json({ message: 'Admin accounts cannot be created via this endpoint' });
     }
 
-    const validateRoles = ['user', 'seller'];
-    if (!validateRoles.includes(role)){
+    const validRoles = ['user', 'seller'];
+    if (!validRoles.includes(role)){
       return res.status(400).json({
         message: `Invalid role. Must be one of: ${ validRoles.join(", ") }`
       });
@@ -73,7 +73,7 @@ export const register = async (req, res) => {
 
     const user = await User.create({
       name,
-      email,
+      email: email.toLowerCase(),
       password,
       phone,
       username,
@@ -93,11 +93,17 @@ export const register = async (req, res) => {
     });
 
     
-    const token = generatAccessToken(user, rememberMe === true);
+    const token = generateAccessToken(user, rememberMe === true);
     setAuthCookie(res, token, rememberMe === true);
 
 
-    sendResponse(res, 201, true, 'Account created', { token, user: user.toPublic() });
+    sendResponse(
+      res, 
+      201, 
+      true, 
+      'Account created', 
+      // delete token after test
+      { token, user: user.toPublic() });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -105,7 +111,7 @@ export const register = async (req, res) => {
 };
 
 // Login controller
-const login = async (req, res) => {
+export const login = async (req, res) => {
   try{
     const { emailOrUsername, password, rememberMe = false } = req.body;
 
@@ -115,10 +121,10 @@ const login = async (req, res) => {
 
     const user = await User.findOne({
       $or: [
-        { email: emailOrUSername.toLowerCase() },
+        { email: emailOrUsername.toLowerCase() },
         { username: emailOrUsername }
       ]
-    }).selet("+password");
+    }).select("+password");
 
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
@@ -140,12 +146,14 @@ const login = async (req, res) => {
     }
 
     const token = generateAccessToken( user, Boolean(rememberMe));
+    setAuthCookie(res, token, Boolean(rememberMe));
 
     return sendResponse(
       res, 
       201,
       true,
       "Login Successful",
+      // delete token after test
       { token, user: user.toPublic()}
     );
 
@@ -156,7 +164,7 @@ const login = async (req, res) => {
 }
 
 // Verify Email 
-const verifyEmail = async (res, req) => {
+export const verifyEmail = async (req, res) => {
   try {
     const hashed = hashToken(req.params.token);
 
@@ -182,12 +190,12 @@ const verifyEmail = async (res, req) => {
   }
 };
 
-const resendVerification = async (req, res) => {
+export const resendVerification = async (req, res) => {
   try {
     const { email } = req.body;
 
     if(!email) {
-      return res.status(400).json({ messege: "email is reqired" });
+      return res.status(400).json({ messege: "email is required" });
     }
 
     const user = await User.findOne({ email: email.toLowerCase() });
@@ -214,6 +222,15 @@ const resendVerification = async (req, res) => {
       html: EMAIL_TYPES.EMAIL_VERIFICATION,
       rawToken: rawEmailToken
     });
+
+    return sendResponse(
+      res,
+      201,
+      true,
+      "Verification email sent",
+      // delete token after test
+      { token, user: user.toPublic()}
+    )
   } catch (error) {
     console.error("[Auth] resendVerification error:", error.message);
     return res.status(500).json({ message: "Server error" });
