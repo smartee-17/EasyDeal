@@ -1,0 +1,43 @@
+### Register
+
+@baseURl=http://localhost:3000/api
+
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmNiMGFmNWUxNzBiZjI5NjFlZjMyZiIsImlhdCI6MTc3ODE2ODAwNywiZXhwIjoxNzc4MjU0NDA3fQ.-0AOjylgYNr07xwyUBMe1q_FmwL9kLdv_08QH_2_pQM
+
+@debugToken=b362524ced31fc464a8467d2343428f7182ad1f36d0d9731423258318a3ab75f
+POST {{baseURl}}/auth/register
+Content-Type: application/json
+
+{
+   "name": "Israel",
+   "email": "israel@gmail.com",
+   "password": "12345678",
+   "phone": "09012345678",
+   "username": "dobbermanx"
+}
+
+###
+
+### Login
+POST {{baseURl}}/auth/login
+Content-Type: application/json
+
+{
+   "emailOrUsername": "israel@gmail.com",
+   "password": "12345678"
+}
+
+###
+
+### Verify Email
+GET {{baseURl}}/auth/verify-email/{{debugToken}}
+
+###
+
+### Resend Verification
+POST {{baseURl}}/auth/resend-verification
+Content-Type: application/json
+
+{
+   "email": "israel@gmail.com"
+}

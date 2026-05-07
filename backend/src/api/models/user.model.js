@@ -4,14 +4,14 @@ import bcrypt from 'bcryptjs';
 const userSchema = new mongoose.Schema(
   {
     // Auth
-    email: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true,  trim: true },
     password: { type: String, required: true, select: false },
     phone: { type: String, required: true },
 
     // Profile
     name: { type: String, required: true },
     username: { type: String, unique: true },
-    avatar: { type: String },
+    avatar: { type: String, default: "" },
     bio: { type: String },
 
     // Market place Info
@@ -45,7 +45,7 @@ const userSchema = new mongoose.Schema(
   },
   { 
     timestamps: true,
-    disciminatorKey: "role"
+    discriminatorKey: "role"
   },
 
   

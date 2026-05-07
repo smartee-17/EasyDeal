@@ -1,4 +1,4 @@
-import baseLayout from "./baseLayout";
+import baseLayout from "./baseLayout.js";
 /**
  * WELCOME EMAIL TEMPLATE
  * Sent when a new user successfully registers.

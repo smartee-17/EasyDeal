@@ -6,7 +6,7 @@ import {
   hashToken } from '../library/token.js';
 import bcrypt from 'bcryptjs';
 import { sendResponse } from '../library/utils.js';
-import { sendEmail }  from '../library/email/emailService';
+import { sendEmail }  from '../library/email/emailService/index.js';
 import EMAIL_TYPES from '../library/email/emailTypes/index.js';
 
 // Used incase of later update
@@ -195,7 +195,7 @@ export const resendVerification = async (req, res) => {
     const { email } = req.body;
 
     if(!email) {
-      return res.status(400).json({ messege: "email is required" });
+      return res.status(400).json({ message: "email is required" });
     }
 
     const user = await User.findOne({ email: email.toLowerCase() });

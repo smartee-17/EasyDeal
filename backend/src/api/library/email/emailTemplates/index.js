@@ -6,13 +6,13 @@
  *   const { welcomeTemplate } = require("../emailTemplates");
  */
 
-import welcomeTemplate from './welcomeTemplate';
-import emailVerificationTemplate from './emailVerificationTemplate';
-import passwordChangedTemplate from './passwordChangedTemplate';
-import passwordResetTemplate from './passwordResetTemplate';
-import loginOtpTemplate from './loginOtpTemplate';
-import inviteUserTemplate from './inviteUserTemplate';
-import notificationTemplate from './notificationTemplate';
+import welcomeTemplate from './welcomeTemplate.js';
+import emailVerificationTemplate from './emailVerificationTemplate.js';
+import passwordChangedTemplate from './passwordChangedTemplate.js';
+import passwordResetTemplate from './passwordResetTemplate.js';
+import loginOtpTemplate from './loginOtpTemplate.js';
+import inviteUserTemplate from './inviteUserTemplate.js';
+import notificationTemplate from './notificationTemplate.js';
 
 export {
   welcomeTemplate,

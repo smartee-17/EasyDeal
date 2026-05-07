@@ -1,4 +1,4 @@
-import baseLayout from "./baseLayout";
+import baseLayout from "./baseLayout.js";
 /**
  * LOGIN OTP TEMPLATE
  * Sent when a user requests a one-time password for authentication.

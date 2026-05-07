@@ -1,4 +1,4 @@
-import baseLayout from './baseLayout';
+import baseLayout from './baseLayout.js';
 
 /**
  * EMAIL VERIFICATION TEMPLATE

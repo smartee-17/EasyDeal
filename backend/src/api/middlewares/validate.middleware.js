@@ -60,7 +60,7 @@ const validateLogin = [
 
 // ─── Forgot password ──────────────────────────────────────────────────────────
 const validateForgotPassword = [
-  body("emailOrUSername")
+  body("emailOrUsername")
     .trim()
     .notEmpty().withMessage("Email or phone number is required"),
 
@@ -93,6 +93,5 @@ export {
   validateLogin,
   validateForgotPassword,
   validateResetPassword,
-  validateVerifyPhone,
   validateResendVerification
 };

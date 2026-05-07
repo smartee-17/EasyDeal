@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import crypto from 'cyrpto';
+import crypto from 'crypto';
 
 export const generateAccessToken = (user, rememberMe) => {
     return jwt.sign(

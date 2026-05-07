@@ -10,8 +10,8 @@
 
 "use strict";
 
-import Resend from require("resend");
-import EMAIL_TYPES from '../emailTypes';
+import { Resend } from 'resend';
+import EMAIL_TYPES from '../emailTypes/index.js';
 import {
   welcomeTemplate,
   emailVerificationTemplate,
@@ -20,7 +20,7 @@ import {
   loginOtpTemplate,
   inviteUserTemplate,
   notificationTemplate,
-} from '../emailTemplates'
+} from '../emailTemplates/index.js'
 
 // ─── Guard: fail fast if env vars are missing ────────────────────────────────
 
