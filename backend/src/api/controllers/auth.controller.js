@@ -133,6 +133,12 @@ const login = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
+    if (user.role === "admin") {
+      user.lastLoginAt = new Date();
+      user.loginCount  = (user.loginCount || 0) + 1;
+      await user.save({ validateBeforeSave: false });
+    }
+
     const token = generateAccessToken( user, Boolean(rememberMe));
 
     return sendResponse(
@@ -159,13 +165,20 @@ const verifyEmail = async (res, req) => {
       emailVerificationTokenExpire: { $gt: Date.now() }
     });
 
+    if(!user){
+      return res.status(400).json({ message: "Verification link is invalid or has expired" });
+    }
+
     user.isEmailVerified = true;
     user.emailVerificationToken = undefined;
     user.emailVerificationTokenExpire = undefined;
+    await user.save({ validateBeforeSave: false });
 
-    await user.save();
+    return res.json({ message: "Email verified successfully" });
+
   } catch (error) {
-
-
+    console.error("[Auth] verifyEmail error:", error.message);
+    return res.status(500).json({ message: "Server error" });
   }
-}
+};
+

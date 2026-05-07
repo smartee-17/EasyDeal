@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import User from "./user.model";
-import { use } from "react";
 
 const adminSchema = new mongoose.Schema({
     permissions: {
