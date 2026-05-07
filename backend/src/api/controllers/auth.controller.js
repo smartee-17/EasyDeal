@@ -148,3 +148,24 @@ const login = async (req, res) => {
     return res.status(500).json({ message: "Server error during login" });
  }
 }
+
+// Verify Email 
+const verifyEmail = async (res, req) => {
+  try {
+    const hashed = hashToken(req.params.token);
+
+    const user = await User.findOne({
+      emailVerificationToken: hashed, 
+      emailVerificationTokenExpire: { $gt: Date.now() }
+    });
+
+    user.isEmailVerified = true;
+    user.emailVerificationToken = undefined;
+    user.emailVerificationTokenExpire = undefined;
+
+    await user.save();
+  } catch (error) {
+
+
+  }
+}

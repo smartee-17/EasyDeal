@@ -39,10 +39,16 @@ const userSchema = new mongoose.Schema(
 
     // Password reset
     resetPasswordToken: { type: String, select: false },
-    resetPasswordExpire: { type: Date, select: false } 
+    resetPasswordExpire: { type: Date, select: false },
+
     
   },
-  { timestamps: true },
+  { 
+    timestamps: true,
+    disciminatorKey: "role"
+  },
+
+  
 );
 
 userSchema.index({ email: 1, phone: 1, username: 1 }, { unique: true });
