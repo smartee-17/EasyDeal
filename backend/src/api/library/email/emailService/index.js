@@ -170,7 +170,7 @@ const sendNotificationEmail = (to, payload) =>
 
 // ─── Exports ──────────────────────────────────────────────────────────────────
 
-export default {
+export  {
   // Core (use when building new flows programmatically)
   sendEmail,
 

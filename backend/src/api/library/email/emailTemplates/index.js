@@ -14,7 +14,7 @@ import loginOtpTemplate from './loginOtpTemplate';
 import inviteUserTemplate from './inviteUserTemplate';
 import notificationTemplate from './notificationTemplate';
 
-export default {
+export {
   welcomeTemplate,
   emailVerificationTemplate,
   passwordResetTemplate,
