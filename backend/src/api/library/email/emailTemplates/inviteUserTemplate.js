@@ -1,4 +1,4 @@
-const { baseLayout } = require("./baseLayout");
+import baseLayout from "./baseLayout";
 
 /**
  * INVITE USER TEMPLATE
@@ -37,4 +37,4 @@ function inviteUserTemplate({ invitedBy, inviteUrl, expiresInDays = 7 }) {
   };
 }
 
-module.exports = { inviteUserTemplate };
+export default inviteUserTemplate

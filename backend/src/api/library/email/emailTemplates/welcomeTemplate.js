@@ -1,5 +1,4 @@
-const { baseLayout } = require("./baseLayout");
-
+import baseLayout from "./baseLayout";
 /**
  * WELCOME EMAIL TEMPLATE
  * Sent when a new user successfully registers.
@@ -34,4 +33,4 @@ function welcomeTemplate({ username, loginUrl }) {
   };
 }
 
-module.exports = { welcomeTemplate };
+export default welcomeTemplate;

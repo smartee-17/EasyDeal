@@ -1,4 +1,4 @@
-const { baseLayout } = require("./baseLayout");
+import baseLayout from "./baseLayout";
 
 /**
  * NOTIFICATION TEMPLATE
@@ -38,4 +38,4 @@ function notificationTemplate({ username, heading, message, ctaLabel, ctaUrl }) 
   };
 }
 
-module.exports = { notificationTemplate };
+export default notificationTemplate;

@@ -6,15 +6,15 @@
  *   const { welcomeTemplate } = require("../emailTemplates");
  */
 
-const { welcomeTemplate }           = require("./welcomeTemplate");
-const { emailVerificationTemplate } = require("./emailVerificationTemplate");
-const { passwordResetTemplate }     = require("./passwordResetTemplate");
-const { passwordChangedTemplate }   = require("./passwordChangedTemplate");
-const { loginOtpTemplate }          = require("./loginOtpTemplate");
-const { inviteUserTemplate }        = require("./inviteUserTemplate");
-const { notificationTemplate }      = require("./notificationTemplate");
+import welcomeTemplate from './welcomeTemplate';
+import emailVerificationTemplate from './emailVerificationTemplate';
+import passwordChangedTemplate from './passwordChangedTemplate';
+import passwordResetTemplate from './passwordResetTemplate';
+import loginOtpTemplate from './loginOtpTemplate';
+import inviteUserTemplate from './inviteUserTemplate';
+import notificationTemplate from './notificationTemplate';
 
-module.exports = {
+export default {
   welcomeTemplate,
   emailVerificationTemplate,
   passwordResetTemplate,

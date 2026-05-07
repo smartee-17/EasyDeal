@@ -21,14 +21,16 @@ export const setAuthCookie = (res, token, rememberMe) => {
     });
 }
 
-export const generateOtp = () => {
-    const raw = Math.floor((1000 + Math.random()) * 9000).toString();
+// Non JWt Helpers
 
-    const hashed = crypto.createHash('sha256').update(raw).digest('hex');
+export const generateSecureToken = (byteLength = 32) => {
 
-    return { raw, hashed};
+  const raw    = crypto.randomBytes(byteLength).toString('hex');
+  const hashed = crypto.createHash('sha256').update(raw).digest('hex');
+  return { raw, hashed };
+
 }
 
 export const hashToken = (raw) => {
   return crypto.createHash("sha256").update(raw).digest("hex");
-};
+}

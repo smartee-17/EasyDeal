@@ -1,5 +1,4 @@
-const { baseLayout } = require("./baseLayout");
-
+import baseLayout from "./baseLayout";
 /**
  * LOGIN OTP TEMPLATE
  * Sent when a user requests a one-time password for authentication.
@@ -35,4 +34,4 @@ function loginOtpTemplate({ username, otp, expiresInMins = 10 }) {
   };
 }
 
-module.exports = { loginOtpTemplate };
+export default loginOtpTemplate;

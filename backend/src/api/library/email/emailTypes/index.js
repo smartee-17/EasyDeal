@@ -15,4 +15,4 @@ const EMAIL_TYPES = Object.freeze({
   NOTIFICATION:          "notification",
 });
 
-module.exports = { EMAIL_TYPES };
+export default EMAIL_TYPES;

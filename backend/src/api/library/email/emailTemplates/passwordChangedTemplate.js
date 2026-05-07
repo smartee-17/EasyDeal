@@ -1,4 +1,4 @@
-const { baseLayout } = require("./baseLayout");
+import baseLayout from "./baseLayout";
 
 /**
  * PASSWORD CHANGED TEMPLATE
@@ -34,4 +34,4 @@ function passwordChangedTemplate({ username, supportUrl }) {
   };
 }
 
-module.exports = { passwordChangedTemplate };
+export default passwordChangedTemplate;

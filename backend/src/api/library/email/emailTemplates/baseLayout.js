@@ -14,7 +14,7 @@
  * @returns {string} Full HTML email string
  */
 function baseLayout({ title, previewText, bodyContent, brandName, brandColor = "#4F46E5" }) {
-  const brand = brandName || process.env.APP_NAME || "MyApp";
+  const brand = brandName || process.env.APP_NAME || "Easy Deal";
 
   return /* html */ `
 <!DOCTYPE html>
@@ -64,4 +64,4 @@ function baseLayout({ title, previewText, bodyContent, brandName, brandColor = "
   `.trim();
 }
 
-module.exports = { baseLayout };
+export default baseLayout;

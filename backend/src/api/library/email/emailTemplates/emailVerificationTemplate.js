@@ -1,4 +1,4 @@
-const { baseLayout } = require("./baseLayout");
+import baseLayout from './baseLayout';
 
 /**
  * EMAIL VERIFICATION TEMPLATE
@@ -35,4 +35,4 @@ function emailVerificationTemplate({ username, verifyUrl, expiresInHrs = 24 }) {
   };
 }
 
-module.exports = { emailVerificationTemplate };
+export default emailVerificationTemplate;

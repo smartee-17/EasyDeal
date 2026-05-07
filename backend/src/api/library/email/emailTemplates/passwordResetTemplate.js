@@ -1,4 +1,4 @@
-const { baseLayout } = require("./baseLayout");
+import baseLayout from "./baseLayout";
 
 /**
  * PASSWORD RESET TEMPLATE
@@ -36,4 +36,4 @@ function passwordResetTemplate({ username, resetUrl, expiresInMins = 30 }) {
   };
 }
 
-module.exports = { passwordResetTemplate };
+export default passwordResetTemplate;

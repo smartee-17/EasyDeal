@@ -10,9 +10,9 @@
 
 "use strict";
 
-const { Resend } = require("resend");
-const { EMAIL_TYPES } = require("../emailTypes");
-const {
+import Resend from require("resend");
+import EMAIL_TYPES from '../emailTypes';
+import {
   welcomeTemplate,
   emailVerificationTemplate,
   passwordResetTemplate,
@@ -20,7 +20,7 @@ const {
   loginOtpTemplate,
   inviteUserTemplate,
   notificationTemplate,
-} = require("../emailTemplates");
+} from '../emailTemplates'
 
 // ─── Guard: fail fast if env vars are missing ────────────────────────────────
 
@@ -170,7 +170,7 @@ const sendNotificationEmail = (to, payload) =>
 
 // ─── Exports ──────────────────────────────────────────────────────────────────
 
-module.exports = {
+export default {
   // Core (use when building new flows programmatically)
   sendEmail,
 
