@@ -32,6 +32,19 @@ const userSchema = new mongoose.Schema(
 
     // Admin
     isBlocked: { type: Boolean, default: false },
+
+    // Verification flags
+    isEmailVerified: { type: Boolean, default: false },
+
+    // Verificstion token
+    emailVerificationToken: { type: String, select: false },
+    emailVerificationTokenExpire: { type: Date, select: false },
+
+    // Password reset
+    resetPasswordToken: { type: String, select: false },
+    resetPasswordExpire: { type: Date, select: false } 
+    
+  
   },
   { timestamps: true },
 );
@@ -49,6 +62,19 @@ userSchema.pre('save', async function () {
 userSchema.methods.matchPassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
+
+// instance method: safe public view
+userSchema.methods.toPublic = function () {
+  const obj = this.toObject();
+  
+  delete obj.password;
+  delete obj.emailVerificationToken;
+  delete obj.emailVerificationTokenExpire;
+  delete obj.resetPasswordToken;
+  delete obj.resetPasswordExpire;
+
+  return obj;
+}
 
 const User = mongoose.model('User', userSchema);
 

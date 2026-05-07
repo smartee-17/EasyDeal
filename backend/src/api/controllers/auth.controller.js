@@ -49,10 +49,8 @@ export const register = async (req, res) => {
     const token = generateToken(user, rememberMe === true);
     setAuthCookie(res, token, rememberMe === true);
 
-    const userObj = user.toObject();
-    delete userObj.password;
 
-    sendResponse(res, 201, true, 'Account created', { token, user: userObj });
+    sendResponse(res, 201, true, 'Account created', { token, user: user.toPublic() });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error', error: error.message });
