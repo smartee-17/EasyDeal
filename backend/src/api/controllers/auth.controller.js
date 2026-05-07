@@ -1,6 +1,6 @@
 import User from '../models/user.model.js';
 import { 
-  generateToken, 
+  generatAccessToken, 
   setAuthCookie, 
   generateSecureToken, 
   hashToken } from '../library/token.js';
@@ -51,7 +51,7 @@ export const register = async (req, res) => {
     const validateRoles = ['user', 'seller'];
     if (!validateRoles.includes(role)){
       return res.status(400).json({
-        message: `Invalid role. Must be one of: ${validRoles.join(", ")}`
+        message: `Invalid role. Must be one of: ${ validRoles.join(", ") }`
       });
     }
 
@@ -69,7 +69,7 @@ export const register = async (req, res) => {
     }
 
     // Email verification token
-    const { raw: rawEmailToken, hashed: hashedEmailToken} = generateSecureToken();
+    const { raw: rawEmailToken, hashed: hashedEmailToken } = generateSecureToken();
 
     const user = await User.create({
       name,
@@ -93,7 +93,7 @@ export const register = async (req, res) => {
     });
 
     
-    const token = generateToken(user, rememberMe === true);
+    const token = generatAccessToken(user, rememberMe === true);
     setAuthCookie(res, token, rememberMe === true);
 
 
@@ -103,3 +103,48 @@ export const register = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
+// Login controller
+const login = async (req, res) => {
+  try{
+    const { emailOrUsername, password, rememberMe = false } = req.body;
+
+    if (!emailOrUsername || !password) {
+      return res.status(400).json({ message: "email or username and password are required" });
+    }
+
+    const user = await User.findOne({
+      $or: [
+        { email: emailOrUSername.toLowerCase() },
+        { username: emailOrUsername }
+      ]
+    }).selet("+password");
+
+    if (!user) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    if(user.isBlocked){
+      return res.status(401).json({ message: "This account has been suspended. Contact support." });
+    }
+
+    const passwordMatch = await user.matchPassword(password);
+    if(!passwordMatch){
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    const token = generateAccessToken( user, Boolean(rememberMe));
+
+    return sendResponse(
+      res, 
+      201,
+      true,
+      "Login Successful",
+      { token, user: user.toPublic()}
+    );
+
+ } catch (error){
+    console.error("[Auth] login error:", error.message);
+    return res.status(500).json({ message: "Server error during login" });
+ }
+}

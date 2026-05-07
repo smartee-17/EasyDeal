@@ -20,9 +20,6 @@ const userSchema = new mongoose.Schema(
       enum: ['user', 'seller', 'admin'],
       default: 'user',
     },
-
-    isVerified: { type: Boolean, default: false },
-
     // Contact Seller
     whatsappNumber: { type: String },
 
@@ -44,7 +41,6 @@ const userSchema = new mongoose.Schema(
     resetPasswordToken: { type: String, select: false },
     resetPasswordExpire: { type: Date, select: false } 
     
-  
   },
   { timestamps: true },
 );
