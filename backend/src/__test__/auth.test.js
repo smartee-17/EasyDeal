@@ -130,7 +130,7 @@ describe('POST /api/auth/login', () => {
       password: 'password123',
     });
 
-    expect(res.status).toBe(201);
+    expect(res.status).toBe(200);
     expect(res.body.message).toBe('Login Successful');
   });
 
@@ -225,7 +225,7 @@ describe('POST /api/auth/resend-verification', () => {
       email: 'test@example.com',
     });
 
-    expect(res.status).toBe(201);
+    expect(res.status).toBe(200);
     expect(res.body.message).toBe('Verification email sent');
   });
 
