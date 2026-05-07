@@ -182,3 +182,40 @@ const verifyEmail = async (res, req) => {
   }
 };
 
+const resendVerification = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if(!email) {
+      return res.status(400).json({ messege: "email is reqired" });
+    }
+
+    const user = await User.findOne({ email: email.toLowerCase() });
+
+    if(!user){
+      return res.json({ message: "if an account exists, a new code has  been sent"});
+    }
+
+    if (user.isEmailVerified) {
+      return res.status(400).json({ message: "Email is already verified" });
+    }
+
+    const { raw: rawEmailToken, hashed: hashedEmailToken } = generateSecureToken();
+
+    user.emailVerificationToken = hashedEmailToken;
+    user.emailVerificationTokenExpire= Date.now() + 10 * 60 * 1000;
+
+    await user.save({ validateBeforeSave: false });
+
+    await sendVerifictionComms({
+      email: user.email,
+      phone: user.phone,
+      subject: "Verify your email address",
+      html: EMAIL_TYPES.EMAIL_VERIFICATION,
+      rawToken: rawEmailToken
+    });
+  } catch (error) {
+    console.error("[Auth] resendVerification error:", error.message);
+    return res.status(500).json({ message: "Server error" });
+  }
+}

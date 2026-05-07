@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 import User from "./user.model";
 
 const adminSchema = new mongoose.Schema({
@@ -14,7 +14,7 @@ const adminSchema = new mongoose.Schema({
 
 adminSchema.pre("save", function (next) {
     if (this.isNew) {
-        this.isVerified = true;
+        this.isEmailVerified = true;
     }
 
     next();
