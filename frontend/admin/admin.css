@@ -57,18 +57,18 @@ ul li {
   margin-top: 15px;
 }
 
-.cell {
+.table__cell {
   padding: 15px;
   text-align: left;
   border-bottom: 1px solid #eee;
 }
 
-.table__header {
+.table__row--header {
   background: black;
   color: white;
 }
 
-.table__header .cell {
+.table__row--header .table__cell {
   font-weight: bold;
 }
 
@@ -76,8 +76,8 @@ ul li {
 /* Components */
 /* ------------------ */
 
-/* Overview Section */
-.admin__overview {
+/* stats Section */
+.stats {
   background: var(--color-surface);
   padding: 25px;
   border-radius: 8px;
@@ -86,7 +86,7 @@ ul li {
 }
 
 /* User Management */
-.user__management--table {
+.management {
   background: var(--color-surface);
   padding: 25px;
   border-radius: 8px;
@@ -95,7 +95,7 @@ ul li {
 }
 
 /* Product Moderation */
-.product__moderation--table {
+.product-moderation {
   background: var(--color-surface);
   padding: 25px;
   border-radius: 8px;
