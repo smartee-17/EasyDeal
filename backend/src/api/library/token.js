@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import crypto from 'cyrpto';
 
 export const generateToken = (user, rememberMe) => {
     return jwt.sign(
@@ -19,3 +20,15 @@ export const setAuthCookie = (res, token, rememberMe) => {
             : 24 * 60 * 60 * 1000
     });
 }
+
+export const generateOtp = () => {
+    const raw = Math.floor((1000 + Math.random()) * 9000).toString();
+
+    const hashed = crypto.createHash('sha256').update(raw).digest('hex');
+
+    return { raw, hashed};
+}
+
+export const hashToken = (raw) => {
+  return crypto.createHash("sha256").update(raw).digest("hex");
+};

@@ -1,5 +1,5 @@
 import User from '../models/user.model.js';
-import { generateToken, setAuthCookie } from '../library/generateJwtToken.js';
+import { generateToken, setAuthCookie } from '../library/token.js';
 import bcrypt from 'bcryptjs';
 import { sendResponse } from '../library/utils.js';
 
