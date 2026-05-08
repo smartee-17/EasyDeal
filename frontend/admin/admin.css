@@ -1,0 +1,104 @@
+/* ------------------ */
+/* General Styles */
+/* ------------------ */
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+}
+
+button {
+  margin-right: 5px;
+  padding: 6px 15px;
+  border-radius: 15px;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: bold;
+}
+
+button:hover {
+  background: #000;
+  color: #fff;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+ul li {
+  padding: 8px 0;
+  border-bottom: 1px dashed #ddd;
+}
+
+/* ------------------ */
+/* Layout */
+/* ------------------ */
+
+.main-content {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 40px 0;
+}
+
+/* Table Styles */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.table__cell {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.table__row--header {
+  background: black;
+  color: white;
+}
+
+.table__row--header .table__cell {
+  font-weight: bold;
+}
+
+/* ------------------ */
+/* Components */
+/* ------------------ */
+
+/* stats Section */
+.stats {
+  background: var(--color-surface);
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: var(--color-text);
+}
+
+/* User Management */
+.management {
+  background: var(--color-surface);
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: var(--color-text);
+}
+
+/* Product Moderation */
+.product-moderation {
+  background: var(--color-surface);
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: var(--color-text);
+}
