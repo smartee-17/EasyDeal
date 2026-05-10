@@ -1,6 +1,6 @@
 export async function registerUser(credentials) {
-  // TODO: Replace the URL with the actual backend endpoint for authentication '/api/auth/signup'
-  const response = await fetch('signup.json', {
+  // const response = await fetch('http://localhost:3000/api/auth/register', {
+  const response = await fetch('http://easydeal.onrender.com/api/auth/register', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(credentials)
@@ -8,7 +8,7 @@ export async function registerUser(credentials) {
 
   checkResponseStatus(response);
   const data = await response.json();
-  return data
+  return data.data; // The backend sends { success, message, data: { token, user } }
 }
 
 export async function loginUser(credentials) {

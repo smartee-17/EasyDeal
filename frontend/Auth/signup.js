@@ -19,17 +19,14 @@ signupForm.addEventListener('submit', async (e) => {
   try {
     const data = await registerUser(credentials);
 
-    // Success: Store the JWT and redirect
-    // TODO: Consider using HttpOnly cookies for better security instead of localStorage, which is vulnerable to XSS attacks. If using cookies, the backend should set the cookie with the token and the frontend can just redirect without handling the token directly.
-    // TODO: Store user role and other necessary info in a secure way (e.g., HttpOnly cookies, or if using localStorage, ensure it's encrypted and has proper expiration handling).
-    localStorage.setItem('token', data.token);
+    localStorage.setItem('user', JSON.stringify(data.user));
 
     signupForm.removeAttribute('data-submitting');
 
     if (data.user.role === 'admin') {
-      window.location.href = '/frontend/Admin/admin.html';
+      window.location.href = '../Admin/admin.html';
     } else {
-      window.location.href = '/frontend/index.html';
+      window.location.href = '..';
     }
   } catch (err) {
     // UI Error Handling
