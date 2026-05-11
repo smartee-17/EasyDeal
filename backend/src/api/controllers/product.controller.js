@@ -70,15 +70,15 @@ export const createProduct = async (req, res) => {
           // Use AI description if it exists, otherwise use fallback title
           alt: {
             detailed:
-              aiDescription.detailed !== null
+              aiDescription !== null
                 ? `${title} - ${aiDescription.detailed}`
                 : `${title} - Image ${index + 1}`,
             short:
-              aiDescription.short !== null
+              aiDescription !== null
                 ? `${title} - ${aiDescription.short}`
                 : `${title} - Image ${index + 1}`,
             standard:
-              aiDescription.standard !== null
+              aiDescription !== null
                 ? `${title} - ${aiDescription.standard}`
                 : `${title} - Image ${index + 1}`,
           },

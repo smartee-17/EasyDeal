@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from 'axios';
 
 export const generateAltText = async (imageUrl, context) => {
   try {
@@ -53,25 +53,25 @@ Start with { and end with }
         },
         timeout: 15000,
       },
-    )
+    );
 
-    const content = response.data.choices[0]?.message?.content
-    if (!content) return null
+    const content = response.data.choices[0]?.message?.content;
+    if (!content) return null;
 
     // Extract JSON safely — handles any extra text the model adds
-    const jsonMatch = content.match(/\{[\s\S]*\}/)
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-      console.error('No JSON found in response:', content)
-      return null
+      console.error('No JSON found in response:', content);
+      return null;
     }
 
-    return JSON.parse(jsonMatch[0]) // Return parsed object, not string
+    return JSON.parse(jsonMatch[0]); // Return parsed object, not string
   } catch (error) {
     if (error.response) {
-      console.error('OpenRouter Error:', error.response.data)
+      console.error('OpenRouter Error:', error.response.data);
     } else {
-      console.error('AI Connection Error:', error.message)
+      console.error('AI Connection Error:', error.message);
     }
-    return null
+    return null;
   }
-}
+};
