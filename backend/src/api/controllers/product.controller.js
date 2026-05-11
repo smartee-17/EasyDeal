@@ -52,6 +52,7 @@ export const createProduct = async (req, res) => {
     const { _id } = req.user;
     const { title, description, category, price } = req.body;
 
+    // Multiple images from Cloudinary
     if (req.files && req.files.length > 5) {
       return res.status(400).json({ message: 'Maximum of 5 images allowed' });
     }
