@@ -1,6 +1,7 @@
 import { sendResponse } from '../library/utils.js';
 import Product from '../models/product.model.js';
 import cloudinary from '../../config/cloudinary.js';
+import { generateAltText } from '../library/visionAi.js';
 
 export const getAllProducts = async (req, res) => {
   try {
@@ -51,15 +52,39 @@ export const createProduct = async (req, res) => {
     const { _id } = req.user;
     const { title, description, category, price } = req.body;
 
-    // Multiple images from Cloudinary
     if (req.files && req.files.length > 5) {
       return res.status(400).json({ message: 'Maximum of 5 images allowed' });
     }
 
-    const images = req.files?.map((file) => ({
-      url: file.path, // Cloudinary URL
-      publicId: file.filename, // for deletion later
-    }));
+    // Process images and generate alts
+    const images = await Promise.all(
+      (req.files || []).map(async (file, index) => {
+        const cloudinaryUrl = file.path;
+
+        // Call the separate AI function
+        const aiDescription = await generateAltText(cloudinaryUrl, description);
+
+        return {
+          url: cloudinaryUrl,
+          publicId: file.filename,
+          // Use AI description if it exists, otherwise use fallback title
+          alt: {
+            detailed:
+              aiDescription.detailed !== null
+                ? `${title} - ${aiDescription.detailed}`
+                : `${title} - Image ${index + 1}`,
+            short:
+              aiDescription.short !== null
+                ? `${title} - ${aiDescription.short}`
+                : `${title} - Image ${index + 1}`,
+            standard:
+              aiDescription.standard !== null
+                ? `${title} - ${aiDescription.standard}`
+                : `${title} - Image ${index + 1}`,
+          },
+        };
+      }),
+    );
 
     const product = new Product({
       title,
