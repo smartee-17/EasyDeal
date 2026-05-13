@@ -52,7 +52,7 @@ export const register = async (req, res) => {
     const userObj = user.toObject();
     delete userObj.password;
 
-    sendResponse(res, 201, true, 'Account created', { token, user: userObj });
+    return sendResponse(res, 201, true, 'Account created', { token, user: userObj });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error', error: error.message });
