@@ -259,3 +259,59 @@ describe('POST /api/auth/resend-verification', () => {
     expect(res.body.message).toBe('email is required');
   });
 });
+
+// ─── RESEND API INTEGRATION (MANUAL ONLY) ──────────────────────────────────── 
+
+
+const RUN_RESEND_TEST = process.env.RUN_RESEND_TEST === 'true';
+
+(RUN_RESEND_TEST ? describe : describe.skip)(
+  'MANUAL: Resend API config smoke test via /api/auth/resend-verification',
+  () => {
+    const uniqueSuffix = `${Date.now()}_${Math.floor(Math.random() * 10000)}`;
+    const testEmail = `rajivkumar8163@gmail.com`;
+    const testUsername = `rajiv_${Date.now()}`;
+
+    let createdUserId = null;
+
+    beforeAll(async () => {
+      jest.unmock('../api/library/email/emailService/index.js');
+      jest.unmock('../api/library/token.js');
+    });
+
+    afterAll(async () => {
+
+      if (createdUserId) {
+        await User.deleteOne({ _id: createdUserId }).catch(() => {
+          console.warn('[Resend smoke test] Cleanup failed for user:', createdUserId);
+        });
+      }
+    });
+
+    test('// should register a temp user and trigger resend-verification against live Resend API', async () => {
+
+      const registerRes = await request(app)
+        .post('/api/auth/register')
+        .send({
+          name: 'Smoke Test User',
+          email: testEmail,
+          password: 'Test@12345',
+          phone: '08098765432',
+          username: testUsername,
+          role: 'user',
+        });
+
+      expect(registerRes.status).toBe(201);
+      expect(registerRes.body.success).toBe(true);
+
+      createdUserId = registerRes.body?.data?._id ?? null;
+
+      const resendRes = await request(app)
+        .post('/api/auth/resend-verification')
+        .send({ email: testEmail });
+
+      expect(resendRes.status).toBe(200);
+      expect(resendRes.body.message).toMatch(/verification email sent/i);
+    });
+  }
+);
