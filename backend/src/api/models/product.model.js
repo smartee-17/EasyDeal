@@ -6,7 +6,7 @@ const productSchema = new mongoose.Schema(
     description: { type: String },
     price: { type: Number, required: true },
     category: { type: String, required: true }, // TODO: String should be change to category id after creating the category model
-    images: { type: [String] },
+    images: [{ url: { type: String }, publicId: { type: String } }],
     seller: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

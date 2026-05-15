@@ -1,5 +1,6 @@
 import { sendResponse } from '../library/utils.js';
 import Product from '../models/product.model.js';
+import cloudinary from '../../config/cloudinary.js';
 
 export const getAllProducts = async (req, res) => {
   try {
@@ -48,17 +49,27 @@ export const getProductById = async (req, res) => {
 export const createProduct = async (req, res) => {
   try {
     const { _id } = req.user;
-    // TODO: Images should be uploaded to cloudinary before saving
-    const { title, description, category, images, price } = req.body;
+    const { title, description, category, price } = req.body;
+
+    // Multiple images from Cloudinary
+    if (req.files && req.files.length > 5) {
+      return res.status(400).json({ message: 'Maximum of 5 images allowed' });
+    }
+
+    const images = req.files?.map((file) => ({
+      url: file.path, // Cloudinary URL
+      publicId: file.filename, // for deletion later
+    }));
 
     const product = new Product({
       title,
       description,
       category,
-      images,
       price,
+      images,
       seller: _id,
     });
+
     await product.save();
 
     return sendResponse(
@@ -78,23 +89,39 @@ export const updateProduct = async (req, res) => {
   try {
     const { _id } = req.user;
     const { id } = req.params;
-    const { title, description, category, images, price } = req.body;
+    const { title, description, category, price, isAvailable } = req.body;
 
-    const product = await Product.findByIdAndUpdate(
-      id,
-      {
-        title,
-        description,
-        category,
-        images,
-        price,
-      },
-      { returnDocument: 'after' },
-    );
+    const product = await Product.findById(id);
 
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
+
+    // If new images are uploaded
+    if (req.files && req.files.length > 5) {
+      return res.status(400).json({ message: 'Maximum of 5 images allowed' });
+    }
+
+    if (req.files && req.files.length > 0) {
+      // Delete old images from Cloudinary
+      for (const image of product.images) {
+        await cloudinary.uploader.destroy(image.publicId);
+      }
+
+      // Set new images
+      product.images = req.files.map((file) => ({
+        url: file.path,
+        publicId: file.filename,
+      }));
+    }
+
+    product.title = title || product.title;
+    product.description = description || product.description;
+    product.category = category || product.category;
+    product.price = price || product.price;
+    product.isAvailable = isAvailable ?? product.isAvailable;
+
+    await product.save();
 
     return sendResponse(
       res,
@@ -117,6 +144,12 @@ export const deleteProduct = async (req, res) => {
 
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
+    }
+
+    if (product.images && product.images.length > 0) {
+      for (const image of product.images) {
+        await cloudinary.uploader.destroy(image.publicId);
+      }
     }
 
     return sendResponse(
