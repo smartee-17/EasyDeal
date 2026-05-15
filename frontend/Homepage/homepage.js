@@ -55,7 +55,7 @@ function renderProducts(categoryFilter) {
   filtered.forEach((product) => {
     productsContainer.innerHTML += `
       <div class="product-card" id="${product._id}">
-        <img class="product-card__image" src="${product.images[0]}" alt="${product.altText}" />
+        <img class="product-card__image" src="${product.images[0].url}" alt="${product.images[0].alt.standard}" />
         <h3 class="product-card__title">${product.title}</h3>
         <p class="product-card__price">${product.price}</p>
         <button class="product-card__button">Add to Cart</button>
