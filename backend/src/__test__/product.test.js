@@ -1,57 +1,37 @@
 import request from 'supertest';
 import app from '../app.js';
 import Product from '../api/models/product.model.js';
-import cloudinary from 'cloudinary';
-import multer from 'multer';
 
-// ─── Mock custom config with exact ES Module matching ────────────────────────
-jest.mock('../config/cloudinary.js', () => {
-  const mockUpload = {
-    array: () => (req, _res, next) => next(),
-    single: () => (req, _res, next) => next(),
-  };
-  return {
-    __esModule: true,
-    default: {
-      v2: {
-        config: jest.fn(),
-        uploader: { destroy: jest.fn() },
-      },
-    },
-    upload: mockUpload,
-  };
+let consoleSpy;
+
+beforeAll(() => {
+  // Spy on console.error and mock it to do nothing (returns undefined)
+  consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 });
 
-// ─── Mock core packages ──────────────────────────────────────────────────────
-jest.mock('cloudinary', () => ({
-  v2: {
-    config: jest.fn(),
-    uploader: {
-      destroy: jest.fn(),
+afterAll(() => {
+  // Restore original console.error functionality when tests finish
+  consoleSpy.mockRestore();
+});
+
+// ─── Cloudinary config mock ───────────────────────────────────────────────────
+jest.mock('../config/cloudinary.js', () => ({
+  __esModule: true,
+  default: {
+    uploader: { destroy: jest.fn() },
+  },
+  upload: {
+    array: () => (req, _res, next) => {
+      req.files = global.__mockFiles ?? [];
+      next();
     },
-    url: jest.fn(),
-    image: jest.fn(),
   },
 }));
 
-jest.mock('multer-storage-cloudinary', () => ({
-  CloudinaryStorage: jest.fn().mockImplementation(() => ({})),
-}));
-
-jest.mock('multer', () => {
-  const multerInstance = {
-    array: () => (req, _res, next) => next(),
-    single: () => (req, _res, next) => next(),
-  };
-  const multer = jest.fn(() => multerInstance);
-  multer.memoryStorage = jest.fn();
-  multer.diskStorage = jest.fn();
-  return multer;
-});
-
-// Auth middleware mock
+// ─── Auth middleware mock ─────────────────────────────────────────────────────
 jest.mock('../api/middlewares/auth.middleware.js', () => ({
-  protect: (req, _res, next) => {
+  __esModule: true,
+  default: (req, _res, next) => {
     req.user = { _id: 'user123' };
     next();
   },
@@ -59,8 +39,9 @@ jest.mock('../api/middlewares/auth.middleware.js', () => ({
 
 jest.mock('../api/models/product.model.js');
 
-// Grab the destroy spy from the mocked cloudinary package
-const mockDestroy = jest.requireMock('cloudinary').v2.uploader.destroy;
+// ─── Grab destroy spy ─────────────────────────────────────────────────────────
+const mockDestroy = jest.requireMock('../config/cloudinary.js').default.uploader
+  .destroy;
 
 // ─── Shared mock data ─────────────────────────────────────────────────────────
 const mockProduct = {
@@ -82,6 +63,7 @@ const mockProduct = {
 
 beforeEach(() => {
   jest.clearAllMocks();
+  global.__mockFiles = [];
   mockDestroy.mockResolvedValue({ result: 'ok' });
 });
 
@@ -156,7 +138,8 @@ describe('GET /api/products/:id', () => {
 // ─── CREATE PRODUCT ───────────────────────────────────────────────────────────
 
 describe('POST /api/products', () => {
-  test('// should create a product successfully', async () => {
+  test('// should create a product successfully without images', async () => {
+    // global.__mockFiles = [] from beforeEach → req.files empty → no image branch
     const savedProduct = { ...mockProduct, images: [] };
     Product.mockImplementation(() => ({
       ...savedProduct,
@@ -166,8 +149,6 @@ describe('POST /api/products', () => {
     const res = await request(app)
       .post('/api/products')
       .set('Authorization', 'Bearer mock-jwt-token')
-      .attach('images', Buffer.from('img1'), 'img1.jpg')
-      .attach('images', Buffer.from('img2'), 'img2.jpg')
       .send({
         title: 'Stealth Pro TKL Keyboard',
         description: 'Ultra-compact Tenkeyless TKL design.',
@@ -181,15 +162,21 @@ describe('POST /api/products', () => {
   });
 
   test('// should reject when more than 5 images are uploaded', async () => {
+    // Simulate 6 files via global — avoids .attach()/.send() conflict
+    global.__mockFiles = Array(6).fill({
+      path: 'https://fake.jpg',
+      filename: 'fake_id',
+    });
+
     const res = await request(app)
       .post('/api/products')
       .set('Authorization', 'Bearer mock-jwt-token')
-      .attach('images', Buffer.from('img1'), 'img1.jpg')
-      .attach('images', Buffer.from('img2'), 'img2.jpg')
-      .attach('images', Buffer.from('img3'), 'img3.jpg')
-      .attach('images', Buffer.from('img4'), 'img4.jpg')
-      .attach('images', Buffer.from('img5'), 'img5.jpg')
-      .attach('images', Buffer.from('img6'), 'img6.jpg');
+      .send({
+        title: 'Too Many',
+        description: 'x',
+        price: 10,
+        category: 'Test',
+      });
 
     expect(res.status).toBe(400);
     expect(res.body.message).toBe('Maximum of 5 images allowed');
@@ -203,12 +190,7 @@ describe('POST /api/products', () => {
     const res = await request(app)
       .post('/api/products')
       .set('Authorization', 'Bearer mock-jwt-token')
-      .send({
-        title: 'Failing Product',
-        description: 'This will fail.',
-        price: 50,
-        category: 'Test',
-      });
+      .send({ title: 'Fail', description: 'x', price: 50, category: 'Test' });
 
     expect(res.status).toBe(500);
     expect(res.body.message).toBe('Internal server error');
@@ -248,32 +230,36 @@ describe('PUT /api/products/:id', () => {
   });
 
   test('// should reject when more than 5 new images are uploaded', async () => {
+    global.__mockFiles = Array(6).fill({
+      path: 'https://fake.jpg',
+      filename: 'fake_id',
+    });
     Product.findById.mockResolvedValue({ ...mockProduct, save: jest.fn() });
 
     const res = await request(app)
       .put('/api/products/product123')
       .set('Authorization', 'Bearer mock-jwt-token')
-      .attach('images', Buffer.from('img1'), 'img1.jpg')
-      .attach('images', Buffer.from('img2'), 'img2.jpg')
-      .attach('images', Buffer.from('img3'), 'img3.jpg')
-      .attach('images', Buffer.from('img4'), 'img4.jpg')
-      .attach('images', Buffer.from('img5'), 'img5.jpg')
-      .attach('images', Buffer.from('img6'), 'img6.jpg');
+      .send({ price: 99.99 });
 
     expect(res.status).toBe(400);
     expect(res.body.message).toBe('Maximum of 5 images allowed');
   });
 
   test('// should delete old Cloudinary images when new ones are provided', async () => {
+    // 1 file triggers the "delete old + set new images" branch in the controller
+    global.__mockFiles = [
+      { path: 'https://res.cloudinary.com/new.jpg', filename: 'new_pub_id' },
+    ];
+
     const productWithImages = {
       ...mockProduct,
       images: [
         {
-          url: 'https://res.cloudinary.com/demo/old1.jpg',
+          url: 'https://res.cloudinary.com/old1.jpg',
           publicId: 'old_public_id_1',
         },
         {
-          url: 'https://res.cloudinary.com/demo/old2.jpg',
+          url: 'https://res.cloudinary.com/old2.jpg',
           publicId: 'old_public_id_2',
         },
       ],
@@ -284,7 +270,7 @@ describe('PUT /api/products/:id', () => {
     await request(app)
       .put('/api/products/product123')
       .set('Authorization', 'Bearer mock-jwt-token')
-      .attach('images', Buffer.from('newimg'), 'new.jpg');
+      .send({ price: 99.99 });
 
     expect(mockDestroy).toHaveBeenCalledWith('old_public_id_1');
     expect(mockDestroy).toHaveBeenCalledWith('old_public_id_2');
@@ -322,14 +308,8 @@ describe('DELETE /api/products/:id', () => {
     const productWithImages = {
       ...mockProduct,
       images: [
-        {
-          url: 'https://res.cloudinary.com/demo/img1.jpg',
-          publicId: 'pub_id_1',
-        },
-        {
-          url: 'https://res.cloudinary.com/demo/img2.jpg',
-          publicId: 'pub_id_2',
-        },
+        { url: 'https://res.cloudinary.com/img1.jpg', publicId: 'pub_id_1' },
+        { url: 'https://res.cloudinary.com/img2.jpg', publicId: 'pub_id_2' },
       ],
     };
     Product.findByIdAndDelete.mockResolvedValue(productWithImages);

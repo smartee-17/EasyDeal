@@ -97,6 +97,11 @@ export const updateProduct = async (req, res) => {
       return res.status(404).json({ message: 'Product not found' });
     }
 
+    // Multiple images from Cloudinary
+    if (req.files && req.files.length > 5) {
+      return res.status(400).json({ message: 'Maximum of 5 images allowed' });
+    }
+
     // Optional: Ensure only the seller can update their own product
     if (product.seller.toString() !== userId.toString()) {
       return res
