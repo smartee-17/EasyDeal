@@ -24,9 +24,9 @@
     "firebase-admin": "^13.8.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.4.1",
-    "resend": "^6.12.3",
     "multer": "^2.1.1",
-    "multer-storage-cloudinary": "^4.0.0"
+    "multer-storage-cloudinary": "^4.0.0",
+    "resend": "^6.12.3"
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",
