@@ -41,6 +41,9 @@ jobs:
           MONGO_URI: ${{ secrets.MONGO_URI }}
           MONGO_TEST_URI: mongodb://127.0.0.1:27017/easydeal_test
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          RUN_RESEND_TEST: ${{ secrets.RUN_RESEND_TEST }}
           PORT: ${{ vars.PORT }}
         run: npm test
         working-directory: ./backend

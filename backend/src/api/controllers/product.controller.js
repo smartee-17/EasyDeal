@@ -1,6 +1,6 @@
 import { sendResponse } from '../library/utils.js';
 import Product from '../models/product.model.js';
-import cloudinary from '../../config/cloudinary.js';
+import cloudinary, { upload } from '../../config/cloudinary.js';
 
 export const getAllProducts = async (req, res) => {
   try {
@@ -87,7 +87,7 @@ export const createProduct = async (req, res) => {
 
 export const updateProduct = async (req, res) => {
   try {
-    const { _id } = req.user;
+    const { _id: userId } = req.user;
     const { id } = req.params;
     const { title, description, category, price, isAvailable } = req.body;
 
@@ -97,30 +97,43 @@ export const updateProduct = async (req, res) => {
       return res.status(404).json({ message: 'Product not found' });
     }
 
-    // If new images are uploaded
+    // Multiple images from Cloudinary
     if (req.files && req.files.length > 5) {
       return res.status(400).json({ message: 'Maximum of 5 images allowed' });
     }
 
+    // Optional: Ensure only the seller can update their own product
+    if (product.seller.toString() !== userId.toString()) {
+      return res
+        .status(403)
+        .json({ message: 'Not authorized to update this product' });
+    }
+
+    // Handle new images if they are provided in the request
     if (req.files && req.files.length > 0) {
-      // Delete old images from Cloudinary
-      for (const image of product.images) {
-        await cloudinary.uploader.destroy(image.publicId);
+      // 1. Purge old images from Cloudinary concurrently to boost performance
+      if (product.images && product.images.length > 0) {
+        const deletionPromises = product.images.map((image) =>
+          cloudinary.uploader.destroy(image.publicId),
+        );
+        await Promise.all(deletionPromises);
       }
 
-      // Set new images
+      // 2. Map and assign the new Cloudinary files to the product document
       product.images = req.files.map((file) => ({
-        url: file.path,
-        publicId: file.filename,
+        url: file.path, // Provided by the Cloudinary multer storage engine
+        publicId: file.filename, // Vital for future deletions
       }));
     }
 
+    // Update text fields (fallback to existing values if not provided in req.body)
     product.title = title || product.title;
     product.description = description || product.description;
     product.category = category || product.category;
     product.price = price || product.price;
     product.isAvailable = isAvailable ?? product.isAvailable;
 
+    // Persist changes to MongoDB
     await product.save();
 
     return sendResponse(
