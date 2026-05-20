@@ -56,10 +56,35 @@ export const createProduct = async (req, res) => {
       return res.status(400).json({ message: 'Maximum of 5 images allowed' });
     }
 
-    const images = req.files?.map((file) => ({
-      url: file.path, // Cloudinary URL
-      publicId: file.filename, // for deletion later
-    }));
+    // Process images and generate alts
+    const images = await Promise.all(
+      (req.files || []).map(async (file, index) => {
+        const cloudinaryUrl = file.path;
+
+        // Call the separate AI function
+        const aiDescription = await generateAltText(cloudinaryUrl, description);
+
+        return {
+          url: cloudinaryUrl,
+          publicId: file.filename,
+          // Use AI description if it exists, otherwise use fallback title
+          alt: {
+            detailed:
+              aiDescription !== null
+                ? `${title} - ${aiDescription.detailed}`
+                : `${title} - Image ${index + 1}`,
+            short:
+              aiDescription !== null
+                ? `${title} - ${aiDescription.short}`
+                : `${title} - Image ${index + 1}`,
+            standard:
+              aiDescription !== null
+                ? `${title} - ${aiDescription.standard}`
+                : `${title} - Image ${index + 1}`,
+          },
+        };
+      }),
+    );
 
     const product = new Product({
       title,
