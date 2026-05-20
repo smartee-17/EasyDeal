@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="./admin.css" />
+    <link rel="stylesheet" href="../shared/global.css" />
+  </head>
+  <body>
+    <main class="main-content">
+      <h1>Admin Dashboard</h1>
+          <section class="stats">
+         <h2 class="stats__title">Marketplace Overview</h2>
+          <div class="stats__content"></div>
+          <ul class="stats__list">
+            <li class="stats__item"><strong>Total active products:</strong> 2</li>
+            <li class="stats__item"><strong>Total registered buyers:</strong> 4</li>
+            <li class="stats__item"><strong>Total sellers:</strong> 3</li>
+          </ul>
+        </div>
+      </section>
+         <section class="management">
+          <h2 class="management__title">USER MANAGEMENT</h2>
+        <table class="table">
+          <thead>
+              <tr class="table__row table__row--header">
+              <th scope="col" class="table__cell">User</th>
+              <th scope="col" class="table__cell">Role</th>
+              <th scope="col" class="table__cell">Status</th>
+              <th scope="col" class="table__cell">Joined</th>
+              <th scope="col" class="table__cell">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="table__row">
+              <td scope="row" class="table__cell">Sandip</td>
+              <td class="table__cell">seller</td>
+              <td class="table__cell">verified</td>
+              <td class="table__cell">Jan 2024</td>
+              <td class="table__cell table__cell--actions">
+                <button aria-label="Ban Sandip">Ban</button>
+                <button aria-label="Delete Sandip">Delete</button>
+              </td>
+            </tr>
+            <tr class="table__row">
+              <td scope="row" class="table__cell">Kazzy</td>
+              <td class="table__cell">buyer</td>
+              <td class="table__cell">active</td>
+              <td class="table__cell">Mar 2024</td>
+              <td class="table__cell table__cell--actions">
+                <button aria-label="Ban Kazzy">Ban</button>
+                <button aria-label="Delete Kazzy">Delete</button>
+              </td>
+            </tr>
+            <tr class="table__row">
+              <td scope="row" class="table__cell">Somaia</td>
+              <td class="table__cell">buyer</td>
+              <td class="table__cell">pending</td>
+              <td class="table__cell">Mar 2024</td>
+              <td class="table__cell table__cell--actions">
+                <button aria-label="Ban Somaia">Ban</button>
+                <button aria-label="Delete Somaia">Delete</button>
+                <button aria-label="Verify Somaia">verify</button>
+              </td>
+            </tr>
+            <tr class="table__row">
+              <td scope="row" class="table__cell">Rajiv</td>
+              <td class="table__cell">seller</td>
+              <td class="table__cell">active</td>
+              <td class="table__cell">Mar 2024</td>
+              <td class="table__cell table__cell--actions">
+                <button aria-label="Ban Rajiv">Ban</button>
+                <button aria-label="Delete Rajiv">Delete</button>
+              </td>
+            </tr>
+            <tr class="table__row">
+              <td scope="row" class="table__cell">Nathan</td>
+              <td class="table__cell">buyer</td>
+              <td class="table__cell">pending</td>
+              <td class="table__cell">Mar 2024</td>
+              <td class="table__cell table__cell--actions">
+                <button aria-label="Ban Nathan">Ban</button>
+                <button aria-label="Delete Nathan">Delete</button>
+                <button aria-label="Verify Nathan">verify</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="product-moderation">
+        <h2 class="product-moderation__heading">PRODUCT MANAGEMENT</h2>
+        <table class="table">
+          <thead>
+            <tr class="table__row table__row--header">
+              <th scope="col" class="table__cell">Product</th>
+              <th scope="col" class="table__cell">Seller</th>
+              <th scope="col" class="table__cell">Category</th>
+              <th scope="col" class="table__cell">Price</th>
+              <th scope="col" class="table__cell">Status</th>
+              <th scope="col" class="table__cell">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="table__row">
+              <th scope="row" class="table__cell">Iphone 14</th>
+              <td class="table__cell">Rajiv</td>
+              <td class="table__cell">Electronics</td>
+              <td class="table__cell">45,000</td>
+              <td class="table__cell">pending</td>
+              <td class="table__cell table__cell--actions">
+                <button aria-label="Approve">approve</button>
+                <button aria-label="Reject">reject</button>
+              </td>
+            </tr>
+            <tr class="table__row">
+              <th scope="row" class="table__cell">Iphone 17 pro max</th>
+              <td class="table__cell">Somaia</td>
+              <td class="table__cell">Electronics</td>
+              <td class="table__cell">65,000</td>
+              <td class="table__cell">approved</td>
+              <td class="table__cell table__cell--actions">
+                <button aria-label="Reject">reject</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </body>
+</html>
