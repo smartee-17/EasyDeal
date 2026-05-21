@@ -4,9 +4,9 @@ import User from '../../api/models/user.model.js';
 import * as tokenLib from '../../api/library/token.js';
 import * as emailService from '../../api/library/email/emailService/index.js';
 
-jest.mock('../api/models/user.model.js');
-jest.mock('../api/library/token.js');
-jest.mock('../api/library/email/emailService/index.js');
+jest.mock('../../api/models/user.model.js');
+jest.mock('../../api/library/token.js');
+jest.mock('../../api/library/email/emailService/index.js');
 
 const mockUser = {
   _id: 'user123',

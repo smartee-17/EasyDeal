@@ -1,3 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="0" failures="0" errors="0" time="3.798">
+<testsuites name="jest tests" tests="36" failures="0" errors="0" time="14.411">
+  <testsuite name="GET /api/products" errors="0" failures="0" skipped="0" timestamp="2026-05-21T15:17:04" time="8.415" tests="18">
+    <testcase classname="GET /api/products // should return all products successfully" name="GET /api/products // should return all products successfully" time="0.069">
+    </testcase>
+    <testcase classname="GET /api/products // should return an empty array when no products exist" name="GET /api/products // should return an empty array when no products exist" time="0.027">
+    </testcase>
+    <testcase classname="GET /api/products // should return 500 on database error" name="GET /api/products // should return 500 on database error" time="0.021">
+    </testcase>
+    <testcase classname="GET /api/products/:id // should return a single product by ID" name="GET /api/products/:id // should return a single product by ID" time="0.021">
+    </testcase>
+    <testcase classname="GET /api/products/:id // should return 404 when product is not found" name="GET /api/products/:id // should return 404 when product is not found" time="0.034">
+    </testcase>
+    <testcase classname="GET /api/products/:id // should return 500 on database error" name="GET /api/products/:id // should return 500 on database error" time="0.017">
+    </testcase>
+    <testcase classname="POST /api/products // should create a product successfully without images" name="POST /api/products // should create a product successfully without images" time="0.06">
+    </testcase>
+    <testcase classname="POST /api/products // should reject when more than 5 images are uploaded" name="POST /api/products // should reject when more than 5 images are uploaded" time="0.024">
+    </testcase>
+    <testcase classname="POST /api/products // should return 500 on save failure" name="POST /api/products // should return 500 on save failure" time="0.022">
+    </testcase>
+    <testcase classname="PUT /api/products/:id // should update product fields successfully" name="PUT /api/products/:id // should update product fields successfully" time="0.022">
+    </testcase>
+    <testcase classname="PUT /api/products/:id // should return 404 if product does not exist" name="PUT /api/products/:id // should return 404 if product does not exist" time="0.024">
+    </testcase>
+    <testcase classname="PUT /api/products/:id // should reject when more than 5 new images are uploaded" name="PUT /api/products/:id // should reject when more than 5 new images are uploaded" time="0.021">
+    </testcase>
+    <testcase classname="PUT /api/products/:id // should delete old Cloudinary images when new ones are provided" name="PUT /api/products/:id // should delete old Cloudinary images when new ones are provided" time="0.02">
+    </testcase>
+    <testcase classname="PUT /api/products/:id // should return 500 on database error" name="PUT /api/products/:id // should return 500 on database error" time="0.021">
+    </testcase>
+    <testcase classname="DELETE /api/products/:id // should delete a product successfully" name="DELETE /api/products/:id // should delete a product successfully" time="0.017">
+    </testcase>
+    <testcase classname="DELETE /api/products/:id // should purge all associated Cloudinary images on delete" name="DELETE /api/products/:id // should purge all associated Cloudinary images on delete" time="0.026">
+    </testcase>
+    <testcase classname="DELETE /api/products/:id // should return 404 when product does not exist" name="DELETE /api/products/:id // should return 404 when product does not exist" time="0.018">
+    </testcase>
+    <testcase classname="DELETE /api/products/:id // should return 500 on database error" name="DELETE /api/products/:id // should return 500 on database error" time="0.021">
+    </testcase>
+  </testsuite>
+  <testsuite name="POST /api/auth/register" errors="0" failures="0" skipped="1" timestamp="2026-05-21T15:17:13" time="5.498" tests="18">
+    <testcase classname="POST /api/auth/register // should create a new user successfully" name="POST /api/auth/register // should create a new user successfully" time="0.03">
+    </testcase>
+    <testcase classname="POST /api/auth/register // should fail when required fields are missing" name="POST /api/auth/register // should fail when required fields are missing" time="0.023">
+    </testcase>
+    <testcase classname="POST /api/auth/register // should fail if email already exists" name="POST /api/auth/register // should fail if email already exists" time="0.019">
+    </testcase>
+    <testcase classname="POST /api/auth/register // should fail if username already exists" name="POST /api/auth/register // should fail if username already exists" time="0.022">
+    </testcase>
+    <testcase classname="POST /api/auth/register // should reject admin role creation" name="POST /api/auth/register // should reject admin role creation" time="0.029">
+    </testcase>
+    <testcase classname="POST /api/auth/register // should fail if role is invalid" name="POST /api/auth/register // should fail if role is invalid" time="0.023">
+    </testcase>
+    <testcase classname="POST /api/auth/login // should login successfully with valid credentials" name="POST /api/auth/login // should login successfully with valid credentials" time="0.021">
+    </testcase>
+    <testcase classname="POST /api/auth/login // should fail with wrong password" name="POST /api/auth/login // should fail with wrong password" time="0.022">
+    </testcase>
+    <testcase classname="POST /api/auth/login // should fail if user does not exist" name="POST /api/auth/login // should fail if user does not exist" time="0.018">
+    </testcase>
+    <testcase classname="POST /api/auth/login // should fail if user account is blocked" name="POST /api/auth/login // should fail if user account is blocked" time="0.018">
+    </testcase>
+    <testcase classname="POST /api/auth/login // should fail if emailOrUsername or password is missing" name="POST /api/auth/login // should fail if emailOrUsername or password is missing" time="0.021">
+    </testcase>
+    <testcase classname="GET /api/auth/verify-email/:token // should verify email with a valid token" name="GET /api/auth/verify-email/:token // should verify email with a valid token" time="0.03">
+    </testcase>
+    <testcase classname="GET /api/auth/verify-email/:token // should fail with an expired or invalid token" name="GET /api/auth/verify-email/:token // should fail with an expired or invalid token" time="0.017">
+    </testcase>
+    <testcase classname="POST /api/auth/resend-verification // should resend verification email for an unverified user" name="POST /api/auth/resend-verification // should resend verification email for an unverified user" time="0.018">
+    </testcase>
+    <testcase classname="POST /api/auth/resend-verification // should return generic message if user is not found (security)" name="POST /api/auth/resend-verification // should return generic message if user is not found (security)" time="0.022">
+    </testcase>
+    <testcase classname="POST /api/auth/resend-verification // should fail if email is already verified" name="POST /api/auth/resend-verification // should fail if email is already verified" time="0.023">
+    </testcase>
+    <testcase classname="POST /api/auth/resend-verification // should fail if email field is missing" name="POST /api/auth/resend-verification // should fail if email field is missing" time="0.026">
+    </testcase>
+    <testcase classname="MANUAL: Resend API config smoke test via /api/auth/resend-verification // should register a temp user and trigger resend-verification against live Resend API" name="MANUAL: Resend API config smoke test via /api/auth/resend-verification // should register a temp user and trigger resend-verification against live Resend API" time="0">
+      <skipped/>
+    </testcase>
+  </testsuite>
 </testsuites>
