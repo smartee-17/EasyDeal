@@ -5,8 +5,14 @@ const productSchema = new mongoose.Schema(
     title: { type: String, required: true },
     description: { type: String },
     price: { type: Number, required: true },
-    category: { type: String, required: true }, // TODO: String should be change to category id after creating the category model
-    images: [{ url: { type: String }, publicId: { type: String } }],
+    category: { type: String, required: true },
+    images: [
+      {
+        url: { type: String },
+        publicId: { type: String },
+        alt: { short: String, standard: String, detailed: String },
+      },
+    ],
     seller: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
