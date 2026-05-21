@@ -1,8 +1,8 @@
 import request from 'supertest';
-import app from '../app.js';
-import User from '../api/models/user.model.js';
-import * as tokenLib from '../api/library/token.js';
-import * as emailService from '../api/library/email/emailService/index.js';
+import app from '../../app.js';
+import User from '../../api/models/user.model.js';
+import * as tokenLib from '../../api/library/token.js';
+import * as emailService from '../../api/library/email/emailService/index.js';
 
 jest.mock('../api/models/user.model.js');
 jest.mock('../api/library/token.js');

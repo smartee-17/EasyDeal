@@ -1,6 +1,6 @@
 import request from 'supertest';
-import app from '../app.js';
-import Product from '../api/models/product.model.js';
+import app from '../../app.js';
+import Product from '../../api/models/product.model.js';
 
 let consoleSpy;
 
