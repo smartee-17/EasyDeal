@@ -182,6 +182,35 @@ describe('POST /api/auth/login', () => {
   });
 });
 
+// Logout 
+describe('POST /api/auth/logout', () => {
+  test('// should logout successfully and clear cookie', async () => {
+    const res = await request(app)
+      .post('/api/auth/logout')
+      .set('Cookie', ['token=mock-jwt-token']); // simulate logged-in user
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.message).toBe('Logged out successfully');
+  });
+
+  test('// should still succeed even if no cookie is present', async () => {
+    const res = await request(app)
+      .post('/api/auth/logout');
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+  });
+
+  test('// should not crash when malformed request is sent', async () => {
+    const res = await request(app)
+      .post('/api/auth/logout')
+      .set('Cookie', ['invalidcookieformat']);
+
+    expect(res.status).toBe(200);
+  });
+});
+
 // ─── VERIFY EMAIL ─────────────────────────────────────────────────────────────
 
 describe('GET /api/auth/verify-email/:token', () => {
@@ -191,6 +220,7 @@ describe('GET /api/auth/verify-email/:token', () => {
       isEmailVerified: false,
       save: jest.fn().mockResolvedValue(true),
     };
+
     User.findOne.mockResolvedValue(unverifiedUser);
 
     const res = await request(app).get('/api/auth/verify-email/validrawtoken');
@@ -198,15 +228,33 @@ describe('GET /api/auth/verify-email/:token', () => {
     expect(res.status).toBe(200);
     expect(res.body.message).toBe('Email verified successfully');
     expect(unverifiedUser.isEmailVerified).toBe(true);
+    expect(unverifiedUser.save).toHaveBeenCalled();
   });
 
-  test('// should fail with an expired or invalid token', async () => {
+  test('// should fail with an invalid token', async () => {
     User.findOne.mockResolvedValue(null);
 
     const res = await request(app).get('/api/auth/verify-email/invalidtoken');
 
     expect(res.status).toBe(400);
     expect(res.body.message).toMatch(/invalid or has expired/i);
+  });
+
+  test('// should fail if token is expired', async () => {
+    User.findOne.mockResolvedValue(null);
+
+    const res = await request(app)
+      .get('/api/auth/verify-email/expiredtoken');
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/invalid or has expired/i);
+  });
+
+  test('// should fail if token is malformed', async () => {
+    const res = await request(app)
+      .get('/api/auth/verify-email/@@@@');
+
+    expect(res.status).toBe(400);
   });
 });
 
@@ -257,6 +305,93 @@ describe('POST /api/auth/resend-verification', () => {
 
     expect(res.status).toBe(400);
     expect(res.body.message).toBe('email is required');
+  });
+});
+
+// ─── FORGOT PASSWORD ─────────────────────────────────────────────
+
+describe('POST /api/auth/forgot-password', () => {
+  test('// should send reset email if user exists', async () => {
+    const user = {
+      ...mockUser,
+      save: jest.fn().mockResolvedValue(true),
+    };
+
+    User.findOne.mockResolvedValue(user);
+
+    const res = await request(app)
+      .post('/api/auth/forgot-password')
+      .send({ email: 'test@example.com' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(emailService.sendEmail).toHaveBeenCalled();
+  });
+
+  test('// should NOT reveal if email does not exist (security)', async () => {
+    User.findOne.mockResolvedValue(null);
+
+    const res = await request(app)
+      .post('/api/auth/forgot-password')
+      .send({ email: 'ghost@example.com' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.message).toMatch(/if an account exists/i);
+  });
+
+  test('// should fail if email is missing', async () => {
+    const res = await request(app)
+      .post('/api/auth/forgot-password')
+      .send({});
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/required/i);
+  });
+});
+
+// ─── RESET PASSWORD ─────────────────────────────────────────────
+
+describe('POST /api/auth/reset-password', () => {
+  test('// should reset password with valid token', async () => {
+    const user = {
+      ...mockUser,
+      password: 'oldPassword',
+      save: jest.fn().mockResolvedValue(true),
+    };
+
+    User.findOne.mockReturnValue({
+      select: jest.fn().mockResolvedValue(user),
+    });
+
+    const res = await request(app)
+      .post('/api/auth/reset-password/validtoken')
+      .send({ newPassword: 'newPassword123' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.message).toMatch(/reset successful/i);
+    expect(user.save).toHaveBeenCalled();
+  });
+
+  test('// should fail if password is too short', async () => {
+    const res = await request(app)
+      .post('/api/auth/reset-password/validtoken')
+      .send({ newPassword: '123' });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/at least 6/i);
+  });
+
+  test('// should fail with invalid or expired token', async () => {
+    User.findOne.mockReturnValue({
+      select: jest.fn().mockResolvedValue(null),
+    });
+
+    const res = await request(app)
+      .post('/api/auth/reset-password/badtoken')
+      .send({ newPassword: 'newPassword123' });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/invalid or has expired/i);
   });
 });
 

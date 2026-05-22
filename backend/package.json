@@ -8,8 +8,8 @@
     "start": "node ./src/server.js",
     "test": "cross-env NODE_ENV=test jest --runInBand --detectOpenHandles",
     "test:watch": "cross-env NODE_ENV=test jest --watch",
-    "test:coverage": "cross-env NODE_ENV=test jest --coverage",
-    "test:ui": "cross-env NODE_ENV=test jest --coverage && start html-report/report.html"
+    "test:verbose": "npm run test -- --verbose",
+    "test:ci": "npm run test -- --ci --coverage --coverageReporters=text --coverageReporters=lcov --coverageReporters=json-summary"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +24,7 @@
     "crypto": "^1.0.1",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.5.2",
     "express-validator": "^7.3.2",
     "firebase-admin": "^13.8.0",
     "jsonwebtoken": "^9.0.3",

@@ -39,9 +39,9 @@ const userSchema = new mongoose.Schema(
 
     // Password reset
     resetPasswordToken: { type: String, select: false },
-    resetPasswordExpire: { type: Date, select: false },
+    resetPasswordExpires: { type: Date, select: false },
 
-    
+    lastLoginAt: { type: Date}
   },
   { 
     timestamps: true,
@@ -74,6 +74,7 @@ userSchema.methods.toPublic = function () {
   delete obj.emailVerificationTokenExpire;
   delete obj.resetPasswordToken;
   delete obj.resetPasswordExpire;
+  delete obj.refreshToken;
 
   return obj;
 }

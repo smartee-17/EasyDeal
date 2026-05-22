@@ -4,6 +4,7 @@ import {
   setAuthCookie,
   generateSecureToken,
   hashToken,
+  generateRefreshToken
 } from '../library/token.js';
 import bcrypt from 'bcryptjs';
 import { sendResponse } from '../library/utils.js';
@@ -11,10 +12,8 @@ import { sendEmail } from '../library/email/emailService/index.js';
 import EMAIL_TYPES from '../library/email/emailTypes/index.js';
 
 // Used incase of later update
-const sendVerifictionComms = async ({ email, subject, type, payload }) => {
+const sendVerifictionComms = async ({ email, type, payload }) => {
   try {
-    if (process.env.NODE_ENV === 'test') return;
-
     await sendEmail({
       to: email,
       type,
@@ -164,6 +163,28 @@ export const login = async (req, res) => {
   }
 };
 
+// Logout
+export const logout = async (req, res) => {
+  try{ 
+    res.clearCookie("token");
+
+    return sendResponse(
+      res, 
+      200,
+      true, 
+      "Logged out successfully",
+      null
+    );
+  } 
+  catch(error) {
+    console.error('[Auth] logout error:', error.message);
+
+    return res.status(500).json({
+      message: 'Server error during logout'
+    });
+  }
+};
+
 // Verify Email
 export const verifyEmail = async (req, res) => {
   try {
@@ -232,10 +253,96 @@ export const resendVerification = async (req, res) => {
     return sendResponse(res, 200, true, 'Verification email sent', {
       resendKeyLoaded: !!process.env.RESEND_API_KEY,
     });
-
-    console.log('RESEND KEY:', process.env.RESEND_API_KEY);
   } catch (error) {
     console.error('[Auth] resendVerification error:', error.message);
     return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        message: 'email is required',
+      });
+    }
+
+
+    const user = await User.findOne({
+      email: email.toLowerCase(),
+    });
+
+    if (!user) {
+      return sendResponse(
+        res,
+        200,
+        true,
+        "If an account exists for this email, a reset link has been sent"
+      );
+    }
+
+    const { raw: rawToken, hashed} = generateSecureToken();
+
+    user.resetPasswordToken = hashed;
+
+    user.resetPasswordExpires = new Date(Date.now() + 60 * 60 * 1000);
+
+    await user.save({ validateBeforeSave: false });
+
+    await sendVerifictionComms({
+      email: user.email,
+      type: EMAIL_TYPES.PASSWORD_RESET,
+      payload: {
+        username: user.username,
+        verifyUrl: `${process.env.CLIENT_URL}/reset-password/${rawToken}`,
+      },
+    });
+
+
+    return sendResponse(
+      res,
+      200,
+      true,
+      "If an account exists for this email, a reset link has been sent"
+    );
+  } 
+  catch (error) {
+    console.error("[Auth] forgotPassword error:", error.message);
+    return res.status(500).json({ message: "Server error" });
+  }
+}
+export const resetToken = async (req, res) => {
+  try{
+    const { token } = req.params;
+    const { newPassword } = req.body;
+
+    if (!newPassword || newPassword.length < 6) {
+      return res.status(400).json({ message: "New password must be at least 6 characters" });
+    }
+
+    const hashed = hashToken(token);
+
+    const user = await User.findOne({
+      resetPasswordToken: hashed,
+      resetPasswordExpires: { $gt: new Date() },
+    }).select("+resetPasswordToken +resetPasswordExpires");
+
+    if(!user) {
+      return res.status(400).json({ message: "Reset link is invalid or has expired"});
+    }
+
+    user.password = newPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+
+    await user.save();
+
+    return res.json({ message: "Password reset successful. You can now log in."})
+  } 
+  catch (error) {
+    console.error("[Auth] resetPassword error:", error.message);
+    return res.status(500).json({ message: "Server error" });
   }
 };
