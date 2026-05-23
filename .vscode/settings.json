@@ -1,9 +1,3 @@
 {
-  "html.format.wrapAttributes": "force-aligned",
-  "mdb.presetConnections": [
-    {
-      "name": "Preset Connection",
-      "connectionString": "mongodb://localhost:27017"
-    }
-  ]
+  "html.format.wrapAttributes": "force-aligned"
 }
