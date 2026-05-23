@@ -7,9 +7,13 @@
     "dev": "nodemon ./src/server.js",
     "start": "node ./src/server.js",
     "test": "cross-env NODE_ENV=test jest --runInBand --detectOpenHandles",
+    
     "test:watch": "cross-env NODE_ENV=test jest --watch",
-    "test:verbose": "npm run test -- --verbose",
-    "test:ci": "npm run test -- --ci --coverage --coverageReporters=text --coverageReporters=lcov --coverageReporters=json-summary"
+    "test:ui": "cross-env NODE_ENV=test jest",
+
+    "test:coverage": "cross-env NODE_ENV=test jest --coverage",
+
+    "test:ci": "cross-env NODE_ENV=test jest --coverage --ci"
   },
   "keywords": [],
   "author": "",

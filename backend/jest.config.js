@@ -12,7 +12,17 @@ export default {
     '**/?(*.)+(spec|test).js',
   ],
 
-  collectCoverage: true,
+  collectCoverage: false,
+
+  collectCoverageFrom: [
+  "src/**/*.js",
+
+  "!src/**/*.test.js",
+  "!src/**/index.js",
+  "!src/**/*.config.js",
+  "!src/**/mocks/**",
+  "!src/**/node_modules/**"
+  ],
 
   coverageDirectory: 'coverage',
 
