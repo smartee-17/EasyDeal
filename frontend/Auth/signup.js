@@ -31,6 +31,7 @@ signupForm.addEventListener('submit', async (e) => {
   } catch (err) {
     // UI Error Handling
     document.querySelector('.form__error-msg').textContent = err.message;
+    signupForm.removeAttribute('data-submitting');
   }
 });
 
