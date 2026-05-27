@@ -7,6 +7,8 @@ const router = express.Router();
 
 router.post('/', protect, authorizeRoles('admin'), controller.createCategory);
 
-router.get('/', protect, controller.getAllCategories);
+router.get('/', controller.getAllCategories);
+
+router.get('/:id', controller.getCategoryById);
 
 export default router;
