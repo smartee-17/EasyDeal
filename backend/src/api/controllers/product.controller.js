@@ -1,12 +1,14 @@
 import { sendResponse } from '../library/utils.js';
 import Product from '../models/product.model.js';
 import cloudinary, { upload } from '../../config/cloudinary.js';
+import { generateAltText } from '../library/visionAi.js';
+import Category from '../models/category.model.js';
 
 export const getAllProducts = async (req, res) => {
   try {
-    // TODO: We use populate after user model is defined
-    // const products = await Product.find().populate('seller', 'name');
-    const products = await Product.find();
+    const products = await Product.find()
+      .populate('category', 'name')
+      .populate('seller', 'name whatsappNumber');
 
     return sendResponse(
       res,
@@ -25,9 +27,9 @@ export const getProductById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // TODO: We use populate after user model is defined
-    // const product = await Product.findById(id).populate('seller', 'name');
-    const product = await Product.findById(id);
+    const product = await Product.findById(id)
+      .populate('category', 'name')
+      .populate('seller', 'name whatsappNumber');
 
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
