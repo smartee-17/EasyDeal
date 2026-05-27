@@ -21,3 +21,24 @@ export const createCategory = async (req, res) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+export const getAllCategories = async (req, res) => {
+  try {
+    const categories = await Category.find();
+
+    if (categories.length === 0) {
+      return res.status(404).json({ message: 'No categories found' });
+    }
+
+    return sendResponse(
+      res,
+      200,
+      true,
+      'Categories retrieved successfully',
+      categories,
+    );
+  } catch (error) {
+    console.log(`Error getting categories: ${error}`);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
