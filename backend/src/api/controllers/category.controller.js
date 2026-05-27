@@ -64,3 +64,31 @@ export const getCategoryById = async (req, res) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+export const updateCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name } = req.body;
+
+    const category = await Category.findByIdAndUpdate(
+      id,
+      { name },
+      { returnDocument: 'after' },
+    );
+
+    if (!category) {
+      return res.status(404).json({ message: 'Category not found' });
+    }
+
+    return sendResponse(
+      res,
+      200,
+      true,
+      'Category updated successfully',
+      category,
+    );
+  } catch (error) {
+    console.log(`Error updating category: ${error}`);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
