@@ -13,4 +13,11 @@ router.get('/:id', controller.getCategoryById);
 
 router.put('/:id', protect, authorizeRoles('admin'), controller.updateCategory);
 
+router.delete(
+  '/:id',
+  protect,
+  authorizeRoles('admin'),
+  controller.deleteCategory,
+);
+
 export default router;
