@@ -11,4 +11,6 @@ router.get('/', controller.getAllCategories);
 
 router.get('/:id', controller.getCategoryById);
 
+router.put('/:id', protect, authorizeRoles('admin'), controller.updateCategory);
+
 export default router;
