@@ -1,253 +1,56 @@
-let products = [];
-let currentProduct = null;
+import { fetchProductById, fetchRelatedProducts } from "./api.js";
+import { 
+  renderProductInfo, 
+  renderGallery, 
+  renderSimilarProducts, 
+  setupInteractions,
+  renderInvalidLink, 
+  renderServerWakeup 
+} from "./render.js";
 
 const params = new URLSearchParams(window.location.search);
 const productID = params.get("id");
 
-const BASE_URL = "https://easydeal.onrender.com/api/products";
-const API_URL = `${BASE_URL}/${productID}`;
+document.addEventListener("DOMContentLoaded", init);
 
-document.addEventListener("DOMContentLoaded", loadProducts);
-
-async function loadProducts() {
-  try {
-    if (!productID || productID === "String") {
-      document.body.innerHTML = `
-        <div style="padding:40px;text-align:center;font-family:sans-serif">
-          <h2> Invalid product link</h2>
-          <p>Please go back to the home page and select a product.</p>
-        </div>
-      `;
-      return;
-    }
-
-    const res = await fetch(API_URL);
-    if (!res.ok) throw new Error("Backend is asleep or not responding");
-
-    const response = await res.json();
-    currentProduct = response.data;
-
-    if (!currentProduct) throw new Error("No product found in database");
-
-    const res2 = await fetch(BASE_URL); 
-    if (res2.ok) {
-      const data2 = await res2.json();
-      products = data2.data || [];
-    }
-
-    document.getElementById("loader")?.classList.add("is-hidden");
-    initProductPage();
-
-  } catch (err) {
-    console.error("FULL ERROR:", err);
-    
-    document.getElementById("loader")?.classList.add("is-hidden");
-    document.body.innerHTML = `
-      <div style="padding:40px;text-align:center;font-family:sans-serif">
-        <p> <strong>Waking up the server...</strong></p>
-        <p>This usually takes 2-3 minutes on the first load. Stay on this page!</p>
-        <div class="page-loader__spinner" style="margin: 20px auto;"></div>
-      </div>
-    `;
-
-    setTimeout(() => window.location.reload(), 10000);
-  }
-}
-
-
-function initProductPage() {
-  const titleEl = document.querySelector(".product-info__title");
-  const priceEl = document.querySelector(".price__current");
-  const descEl = document.getElementById("productDescription");
-
-  const track = document.getElementById("galleryTrack");
-  const dotsContainer = document.getElementById("dots");
-  const thumbsContainer = document.querySelector(".gallery__thumbs");
-
-  if (!track || !dotsContainer || !thumbsContainer) return;
-
-  renderProductInfo(titleEl, priceEl, descEl);
-  renderGallery(track, dotsContainer, thumbsContainer);
-  renderSimilarProducts();
-  setupInteractions();
-}
-
-/* -- PRODUCT INFO -- */
-function renderProductInfo(titleEl, priceEl, descEl) {
-  if (titleEl) titleEl.textContent = currentProduct.title;
-  if (priceEl) priceEl.textContent = `$${Number(currentProduct.price).toLocaleString()}`;
-  if (descEl) descEl.textContent = currentProduct.description || "";
-}
-
-/* ---GALLERY ----- */
-function renderGallery(track, dotsContainer, thumbsContainer) {
-  let images = currentProduct.images || [];
-  
-  if (images.length === 1) {
-    images = [images[0], images[0], images[0]];
-  }
-
-  if (!images.length) return;
-
-  let index = 0;
-  let dots = [];
-
-  track.innerHTML = images.map(img => `
-    <div class="gallery__slide" style="min-width: 100%; flex: 0 0 100%; box-sizing: border-box;">
-      <img src="${img}" alt="${currentProduct.title}" style="width: 100%; display: block; object-fit: cover;">
-    </div>
-  `).join("");
-
-  thumbsContainer.innerHTML = images.map((img, i) => `
-    <img src="${img}" class="gallery__thumb ${i === 0 ? "is-active" : ""}" data-index="${i}">
-  `).join("");
-
-  const thumbs = document.querySelectorAll(".gallery__thumb");
-  dotsContainer.innerHTML = "";
-
-  images.forEach((_, i) => {
-    const dot = document.createElement("button");
-    dot.className = "gallery__dot";
-    if (i === 0) dot.classList.add("is-active");
-    dot.onclick = () => { index = i; update(); };
-    dotsContainer.appendChild(dot);
-    dots.push(dot);
-  });
-
-  function update() {
-
-    track.style.transform = `translateX(-${index * 100}%)`;
-
-    dots.forEach(d => d.classList.remove("is-active"));
-    dots[index]?.classList.add("is-active");
-
-    thumbs.forEach(t => t.classList.remove("is-active"));
-    thumbs[index]?.classList.add("is-active");
-  }
-
-  document.getElementById("next").onclick = () => {
-    index = (index + 1) % images.length;
-    update();
-  };
-
-  document.getElementById("prev").onclick = () => {
-    index = (index - 1 + images.length) % images.length;
-    update();
-  };
-
-  thumbs.forEach((t, i) => {
-    t.onclick = () => {
-      index = i;
-      update();
-    };
-  });
-}
-
-/* --- SIMILAR PRODUCTS ---- */
-function renderSimilarProducts() {
-  const grid = document.querySelector(".similar-products__grid");
-  if (!grid) return;
-
-  grid.innerHTML = products.map(p => `
-    <div class="product-card">
-      <div class="product-card__image">
-        <img src="${p.images?.[0] || ""}" alt="${p.title}" />
-      </div>
-      
-      <div class="product-card__body">
-        <h4 class="product-card__name">${p.title}</h4>
-        <p class="product-card__price">$${Number(p.price).toLocaleString()}</p>
-
-        <button class="product-card__chat-btn"
-          data-phone="${p.seller?.whatsapp || ""}"
-          data-title="${p.title}">
-          <i class="fa-brands fa-whatsapp"></i> Chat Seller
-        </button>
-      </div>
-    </div>
-  `).join("");
-}
-
-function setupInteractions() {
-  let qty = 1;
-  const qtyEl = document.getElementById("qty");
-
-  document.getElementById("plus")?.addEventListener("click", () => {
-    qty++;
-    if (qtyEl) qtyEl.textContent = qty;
-  });
-
-  document.getElementById("minus")?.addEventListener("click", () => {
-    if (qty > 1) qty--;
-    if (qtyEl) qtyEl.textContent = qty;
-  });
-
-  document.getElementById("chatSellerBtn")?.addEventListener("click", () => {
-    openWA(currentProduct?.seller?.whatsapp, currentProduct?.title);
-  });
-
-  document.addEventListener("click", (e) => {
-    const btn = e.target.closest(".product-card__chat-btn");
-    if (!btn) return;
-
-    openWA(btn.dataset.phone, btn.dataset.title);
-  });
-
-  const wishlist = document.getElementById("wishlist");
-
-  wishlist?.addEventListener("click", () => {
-    const saved = wishlist.classList.toggle("is-saved");
-
-    wishlist.innerHTML = saved
-      ? `<i class="fa-solid fa-heart"></i> Saved`
-      : `<i class="fa-regular fa-heart"></i> Save`;
-  });
-
-  /* --- TABS ---- */
-  document.querySelectorAll(".tabs__btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".tabs__btn").forEach(b => b.classList.remove("is-active"));
-      document.querySelectorAll(".tabs__panel").forEach(p => p.classList.remove("is-active"));
-
-      btn.classList.add("is-active");
-      document.getElementById(btn.dataset.tab)?.classList.add("is-active");
-    });
-  });
-
-  const themeToggle = document.getElementById("themeToggle");
-  const sun = themeToggle?.querySelector(".sun");
-  const moon = themeToggle?.querySelector(".moon");
-
-  const savedTheme = localStorage.getItem("theme");
-
-  function applyTheme(isDark) {
-    if (isDark) {
-      document.body.setAttribute("data-theme", "dark");
-      sun && (sun.style.display = "none");
-      moon && (moon.style.display = "block");
-    } else {
-      document.body.removeAttribute("data-theme");
-      sun && (sun.style.display = "block");
-      moon && (moon.style.display = "none");
-    }
-  }
-
-  applyTheme(savedTheme === "dark");
-
-  themeToggle?.addEventListener("click", () => {
-    const isDark = document.body.getAttribute("data-theme") === "dark";
-
-    applyTheme(!isDark);
-    localStorage.setItem("theme", !isDark ? "dark" : "light");
-  });
-}
-
-function openWA(phone, title) {
-  if (!phone) {
-    console.warn("No WhatsApp number found for this seller");
+async function init() {
+  if (!productID || productID === "String") {
+    renderInvalidLink();
     return;
   }
 
-  const msg = encodeURIComponent(`Hello, I'm interested in: ${title}`);
-  window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
+  try {
+    const currentProduct = await fetchProductById(productID);
+    if (!currentProduct) throw new Error("No product found in database");
+
+    let products = [];
+    try {
+      products = await fetchRelatedProducts();
+    } catch (e) {
+      console.warn("Failed to load similar products seamlessly:", e);
+    }
+
+    document.getElementById("loader")?.classList.add("is-hidden");
+
+    renderProductInfo(currentProduct, {
+      titleEl: document.querySelector(".product-info__title"),
+      priceEl: document.querySelector(".price__current"),
+      descEl: document.getElementById("productDescription")
+    });
+
+    renderGallery(currentProduct, {
+      track: document.getElementById("galleryTrack"),
+      dotsContainer: document.getElementById("dots"),
+      thumbsContainer: document.querySelector(".gallery__thumbs")
+    });
+
+    renderSimilarProducts(products || []);
+    setupInteractions(currentProduct);
+
+  } catch (err) {
+    console.error("Initialization Failed:", err);
+    document.getElementById("loader")?.classList.add("is-hidden");
+    renderServerWakeup();
+    setTimeout(() => window.location.reload(), 10000);
+  }
 }
