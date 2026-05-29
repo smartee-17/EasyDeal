@@ -19,14 +19,12 @@ export function renderGallery(product, elements) {
   let index = 0;
   let dots = [];
 
-  // FIXED: Accessing img.url instead of treatment as string literal
   track.innerHTML = images.map(img => `
     <div class="gallery__slide" style="min-width: 100%; flex: 0 0 100%; box-sizing: border-box;">
       <img src="${img.url || ""}" alt="${product.title}" style="width: 100%; display: block; object-fit: cover;">
     </div>
   `).join("");
 
-  // FIXED: Accessing img.url instead of treatment as string literal
   thumbsContainer.innerHTML = images.map((img, i) => `
     <img src="${img.url || ""}" class="gallery__thumb ${i === 0 ? "is-active" : ""}" data-index="${i}">
   `).join("");
@@ -79,7 +77,6 @@ export function renderSimilarProducts(products) {
   const grid = document.querySelector(".similar-products__grid");
   if (!grid) return;
 
-  // FIXED: Accessing proper p.images[0].url and updated conditional check syntax error
   grid.innerHTML = products.map(p => `
     <div class="product-card">
       <div class="product-card__image">
