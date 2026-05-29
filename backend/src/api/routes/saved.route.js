@@ -10,4 +10,6 @@ router.post('/:productId', protect, controller.addProductToSaved);
 
 router.delete('/:productId', protect, controller.removeProductFromSaved);
 
+router.get('/check/:productId', protect, controller.checkProductInSaved);
+
 export default router;

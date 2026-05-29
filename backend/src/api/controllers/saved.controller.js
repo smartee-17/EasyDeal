@@ -71,3 +71,28 @@ export const removeProductFromSaved = async (req, res) => {
     sendResponse(res, 500, false, 'Server error');
   }
 };
+
+export const checkProductInSaved = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const userId = req.user.id;
+
+    if (!productId) {
+      return res
+        .status(400)
+        .json({ success: false, message: 'Product ID is required' });
+    }
+
+    const savedProduct = await Saved.findOne({ productId, userId });
+
+    if (!savedProduct) {
+      return res
+        .status(404)
+        .json({ success: false, message: 'Product not found in saved' });
+    }
+
+    sendResponse(res, 200, true, 'Product found in saved', savedProduct);
+  } catch (error) {
+    sendResponse(res, 500, false, 'Server error');
+  }
+};
