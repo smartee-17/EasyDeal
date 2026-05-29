@@ -49,7 +49,7 @@ const mockProduct = {
   title: 'Stealth Pro TKL Keyboard',
   description: 'Ultra-compact Tenkeyless TKL design.',
   price: 124.99,
-  category: 'Peripherals',
+  category: '6a170de45eeb735cb0168396',
   images: [
     {
       url: 'https://res.cloudinary.com/demo/image/upload/sample.jpg',
@@ -70,8 +70,17 @@ beforeEach(() => {
 // ─── GET ALL PRODUCTS ─────────────────────────────────────────────────────────
 
 describe('GET /api/products', () => {
+  let mockFindChain;
+
+  beforeEach(() => {
+    mockFindChain = {
+      populate: jest.fn(),
+    };
+    Product.find.mockReturnValue(mockFindChain);
+  });
+
   test('// should return all products successfully', async () => {
-    Product.find.mockResolvedValue([mockProduct]);
+    mockFindChain.populate.mockResolvedValue([mockProduct]);
 
     const res = await request(app).get('/api/products');
 
@@ -83,7 +92,7 @@ describe('GET /api/products', () => {
   });
 
   test('// should return an empty array when no products exist', async () => {
-    Product.find.mockResolvedValue([]);
+    mockFindChain.populate.mockResolvedValue([]);
 
     const res = await request(app).get('/api/products');
 
@@ -93,7 +102,7 @@ describe('GET /api/products', () => {
   });
 
   test('// should return 500 on database error', async () => {
-    Product.find.mockRejectedValue(new Error('DB connection failed'));
+    mockFindChain.populate.mockRejectedValue(new Error('DB connection failed'));
 
     const res = await request(app).get('/api/products');
 
@@ -106,7 +115,11 @@ describe('GET /api/products', () => {
 
 describe('GET /api/products/:id', () => {
   test('// should return a single product by ID', async () => {
-    Product.findById.mockResolvedValue(mockProduct);
+    Product.findById.mockReturnValue({
+      populate: jest.fn().mockReturnValue({
+        populate: jest.fn().mockResolvedValue(mockProduct),
+      }),
+    });
 
     const res = await request(app).get('/api/products/product123');
 
@@ -117,7 +130,12 @@ describe('GET /api/products/:id', () => {
   });
 
   test('// should return 404 when product is not found', async () => {
-    Product.findById.mockResolvedValue(null);
+    // Nested populate chain resolving to null triggers the 404 branch
+    Product.findById.mockReturnValue({
+      populate: jest.fn().mockReturnValue({
+        populate: jest.fn().mockResolvedValue(null),
+      }),
+    });
 
     const res = await request(app).get('/api/products/nonexistentid');
 
@@ -126,7 +144,12 @@ describe('GET /api/products/:id', () => {
   });
 
   test('// should return 500 on database error', async () => {
-    Product.findById.mockRejectedValue(new Error('DB error'));
+    // Nested populate chain rejecting to simulate a DB failure
+    Product.findById.mockReturnValue({
+      populate: jest.fn().mockReturnValue({
+        populate: jest.fn().mockRejectedValue(new Error('DB error')),
+      }),
+    });
 
     const res = await request(app).get('/api/products/product123');
 
@@ -139,7 +162,6 @@ describe('GET /api/products/:id', () => {
 
 describe('POST /api/products', () => {
   test('// should create a product successfully without images', async () => {
-    // global.__mockFiles = [] from beforeEach → req.files empty → no image branch
     const savedProduct = { ...mockProduct, images: [] };
     Product.mockImplementation(() => ({
       ...savedProduct,
@@ -153,7 +175,7 @@ describe('POST /api/products', () => {
         title: 'Stealth Pro TKL Keyboard',
         description: 'Ultra-compact Tenkeyless TKL design.',
         price: 124.99,
-        category: 'Peripherals',
+        category: '6a170de45eeb735cb0168396',
       });
 
     expect(res.status).toBe(201);
@@ -162,7 +184,6 @@ describe('POST /api/products', () => {
   });
 
   test('// should reject when more than 5 images are uploaded', async () => {
-    // Simulate 6 files via global — avoids .attach()/.send() conflict
     global.__mockFiles = Array(6).fill({
       path: 'https://fake.jpg',
       filename: 'fake_id',
@@ -175,7 +196,7 @@ describe('POST /api/products', () => {
         title: 'Too Many',
         description: 'x',
         price: 10,
-        category: 'Test',
+        category: '6a170de45eeb735cb0168396',
       });
 
     expect(res.status).toBe(400);
@@ -190,7 +211,12 @@ describe('POST /api/products', () => {
     const res = await request(app)
       .post('/api/products')
       .set('Authorization', 'Bearer mock-jwt-token')
-      .send({ title: 'Fail', description: 'x', price: 50, category: 'Test' });
+      .send({
+        title: 'Fail',
+        description: 'x',
+        price: 50,
+        category: '6a170de45eeb735cb0168396',
+      });
 
     expect(res.status).toBe(500);
     expect(res.body.message).toBe('Internal server error');
@@ -246,7 +272,6 @@ describe('PUT /api/products/:id', () => {
   });
 
   test('// should delete old Cloudinary images when new ones are provided', async () => {
-    // 1 file triggers the "delete old + set new images" branch in the controller
     global.__mockFiles = [
       { path: 'https://res.cloudinary.com/new.jpg', filename: 'new_pub_id' },
     ];
