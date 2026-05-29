@@ -1,20 +1,47 @@
 import express from 'express';
+import rateLimit  from 'express-rate-limit';
 import { 
     register,
     login,
     verifyEmail,
-    resendVerification
+    resendVerification,
+    forgotPassword,
+    resetPassword,
+    logout
 } from '../controllers/auth.controller.js';
 import protect from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
 
-router.post('/register', register);
+const isTest = process.env.NODE_ENV === 'test';
 
-router.post("/login", login);
+// Rate limiter
+const authLimiter = isTest ? (req, res, next) => next () 
+: rateLimit({
+  windowMs:        15 * 60 * 1000,
+  max:             10,
+  standardHeaders: true,
+  legacyHeaders:   false,
+  message: {
+    success: false,
+    message: "Too many auth attempts — please try again in 15 minutes.",
+    data:    null,
+  },
+});
 
-router.get("/verify-email/:token", verifyEmail);
 
-router.post("/resend-verification", resendVerification);
+router.post('/register', authLimiter,register);
+
+router.post("/login", authLimiter, login);
+
+router.get("/verify-email/:token", authLimiter, verifyEmail);
+
+router.post("/resend-verification", authLimiter, resendVerification);
+
+router.post("/forgot-password", authLimiter, forgotPassword);
+
+router.post("/reset-password/:token", authLimiter, resetPassword);
+
+router.post("/logout", logout )
 
 export default router;

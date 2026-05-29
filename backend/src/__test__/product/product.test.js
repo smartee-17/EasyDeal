@@ -1,6 +1,6 @@
 import request from 'supertest';
-import app from '../app.js';
-import Product from '../api/models/product.model.js';
+import app from '../../app.js';
+import Product from '../../api/models/product.model.js';
 
 let consoleSpy;
 
@@ -15,7 +15,7 @@ afterAll(() => {
 });
 
 // ─── Cloudinary config mock ───────────────────────────────────────────────────
-jest.mock('../config/cloudinary.js', () => ({
+jest.mock('../../config/cloudinary.js', () => ({
   __esModule: true,
   default: {
     uploader: { destroy: jest.fn() },
@@ -29,7 +29,7 @@ jest.mock('../config/cloudinary.js', () => ({
 }));
 
 // ─── Auth middleware mock ─────────────────────────────────────────────────────
-jest.mock('../api/middlewares/auth.middleware.js', () => ({
+jest.mock('../../api/middlewares/auth.middleware.js', () => ({
   __esModule: true,
   default: (req, _res, next) => {
     req.user = { _id: 'user123' };
@@ -37,10 +37,10 @@ jest.mock('../api/middlewares/auth.middleware.js', () => ({
   },
 }));
 
-jest.mock('../api/models/product.model.js');
+jest.mock('../../api/models/product.model.js');
 
 // ─── Grab destroy spy ─────────────────────────────────────────────────────────
-const mockDestroy = jest.requireMock('../config/cloudinary.js').default.uploader
+const mockDestroy = jest.requireMock('../../config/cloudinary.js').default.uploader
   .destroy;
 
 // ─── Shared mock data ─────────────────────────────────────────────────────────
