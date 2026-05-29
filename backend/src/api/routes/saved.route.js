@@ -6,4 +6,6 @@ const router = express.Router();
 
 router.post('/', protect, controller.addProductToSaved);
 
+router.get('/', protect, controller.getSavedProducts);
+
 export default router;
