@@ -4,8 +4,10 @@ import * as controller from '../controllers/saved.controller.js';
 
 const router = express.Router();
 
-router.post('/', protect, controller.addProductToSaved);
-
 router.get('/', protect, controller.getSavedProducts);
+
+router.post('/:productId', protect, controller.addProductToSaved);
+
+router.delete('/:productId', protect, controller.removeProductFromSaved);
 
 export default router;
