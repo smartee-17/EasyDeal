@@ -1,5 +1,9 @@
 import { sendResponse } from '../library/utils.js';
 import Product from '../models/product.model.js';
+<<<<<<< HEAD
+=======
+import cloudinary, { upload } from '../../config/cloudinary.js';
+>>>>>>> 7d5f02507bc9b7e15747812fe41e9b69e1f3081b
 
 export const getAllProducts = async (req, res) => {
   try {
@@ -48,17 +52,64 @@ export const getProductById = async (req, res) => {
 export const createProduct = async (req, res) => {
   try {
     const { _id } = req.user;
+<<<<<<< HEAD
     // TODO: Images should be uploaded to cloudinary before saving
     const { title, description, category, images, price } = req.body;
+=======
+    const { title, description, category, price } = req.body;
+
+    // Multiple images from Cloudinary
+    if (req.files && req.files.length > 5) {
+      return res.status(400).json({ message: 'Maximum of 5 images allowed' });
+    }
+
+    // Process images and generate alts
+    const images = await Promise.all(
+      (req.files || []).map(async (file, index) => {
+        const cloudinaryUrl = file.path;
+
+        // Call the separate AI function
+        const aiDescription = await generateAltText(cloudinaryUrl, description);
+
+        return {
+          url: cloudinaryUrl,
+          publicId: file.filename,
+          // Use AI description if it exists, otherwise use fallback title
+          alt: {
+            detailed:
+              aiDescription !== null
+                ? `${title} - ${aiDescription.detailed}`
+                : `${title} - Image ${index + 1}`,
+            short:
+              aiDescription !== null
+                ? `${title} - ${aiDescription.short}`
+                : `${title} - Image ${index + 1}`,
+            standard:
+              aiDescription !== null
+                ? `${title} - ${aiDescription.standard}`
+                : `${title} - Image ${index + 1}`,
+          },
+        };
+      }),
+    );
+>>>>>>> 7d5f02507bc9b7e15747812fe41e9b69e1f3081b
 
     const product = new Product({
       title,
       description,
       category,
+<<<<<<< HEAD
       images,
       price,
       seller: _id,
     });
+=======
+      price,
+      images,
+      seller: _id,
+    });
+
+>>>>>>> 7d5f02507bc9b7e15747812fe41e9b69e1f3081b
     await product.save();
 
     return sendResponse(
@@ -76,6 +127,7 @@ export const createProduct = async (req, res) => {
 
 export const updateProduct = async (req, res) => {
   try {
+<<<<<<< HEAD
     const { _id } = req.user;
     const { id } = req.params;
     const { title, description, category, images, price } = req.body;
@@ -91,11 +143,60 @@ export const updateProduct = async (req, res) => {
       },
       { returnDocument: 'after' },
     );
+=======
+    const { _id: userId } = req.user;
+    const { id } = req.params;
+    const { title, description, category, price, isAvailable } = req.body;
+
+    const product = await Product.findById(id);
+>>>>>>> 7d5f02507bc9b7e15747812fe41e9b69e1f3081b
 
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
 
+<<<<<<< HEAD
+=======
+    // Multiple images from Cloudinary
+    if (req.files && req.files.length > 5) {
+      return res.status(400).json({ message: 'Maximum of 5 images allowed' });
+    }
+
+    // Optional: Ensure only the seller can update their own product
+    if (product.seller.toString() !== userId.toString()) {
+      return res
+        .status(403)
+        .json({ message: 'Not authorized to update this product' });
+    }
+
+    // Handle new images if they are provided in the request
+    if (req.files && req.files.length > 0) {
+      // 1. Purge old images from Cloudinary concurrently to boost performance
+      if (product.images && product.images.length > 0) {
+        const deletionPromises = product.images.map((image) =>
+          cloudinary.uploader.destroy(image.publicId),
+        );
+        await Promise.all(deletionPromises);
+      }
+
+      // 2. Map and assign the new Cloudinary files to the product document
+      product.images = req.files.map((file) => ({
+        url: file.path, // Provided by the Cloudinary multer storage engine
+        publicId: file.filename, // Vital for future deletions
+      }));
+    }
+
+    // Update text fields (fallback to existing values if not provided in req.body)
+    product.title = title || product.title;
+    product.description = description || product.description;
+    product.category = category || product.category;
+    product.price = price || product.price;
+    product.isAvailable = isAvailable ?? product.isAvailable;
+
+    // Persist changes to MongoDB
+    await product.save();
+
+>>>>>>> 7d5f02507bc9b7e15747812fe41e9b69e1f3081b
     return sendResponse(
       res,
       200,
@@ -119,6 +220,15 @@ export const deleteProduct = async (req, res) => {
       return res.status(404).json({ message: 'Product not found' });
     }
 
+<<<<<<< HEAD
+=======
+    if (product.images && product.images.length > 0) {
+      for (const image of product.images) {
+        await cloudinary.uploader.destroy(image.publicId);
+      }
+    }
+
+>>>>>>> 7d5f02507bc9b7e15747812fe41e9b69e1f3081b
     return sendResponse(
       res,
       200,
