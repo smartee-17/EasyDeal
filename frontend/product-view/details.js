@@ -14,7 +14,7 @@ const productID = params.get("id");
 document.addEventListener("DOMContentLoaded", init);
 
 async function init() {
-  if (!productID || productID === "String") {
+  if (!productID || productID === "undefined" || productID === "null") {
     renderInvalidLink();
     return;
   }
@@ -51,6 +51,8 @@ async function init() {
     console.error("Initialization Failed:", err);
     document.getElementById("loader")?.classList.add("is-hidden");
     renderServerWakeup();
-    setTimeout(() => window.location.reload(), 10000);
+    setTimeout(() => {
+        window.location.href = window.location.href;
+        }, 10000);
   }
 }

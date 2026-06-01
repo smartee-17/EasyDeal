@@ -9,8 +9,8 @@ export function renderProductInfo(product, elements) {
 
 export function renderGallery(product, elements) {
   const { track, dotsContainer, thumbsContainer } = elements;
-  let images = product.images || [];
   
+  let images = product.images?.filter(Boolean) || [];
   if (images.length === 1) {
     images = [images[0], images[0], images[0]];
   }
@@ -21,7 +21,7 @@ export function renderGallery(product, elements) {
 
   track.innerHTML = images.map(img => `
     <div class="gallery__slide" style="min-width: 100%; flex: 0 0 100%; box-sizing: border-box;">
-      <img src="${img.url || ""}" alt="${product.title}" style="width: 100%; display: block; object-fit: cover;">
+      <img src="${img.url || ""}" alt="${product?.title || "Product image"}" style="width: 100%; display: block; object-fit: cover;">
     </div>
   `).join("");
 
