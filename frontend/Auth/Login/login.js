@@ -1,4 +1,4 @@
-import { loginUser } from "./authService.js";
+import { loginUser } from "../Services/authService.js";
 
 /* Login form submission */
 const loginForm = document.querySelector('.form');
@@ -27,9 +27,9 @@ loginForm.addEventListener('submit', async (e) => {
 	  loginForm.removeAttribute('data-submitting');
 
     if (data.user.role === 'admin') {
-      window.location.href = '/frontend/Admin/admin.html';
+      window.location.href = '../../Admin/admin.html';
     } else {
-      window.location.href = '/frontend/index.html';
+      window.location.href = '../../Homepage/homepage.html';
     }
   } catch (err) {
     // UI Error Handling

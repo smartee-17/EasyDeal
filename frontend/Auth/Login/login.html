@@ -3,30 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/png" sizes="32x32" href="/frontend/assets/images/favicons/favicon-32.png">
-  <link rel="stylesheet" href="/frontend/shared/global.css">
-  <link rel="stylesheet" href="/frontend/Auth/shared.css">
-  <script defer src="/frontend/Auth/signup.js" type="module"></script>
-  <script defer src="/frontend/Auth/shared.js" type="module"></script>
-  <title>Sign Up</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/images/favicons/favicon-32.png">
+  <link rel="stylesheet" href="../../shared/global.css">
+  <link rel="stylesheet" href="../../Shared/style.css">
+  <script defer src="./login.js" type="module"></script>
+  <script defer src="../Shared/utils.js" type="module"></script>
+  <title>Log In</title>
 </head>
 <body class="page">
   <main class="main">
     <div class="logo" role="img" aria-label="Easy Deal Logo"></div>
-    <h1 class="title">Sign Up</h1>
+    <h1 class="title">Log In</h1>
     <form class="form">
-      <section class="form__field">
-        <label for="name">Name</label>
-        <input type="text"
-               id="name"
-               name="name"
-               placeholder="Name"
-               autocomplete="name"
-               autofocus
-               required
-               class="form__name-input">
-      </section>
-
       <section class="form__field">
         <label for="email">Email</label>
         <input type="email"
@@ -34,21 +22,10 @@
                name="email"
                placeholder="Email"
                autocomplete="email"
+               autofocus
                required
                class="form__email-input">
-      </section>
-
-      <section class="form__field">
-        <label for="phone">Phone Number</label>
-        <input type="tel"
-               id="phone"
-               name="phone"
-               placeholder="Phone Number"
-               autocomplete="tel"
-               required
-               class="form__phone-input">
-      </section>
-
+    </section>
       <section class="form__field">
         <label for="password">Password</label>
         <input type="password" 
@@ -65,7 +42,8 @@
           </svg>
         </button>
       </section>
-      <button type="submit" class="form__submit-button">Sign Up</button>
+      <button type="submit" class="form__submit-button">Login</button>
+      <p class="form__signup-link">Don't have an account? <a href="../Signup/signup.html">Sign Up</a></p>
       <p class="form__error-msg" aria-live="polite"></p>
     </form>
   </main>
