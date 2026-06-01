@@ -11,7 +11,10 @@ const userSchema = new mongoose.Schema(
     // Profile
     name: { type: String, required: true },
     username: { type: String, unique: true },
-    avatar: { type: String, default: "" },
+    avatar: { 
+        url: { type: String },
+        publicId: { type: String },
+    },
     bio: { type: String },
 
     // Market place Info
