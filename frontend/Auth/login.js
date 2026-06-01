@@ -27,9 +27,9 @@ loginForm.addEventListener('submit', async (e) => {
 	  loginForm.removeAttribute('data-submitting');
 
     if (data.user.role === 'admin') {
-      window.location.href = '/frontend/Admin/admin.html';
+      window.location.href = '../Admin/admin.html';
     } else {
-      window.location.href = '/frontend/index.html';
+      window.location.href = '..';
     }
   } catch (err) {
     // UI Error Handling
