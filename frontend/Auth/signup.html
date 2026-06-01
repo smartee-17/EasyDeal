@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/png" sizes="32x32" href="/frontend/assets/images/favicons/favicon-32.png">
-  <link rel="stylesheet" href="/frontend/shared/global.css">
-  <link rel="stylesheet" href="/frontend/Auth/shared.css">
-  <script defer src="/frontend/Auth/signup.js" type="module"></script>
-  <script defer src="/frontend/Auth/shared.js" type="module"></script>
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/images/favicons/favicon-32.png">
+  <link rel="stylesheet" href="../shared/global.css">
+  <link rel="stylesheet" href="./style.css">
+  <script defer src="./signup.js" type="module"></script>
+  <script defer src="./main.js" type="module"></script>
   <title>Sign Up</title>
 </head>
 <body class="page">
@@ -36,6 +36,17 @@
                autocomplete="email"
                required
                class="form__email-input">
+      </section>
+
+      <section class="form__field">
+        <label for="username">Username</label>
+        <input type="text"
+               id="username"
+               name="username"
+               placeholder="Username"
+               autocomplete="username"
+               required
+               class="form__username-input">
       </section>
 
       <section class="form__field">
