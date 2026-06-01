@@ -12,7 +12,7 @@ export default {
     '**/?(*.)+(spec|test).js',
   ],
 
-  collectCoverage: false,
+  collectCoverage: true,
 
   collectCoverageFrom: [
   "src/**/*.js",
@@ -26,7 +26,7 @@ export default {
 
   coverageDirectory: 'coverage',
 
-  coverageReporters: ['text', 'html'],
+  coverageReporters: ['text', 'html', 'Icov'],
 
   reporters: [
     'default',
