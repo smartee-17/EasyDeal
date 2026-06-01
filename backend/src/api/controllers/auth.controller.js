@@ -313,7 +313,7 @@ export const forgotPassword = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 }
-export const resetToken = async (req, res) => {
+export const resetPassword = async (req, res) => {
   try{
     const { token } = req.params;
     const { newPassword } = req.body;

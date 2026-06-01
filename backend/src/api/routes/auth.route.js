@@ -6,7 +6,7 @@ import {
     verifyEmail,
     resendVerification,
     forgotPassword,
-    resetToken,
+    resetPassword,
     logout
 } from '../controllers/auth.controller.js';
 import protect from '../middlewares/auth.middleware.js';
@@ -40,7 +40,7 @@ router.post("/resend-verification", authLimiter, resendVerification);
 
 router.post("/forgot-password", authLimiter, forgotPassword);
 
-router.post("/reset-password/:token", authLimiter, resetToken);
+router.post("/reset-password/:token", authLimiter, resetPassword);
 
 router.post("/logout", logout )
 

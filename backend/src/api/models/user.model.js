@@ -74,7 +74,6 @@ userSchema.methods.toPublic = function () {
   delete obj.emailVerificationTokenExpire;
   delete obj.resetPasswordToken;
   delete obj.resetPasswordExpire;
-  delete obj.refreshToken;
 
   return obj;
 }
