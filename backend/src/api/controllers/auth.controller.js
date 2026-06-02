@@ -3,8 +3,7 @@ import {
   generateAccessToken,
   setAuthCookie,
   generateSecureToken,
-  hashToken,
-  generateRefreshToken
+  hashToken
 } from '../library/token.js';
 import bcrypt from 'bcryptjs';
 import { sendResponse } from '../library/utils.js';

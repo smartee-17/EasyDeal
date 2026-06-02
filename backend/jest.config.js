@@ -12,7 +12,7 @@ export default {
     '**/?(*.)+(spec|test).js',
   ],
 
-  collectCoverage: true,
+  collectCoverage: false,
 
   collectCoverageFrom: [
   "src/**/*.js",
