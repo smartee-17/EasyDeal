@@ -47,3 +47,42 @@ jobs:
           PORT: ${{ vars.PORT }}
         run: npm test
         working-directory: ./backend
+
+        
+      - name: Upload coverage report
+        uses:  actions/upload-artifact@v4
+        with: 
+          name: coverage-report
+          path: ./backend/coverage/
+
+      - name: Upload HTML test report 
+        uses: actions/upload-artifact@v4
+        with: 
+          name: html-report
+          path: ./backend/html-report/
+
+      - name: Upload JUnit report 
+        uses: actions/upload-artifact@v4
+        with: 
+          name: junit-report
+          path: ./backend/junit/
+
+  deploy-pages:
+    needs: build
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+
+    steps: 
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy Html report to Github Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./backend/html-report
+
