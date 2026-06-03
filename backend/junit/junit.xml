@@ -1,182 +1,104 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="60" failures="6" errors="0" time="12.283">
-  <testsuite name="GET /api/user/me" errors="0" failures="3" skipped="0" timestamp="2026-06-02T13:54:02" time="7.392" tests="13">
-    <testcase classname="GET /api/user/me should fetch logged-in user profile successfully" name="GET /api/user/me should fetch logged-in user profile successfully" time="0.095">
+<testsuites name="jest tests" tests="48" failures="0" errors="0" time="10.902">
+  <testsuite name="POST /api/auth/register" errors="0" failures="0" skipped="1" timestamp="2026-06-03T22:19:44" time="3.151" tests="29">
+    <testcase classname="POST /api/auth/register // should create a new user successfully" name="POST /api/auth/register // should create a new user successfully" time="0.171">
     </testcase>
-    <testcase classname="GET /api/user/me should return 404 if user not found" name="GET /api/user/me should return 404 if user not found" time="0.022">
+    <testcase classname="POST /api/auth/register // should fail when required fields are missing" name="POST /api/auth/register // should fail when required fields are missing" time="0.031">
     </testcase>
-    <testcase classname="GET /api/user/me should handle database errors gracefully" name="GET /api/user/me should handle database errors gracefully" time="0.047">
+    <testcase classname="POST /api/auth/register // should fail if email already exists" name="POST /api/auth/register // should fail if email already exists" time="0.021">
     </testcase>
-    <testcase classname="GET /api/user/me should fail if req.user is missing" name="GET /api/user/me should fail if req.user is missing" time="0.071">
+    <testcase classname="POST /api/auth/register // should fail if username already exists" name="POST /api/auth/register // should fail if username already exists" time="0.03">
     </testcase>
-    <testcase classname="PATCH /api/user/me should update allowed fields successfully" name="PATCH /api/user/me should update allowed fields successfully" time="0.067">
+    <testcase classname="POST /api/auth/register // should reject admin role creation" name="POST /api/auth/register // should reject admin role creation" time="0.022">
     </testcase>
-    <testcase classname="PATCH /api/user/me should ignore non-allowed fields silently" name="PATCH /api/user/me should ignore non-allowed fields silently" time="0.033">
+    <testcase classname="POST /api/auth/register // should fail if role is invalid" name="POST /api/auth/register // should fail if role is invalid" time="0.027">
     </testcase>
-    <testcase classname="PATCH /api/user/me should return 404 if user not found" name="PATCH /api/user/me should return 404 if user not found" time="0.024">
+    <testcase classname="POST /api/auth/login // should login successfully with valid credentials" name="POST /api/auth/login // should login successfully with valid credentials" time="0.028">
     </testcase>
-    <testcase classname="PATCH /api/user/me should update avatar and delete old cloudinary image" name="PATCH /api/user/me should update avatar and delete old cloudinary image" time="0.057">
-      <failure>ReferenceError: cloudinary is not defined
-    at Object.cloudinary (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\src\__test__\user\user.test.js:194:5)
-    at Promise.then.completed (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\utils.js:298:28)
-    at new Promise (&lt;anonymous&gt;)
-    at callAsyncCircusFn (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\utils.js:231:10)
-    at _callCircusTest (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\run.js:316:40)
-    at processTicksAndRejections (node:internal/process/task_queues:103:5)
-    at _runTest (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\run.js:252:3)
-    at _runTestsForDescribeBlock (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\run.js:126:9)
-    at _runTestsForDescribeBlock (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\run.js:121:9)
-    at run (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\run.js:71:3)
-    at runAndTransformResultsToJestFormat (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
-    at jestAdapter (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
-    at runTestInternal (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-runner\build\runTest.js:367:16)
-    at runTest (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-runner\build\runTest.js:444:34)</failure>
+    <testcase classname="POST /api/auth/login // should fail with wrong password" name="POST /api/auth/login // should fail with wrong password" time="0.019">
     </testcase>
-    <testcase classname="PATCH /api/user/me should not call cloudinary destroy if no previous avatar exists" name="PATCH /api/user/me should not call cloudinary destroy if no previous avatar exists" time="0.033">
-      <failure>ReferenceError: cloudinary is not defined
-    at Object.cloudinary (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\src\__test__\user\user.test.js:226:12)
-    at processTicksAndRejections (node:internal/process/task_queues:103:5)</failure>
+    <testcase classname="POST /api/auth/login // should fail if user does not exist" name="POST /api/auth/login // should fail if user does not exist" time="0.029">
     </testcase>
-    <testcase classname="PATCH /api/user/me should handle empty update body safely" name="PATCH /api/user/me should handle empty update body safely" time="0.027">
+    <testcase classname="POST /api/auth/login // should fail if user account is blocked" name="POST /api/auth/login // should fail if user account is blocked" time="0.02">
     </testcase>
-    <testcase classname="PATCH /api/user/me should handle database update failure" name="PATCH /api/user/me should handle database update failure" time="0.022">
+    <testcase classname="POST /api/auth/login // should fail if emailOrUsername or password is missing" name="POST /api/auth/login // should fail if emailOrUsername or password is missing" time="0.018">
     </testcase>
-    <testcase classname="PATCH /api/user/me should handle cloudinary failure gracefully" name="PATCH /api/user/me should handle cloudinary failure gracefully" time="0.006">
-      <failure>ReferenceError: cloudinary is not defined
-    at Object.cloudinary (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\src\__test__\user\user.test.js:255:5)
-    at Promise.then.completed (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\utils.js:298:28)
-    at new Promise (&lt;anonymous&gt;)
-    at callAsyncCircusFn (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\utils.js:231:10)
-    at _callCircusTest (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\run.js:316:40)
-    at processTicksAndRejections (node:internal/process/task_queues:103:5)
-    at _runTest (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\run.js:252:3)
-    at _runTestsForDescribeBlock (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\run.js:126:9)
-    at _runTestsForDescribeBlock (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\run.js:121:9)
-    at run (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\run.js:71:3)
-    at runAndTransformResultsToJestFormat (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
-    at jestAdapter (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
-    at runTestInternal (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-runner\build\runTest.js:367:16)
-    at runTest (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-runner\build\runTest.js:444:34)</failure>
+    <testcase classname="POST /api/auth/logout // should logout successfully and clear cookie" name="POST /api/auth/logout // should logout successfully and clear cookie" time="0.023">
     </testcase>
-    <testcase classname="PATCH /api/user/me should fail if user.toPublic is undefined" name="PATCH /api/user/me should fail if user.toPublic is undefined" time="0.032">
+    <testcase classname="POST /api/auth/logout // should still succeed even if no cookie is present" name="POST /api/auth/logout // should still succeed even if no cookie is present" time="0.019">
     </testcase>
-  </testsuite>
-  <testsuite name="GET /api/products" errors="0" failures="3" skipped="0" timestamp="2026-06-02T13:54:10" time="1.826" tests="18">
-    <testcase classname="GET /api/products // should return all products successfully" name="GET /api/products // should return all products successfully" time="0.027">
+    <testcase classname="POST /api/auth/logout // should not crash when malformed request is sent" name="POST /api/auth/logout // should not crash when malformed request is sent" time="0.018">
     </testcase>
-    <testcase classname="GET /api/products // should return an empty array when no products exist" name="GET /api/products // should return an empty array when no products exist" time="0.031">
+    <testcase classname="GET /api/auth/verify-email/:token // should verify email with a valid token" name="GET /api/auth/verify-email/:token // should verify email with a valid token" time="0.025">
     </testcase>
-    <testcase classname="GET /api/products // should return 500 on database error" name="GET /api/products // should return 500 on database error" time="0.025">
+    <testcase classname="GET /api/auth/verify-email/:token // should fail with an invalid token" name="GET /api/auth/verify-email/:token // should fail with an invalid token" time="0.017">
     </testcase>
-    <testcase classname="GET /api/products/:id // should return a single product by ID" name="GET /api/products/:id // should return a single product by ID" time="0.027">
+    <testcase classname="GET /api/auth/verify-email/:token // should fail if token is expired" name="GET /api/auth/verify-email/:token // should fail if token is expired" time="0.017">
     </testcase>
-    <testcase classname="GET /api/products/:id // should return 404 when product is not found" name="GET /api/products/:id // should return 404 when product is not found" time="0.02">
+    <testcase classname="GET /api/auth/verify-email/:token // should fail if token is malformed" name="GET /api/auth/verify-email/:token // should fail if token is malformed" time="0.017">
     </testcase>
-    <testcase classname="GET /api/products/:id // should return 500 on database error" name="GET /api/products/:id // should return 500 on database error" time="0.033">
+    <testcase classname="POST /api/auth/resend-verification // should resend verification email for an unverified user" name="POST /api/auth/resend-verification // should resend verification email for an unverified user" time="0.02">
     </testcase>
-    <testcase classname="POST /api/products // should create a product successfully without images" name="POST /api/products // should create a product successfully without images" time="0.04">
+    <testcase classname="POST /api/auth/resend-verification // should return generic message if user is not found (security)" name="POST /api/auth/resend-verification // should return generic message if user is not found (security)" time="0.018">
     </testcase>
-    <testcase classname="POST /api/products // should reject when more than 5 images are uploaded" name="POST /api/products // should reject when more than 5 images are uploaded" time="0.028">
-      <failure>Error: expect(received).toBe(expected) // Object.is equality
-
-Expected: 400
-Received: 201
-    at Object.toBe (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\src\__test__\product\product.test.js:207:24)
-    at processTicksAndRejections (node:internal/process/task_queues:103:5)</failure>
+    <testcase classname="POST /api/auth/resend-verification // should fail if email is already verified" name="POST /api/auth/resend-verification // should fail if email is already verified" time="0.018">
     </testcase>
-    <testcase classname="POST /api/products // should return 500 on save failure" name="POST /api/products // should return 500 on save failure" time="0.023">
+    <testcase classname="POST /api/auth/resend-verification // should fail if email field is missing" name="POST /api/auth/resend-verification // should fail if email field is missing" time="0.02">
     </testcase>
-    <testcase classname="PUT /api/products/:id // should update product fields successfully" name="PUT /api/products/:id // should update product fields successfully" time="0.025">
+    <testcase classname="POST /api/auth/forgot-password // should send reset email if user exists" name="POST /api/auth/forgot-password // should send reset email if user exists" time="0.018">
     </testcase>
-    <testcase classname="PUT /api/products/:id // should return 404 if product does not exist" name="PUT /api/products/:id // should return 404 if product does not exist" time="0.021">
+    <testcase classname="POST /api/auth/forgot-password // should NOT reveal if email does not exist (security)" name="POST /api/auth/forgot-password // should NOT reveal if email does not exist (security)" time="0.021">
     </testcase>
-    <testcase classname="PUT /api/products/:id // should reject when more than 5 new images are uploaded" name="PUT /api/products/:id // should reject when more than 5 new images are uploaded" time="0.024">
-      <failure>Error: expect(received).toBe(expected) // Object.is equality
-
-Expected: 400
-Received: 200
-    at Object.toBe (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\src\__test__\product\product.test.js:270:24)
-    at processTicksAndRejections (node:internal/process/task_queues:103:5)</failure>
+    <testcase classname="POST /api/auth/forgot-password // should fail if email is missing" name="POST /api/auth/forgot-password // should fail if email is missing" time="0.018">
     </testcase>
-    <testcase classname="PUT /api/products/:id // should delete old Cloudinary images when new ones are provided" name="PUT /api/products/:id // should delete old Cloudinary images when new ones are provided" time="0.021">
-      <failure>Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)
-
-Expected: &quot;old_public_id_1&quot;
-
-Number of calls: 0
-    at Object.toHaveBeenCalledWith (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\src\__test__\product\product.test.js:301:25)
-    at processTicksAndRejections (node:internal/process/task_queues:103:5)</failure>
+    <testcase classname="POST /api/auth/reset-password // should reset password with valid token" name="POST /api/auth/reset-password // should reset password with valid token" time="0.022">
     </testcase>
-    <testcase classname="PUT /api/products/:id // should return 500 on database error" name="PUT /api/products/:id // should return 500 on database error" time="0.021">
+    <testcase classname="POST /api/auth/reset-password // should fail if password is too short" name="POST /api/auth/reset-password // should fail if password is too short" time="0.021">
     </testcase>
-    <testcase classname="DELETE /api/products/:id // should delete a product successfully" name="DELETE /api/products/:id // should delete a product successfully" time="0.024">
-    </testcase>
-    <testcase classname="DELETE /api/products/:id // should purge all associated Cloudinary images on delete" name="DELETE /api/products/:id // should purge all associated Cloudinary images on delete" time="0.019">
-    </testcase>
-    <testcase classname="DELETE /api/products/:id // should return 404 when product does not exist" name="DELETE /api/products/:id // should return 404 when product does not exist" time="0.019">
-    </testcase>
-    <testcase classname="DELETE /api/products/:id // should return 500 on database error" name="DELETE /api/products/:id // should return 500 on database error" time="0.027">
-    </testcase>
-  </testsuite>
-  <testsuite name="POST /api/auth/register" errors="0" failures="0" skipped="1" timestamp="2026-06-02T13:54:12" time="2.604" tests="29">
-    <testcase classname="POST /api/auth/register // should create a new user successfully" name="POST /api/auth/register // should create a new user successfully" time="0.048">
-    </testcase>
-    <testcase classname="POST /api/auth/register // should fail when required fields are missing" name="POST /api/auth/register // should fail when required fields are missing" time="0.021">
-    </testcase>
-    <testcase classname="POST /api/auth/register // should fail if email already exists" name="POST /api/auth/register // should fail if email already exists" time="0.031">
-    </testcase>
-    <testcase classname="POST /api/auth/register // should fail if username already exists" name="POST /api/auth/register // should fail if username already exists" time="0.019">
-    </testcase>
-    <testcase classname="POST /api/auth/register // should reject admin role creation" name="POST /api/auth/register // should reject admin role creation" time="0.023">
-    </testcase>
-    <testcase classname="POST /api/auth/register // should fail if role is invalid" name="POST /api/auth/register // should fail if role is invalid" time="0.026">
-    </testcase>
-    <testcase classname="POST /api/auth/login // should login successfully with valid credentials" name="POST /api/auth/login // should login successfully with valid credentials" time="0.019">
-    </testcase>
-    <testcase classname="POST /api/auth/login // should fail with wrong password" name="POST /api/auth/login // should fail with wrong password" time="0.025">
-    </testcase>
-    <testcase classname="POST /api/auth/login // should fail if user does not exist" name="POST /api/auth/login // should fail if user does not exist" time="0.022">
-    </testcase>
-    <testcase classname="POST /api/auth/login // should fail if user account is blocked" name="POST /api/auth/login // should fail if user account is blocked" time="0.019">
-    </testcase>
-    <testcase classname="POST /api/auth/login // should fail if emailOrUsername or password is missing" name="POST /api/auth/login // should fail if emailOrUsername or password is missing" time="0.032">
-    </testcase>
-    <testcase classname="POST /api/auth/logout // should logout successfully and clear cookie" name="POST /api/auth/logout // should logout successfully and clear cookie" time="0.025">
-    </testcase>
-    <testcase classname="POST /api/auth/logout // should still succeed even if no cookie is present" name="POST /api/auth/logout // should still succeed even if no cookie is present" time="0.02">
-    </testcase>
-    <testcase classname="POST /api/auth/logout // should not crash when malformed request is sent" name="POST /api/auth/logout // should not crash when malformed request is sent" time="0.019">
-    </testcase>
-    <testcase classname="GET /api/auth/verify-email/:token // should verify email with a valid token" name="GET /api/auth/verify-email/:token // should verify email with a valid token" time="0.02">
-    </testcase>
-    <testcase classname="GET /api/auth/verify-email/:token // should fail with an invalid token" name="GET /api/auth/verify-email/:token // should fail with an invalid token" time="0.02">
-    </testcase>
-    <testcase classname="GET /api/auth/verify-email/:token // should fail if token is expired" name="GET /api/auth/verify-email/:token // should fail if token is expired" time="0.019">
-    </testcase>
-    <testcase classname="GET /api/auth/verify-email/:token // should fail if token is malformed" name="GET /api/auth/verify-email/:token // should fail if token is malformed" time="0.022">
-    </testcase>
-    <testcase classname="POST /api/auth/resend-verification // should resend verification email for an unverified user" name="POST /api/auth/resend-verification // should resend verification email for an unverified user" time="0.024">
-    </testcase>
-    <testcase classname="POST /api/auth/resend-verification // should return generic message if user is not found (security)" name="POST /api/auth/resend-verification // should return generic message if user is not found (security)" time="0.02">
-    </testcase>
-    <testcase classname="POST /api/auth/resend-verification // should fail if email is already verified" name="POST /api/auth/resend-verification // should fail if email is already verified" time="0.021">
-    </testcase>
-    <testcase classname="POST /api/auth/resend-verification // should fail if email field is missing" name="POST /api/auth/resend-verification // should fail if email field is missing" time="0.025">
-    </testcase>
-    <testcase classname="POST /api/auth/forgot-password // should send reset email if user exists" name="POST /api/auth/forgot-password // should send reset email if user exists" time="0.02">
-    </testcase>
-    <testcase classname="POST /api/auth/forgot-password // should NOT reveal if email does not exist (security)" name="POST /api/auth/forgot-password // should NOT reveal if email does not exist (security)" time="0.018">
-    </testcase>
-    <testcase classname="POST /api/auth/forgot-password // should fail if email is missing" name="POST /api/auth/forgot-password // should fail if email is missing" time="0.023">
-    </testcase>
-    <testcase classname="POST /api/auth/reset-password // should reset password with valid token" name="POST /api/auth/reset-password // should reset password with valid token" time="0.02">
-    </testcase>
-    <testcase classname="POST /api/auth/reset-password // should fail if password is too short" name="POST /api/auth/reset-password // should fail if password is too short" time="0.023">
-    </testcase>
-    <testcase classname="POST /api/auth/reset-password // should fail with invalid or expired token" name="POST /api/auth/reset-password // should fail with invalid or expired token" time="0.023">
+    <testcase classname="POST /api/auth/reset-password // should fail with invalid or expired token" name="POST /api/auth/reset-password // should fail with invalid or expired token" time="0.026">
     </testcase>
     <testcase classname="MANUAL: Resend API config smoke test via /api/auth/resend-verification // should register a temp user and trigger resend-verification against live Resend API" name="MANUAL: Resend API config smoke test via /api/auth/resend-verification // should register a temp user and trigger resend-verification against live Resend API" time="0">
       <skipped/>
+    </testcase>
+  </testsuite>
+  <testsuite name="User Controller" errors="0" failures="0" skipped="0" timestamp="2026-06-03T22:19:47" time="1.455" tests="19">
+    <testcase classname="User Controller Auth failures GET /me → 401 when protect middleware rejects" name="User Controller Auth failures GET /me → 401 when protect middleware rejects" time="0.027">
+    </testcase>
+    <testcase classname="User Controller Auth failures PATCH /me → 401 when protect middleware rejects" name="User Controller Auth failures PATCH /me → 401 when protect middleware rejects" time="0.071">
+    </testcase>
+    <testcase classname="User Controller GET /api/user/me 200 – returns public user profile" name="User Controller GET /api/user/me 200 – returns public user profile" time="0.031">
+    </testcase>
+    <testcase classname="User Controller GET /api/user/me 200 – queries DB with id from req.user" name="User Controller GET /api/user/me 200 – queries DB with id from req.user" time="0.029">
+    </testcase>
+    <testcase classname="User Controller GET /api/user/me 404 – when findById returns null (user deleted mid-session)" name="User Controller GET /api/user/me 404 – when findById returns null (user deleted mid-session)" time="0.019">
+    </testcase>
+    <testcase classname="User Controller GET /api/user/me 500 – on unexpected DB error" name="User Controller GET /api/user/me 500 – on unexpected DB error" time="0.059">
+    </testcase>
+    <testcase classname="User Controller PATCH /api/user/me 200 – updates allowed fields and returns updated profile" name="User Controller PATCH /api/user/me 200 – updates allowed fields and returns updated profile" time="0.025">
+    </testcase>
+    <testcase classname="User Controller PATCH /api/user/me 200 – passes { new: true, runValidators: true } to findByIdAndUpdate" name="User Controller PATCH /api/user/me 200 – passes { new: true, runValidators: true } to findByIdAndUpdate" time="0.023">
+    </testcase>
+    <testcase classname="User Controller PATCH /api/user/me 200 – all six allowed fields are forwarded in the update object" name="User Controller PATCH /api/user/me 200 – all six allowed fields are forwarded in the update object" time="0.02">
+    </testcase>
+    <testcase classname="User Controller PATCH /api/user/me 200 – strips non-whitelisted fields (role, password, __v)" name="User Controller PATCH /api/user/me 200 – strips non-whitelisted fields (role, password, __v)" time="0.022">
+    </testcase>
+    <testcase classname="User Controller PATCH /api/user/me 200 – empty body → update object contains no allowed fields" name="User Controller PATCH /api/user/me 200 – empty body → update object contains no allowed fields" time="0.023">
+    </testcase>
+    <testcase classname="User Controller PATCH /api/user/me 200 – avatar object is added to update when multer attaches a file" name="User Controller PATCH /api/user/me 200 – avatar object is added to update when multer attaches a file" time="0.021">
+    </testcase>
+    <testcase classname="User Controller PATCH /api/user/me 200 – old Cloudinary image is destroyed before saving new one" name="User Controller PATCH /api/user/me 200 – old Cloudinary image is destroyed before saving new one" time="0.023">
+    </testcase>
+    <testcase classname="User Controller PATCH /api/user/me 200 – cloudinary.destroy is NOT called when user has no prior avatar" name="User Controller PATCH /api/user/me 200 – cloudinary.destroy is NOT called when user has no prior avatar" time="0.021">
+    </testcase>
+    <testcase classname="User Controller PATCH /api/user/me 200 – cloudinary.destroy is NOT called when no file is in the request" name="User Controller PATCH /api/user/me 200 – cloudinary.destroy is NOT called when no file is in the request" time="0.02">
+    </testcase>
+    <testcase classname="User Controller PATCH /api/user/me 404 – when findById returns null" name="User Controller PATCH /api/user/me 404 – when findById returns null" time="0.021">
+    </testcase>
+    <testcase classname="User Controller PATCH /api/user/me 500 – on DB error from findById" name="User Controller PATCH /api/user/me 500 – on DB error from findById" time="0.031">
+    </testcase>
+    <testcase classname="User Controller PATCH /api/user/me 500 – on DB error from findByIdAndUpdate" name="User Controller PATCH /api/user/me 500 – on DB error from findByIdAndUpdate" time="0.024">
+    </testcase>
+    <testcase classname="User Controller PATCH /api/user/me 500 – on Cloudinary destroy failure (controller propagates the error)" name="User Controller PATCH /api/user/me 500 – on Cloudinary destroy failure (controller propagates the error)" time="0.022">
     </testcase>
   </testsuite>
 </testsuites>
