@@ -72,17 +72,28 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: write
+      contents: read
       pages: write
       id-token: write
+
+    environment: 
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps: 
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy Html report to Github Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./backend/html-report
+          path: ./backend/html-report
+    
+      - name: Deploy to Github Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
+
 
