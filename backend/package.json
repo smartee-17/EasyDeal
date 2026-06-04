@@ -7,12 +7,9 @@
     "dev": "nodemon ./src/server.js",
     "start": "node ./src/server.js",
     "test": "cross-env NODE_ENV=test jest --runInBand --detectOpenHandles",
-    
     "test:watch": "cross-env NODE_ENV=test jest --watch",
     "test:ui": "cross-env NODE_ENV=test jest",
-
     "test:coverage": "cross-env NODE_ENV=test jest --coverage",
-
     "test:ci": "cross-env NODE_ENV=test jest --coverage --ci"
   },
   "keywords": [],
@@ -20,6 +17,7 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@upstash/redis": "^1.38.0",
     "axios": "^1.16.0",
     "bcryptjs": "^3.0.3",
     "cloudinary": "^1.41.3",
