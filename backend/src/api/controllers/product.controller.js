@@ -6,7 +6,9 @@ import Category from '../models/category.model.js';
 
 export const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find()
+    const { category } = req.query;
+    const filter = category ? { category } : {};
+    const products = await Product.find(filter)
       .populate('category', 'name')
       .populate('seller', 'name whatsappNumber');
 
