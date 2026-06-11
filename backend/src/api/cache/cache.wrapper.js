@@ -22,3 +22,11 @@ export const cacheWrapper = async ({
 
     return result;
 };
+
+export const cacheDelete = async (key) => {
+    try {
+        await CacheService.del(key);
+    } catch (err) {
+        console.log('Cache delete error:', err);
+    }
+};

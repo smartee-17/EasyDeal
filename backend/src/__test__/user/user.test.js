@@ -94,6 +94,20 @@ jest.mock('../../api/library/utils.js', () => ({
   ),
 }));
 
+// ── 1d. Cache wrapper ───────────────────────────────────────────────────────
+jest.mock('../../api/cache/cache.wrapper.js', () => ({
+  cacheWrapper: jest.fn(),
+  cacheDelete: jest.fn(),
+}));
+
+// ── 1e. CacheKeys ────────────────────────────────────────────────────────────
+jest.mock('../../api/cache/cache.keys.js', () => ({
+  CacheKeys: {
+    user: jest.fn((id) => `user:${id}`),
+  },
+}));
+
+
 // ─── 2. IMPORTS ──────────────────────────────────────────────────────────────
 
 
@@ -101,6 +115,8 @@ import userRoutes from '../../api/routes/user.route.js';
 import User from '../../api/models/user.model.js';
 import cloudinary, { upload } from '../../config/cloudinary.js';
 import protect from '../../api/middlewares/auth.middleware.js';
+import { cacheWrapper, cacheDelete } from '../../api/cache/cache.wrapper.js';
+import { CacheKeys } from '../../api/cache/cache.keys.js';
 
 // ─── 3. MINIMAL TEST APP ─────────────────────────────────────────────────────
 
@@ -156,6 +172,14 @@ const resetMocks = () => {
   User.findById.mockResolvedValue(instance);
   User.findByIdAndUpdate.mockResolvedValue(instance);
   cloudinary.uploader.destroy.mockResolvedValue({ result: 'ok' });
+
+  // Re-establish CacheKeys.user mock after clearAllMocks
+  CacheKeys.user.mockImplementation((id) => `user:${id}`);
+
+  // cacheWrapper defaults to simulating a cache miss: runs fetchFunction and returns result
+  cacheWrapper.mockImplementation(async ({ fetchFunction }) => fetchFunction());
+
+  cacheDelete.mockResolvedValue(undefined);
 };
 
 // ─── 5. TEST SUITES ──────────────────────────────────────────────────────────
@@ -226,6 +250,77 @@ describe('User Controller', () => {
       expect(res.status).toBe(500);
       expect(res.body.message).toBe('Server error');
       expect(res.body.error).toBe('DB connection lost');
+    });
+
+    // ── 5.2.1  Caching behavior ───────────────────────────────────────────
+
+    test('CACHE – cacheWrapper is called with correct key and ttl on GET /me', async () => {
+      await request(app).get('/api/user/me');
+
+      expect(cacheWrapper).toHaveBeenCalledTimes(1);
+      expect(cacheWrapper).toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'user:user-123',
+          ttl: 3600,
+          fetchFunction: expect.any(Function),
+        }),
+      );
+    });
+
+    test('CACHE – CacheKeys.user is called with the authenticated user id', async () => {
+      await request(app).get('/api/user/me');
+
+      expect(CacheKeys.user).toHaveBeenCalledWith('user-123');
+    });
+
+    test('CACHE – on cache miss, fetchFunction calls User.findById and returns toPublic result', async () => {
+      // cacheWrapper executes fetchFunction (cache miss simulation — default in resetMocks)
+      await request(app).get('/api/user/me');
+
+      expect(User.findById).toHaveBeenCalledWith('user-123');
+      expect(User._mockToPublic).toHaveBeenCalledTimes(1);
+    });
+
+    test('CACHE – on cache hit, User.findById is NOT called', async () => {
+      const cachedProfile = {
+        id: 'user-123',
+        name: 'Test User',
+        email: 'test@example.com',
+        role: 'user',
+      };
+      // Simulate a cache hit: cacheWrapper returns cached data without calling fetchFunction
+      cacheWrapper.mockResolvedValue(cachedProfile);
+
+      const res = await request(app).get('/api/user/me');
+
+      expect(res.status).toBe(200);
+      expect(res.body.user).toMatchObject(cachedProfile);
+      expect(User.findById).not.toHaveBeenCalled();
+    });
+
+    test('CACHE – response user data matches toPublic format from fetchFunction', async () => {
+      const publicProfile = {
+        id: 'user-123',
+        name: 'Test User',
+        email: 'test@example.com',
+        role: 'user',
+      };
+      User._mockToPublic.mockReturnValue(publicProfile);
+
+      const res = await request(app).get('/api/user/me');
+
+      expect(res.status).toBe(200);
+      expect(res.body.user).toMatchObject(publicProfile);
+    });
+
+    test('CACHE – 404 when fetchFunction inside cacheWrapper returns null', async () => {
+      // Simulate cache miss where DB also returns null
+      cacheWrapper.mockResolvedValue(null);
+
+      const res = await request(app).get('/api/user/me');
+
+      expect(res.status).toBe(404);
+      expect(res.body.message).toBe('User not found');
     });
   });
 
@@ -408,6 +503,85 @@ describe('User Controller', () => {
 
       expect(res.status).toBe(500);
       expect(res.body.message).toBe('Server error during update');
+    });
+
+    // ── 5.3.5  Cache invalidation ─────────────────────────────────────────
+
+    test('CACHE – cacheDelete is called with correct key after successful updateMe', async () => {
+      await request(app).patch('/api/user/me').send({ name: 'Updated Name' });
+
+      expect(cacheDelete).toHaveBeenCalledTimes(1);
+      expect(cacheDelete).toHaveBeenCalledWith('user:user-123');
+    });
+
+    test('CACHE – CacheKeys.user is called with the authenticated user id on updateMe', async () => {
+      await request(app).patch('/api/user/me').send({ name: 'Updated Name' });
+
+      expect(CacheKeys.user).toHaveBeenCalledWith('user-123');
+    });
+
+    test('CACHE – cacheDelete is called even when no fields are changed (empty body)', async () => {
+      await request(app).patch('/api/user/me').send({});
+
+      expect(cacheDelete).toHaveBeenCalledTimes(1);
+      expect(cacheDelete).toHaveBeenCalledWith('user:user-123');
+    });
+
+    test('CACHE – cacheDelete is called after avatar upload succeeds', async () => {
+      upload._state.simulateFileUpload = true;
+      const { path, filename } = upload._state.mockFile;
+      const updatedInstance = {
+        ...User._mockInstance,
+        avatar: { url: path, publicId: filename },
+        toPublic: jest.fn().mockReturnValue({
+          id: 'user-123',
+          name: 'Test User',
+          email: 'test@example.com',
+          role: 'user',
+          avatar: { url: path, publicId: filename },
+        }),
+      };
+      User.findByIdAndUpdate.mockResolvedValue(updatedInstance);
+
+      await request(app).patch('/api/user/me').send({});
+
+      expect(cacheDelete).toHaveBeenCalledWith('user:user-123');
+    });
+
+    test('CACHE – cacheDelete is NOT called when findById returns null (early 404)', async () => {
+      User.findById.mockResolvedValue(null);
+
+      await request(app).patch('/api/user/me').send({ name: 'X' });
+
+      expect(cacheDelete).not.toHaveBeenCalled();
+    });
+
+    test('CACHE – cacheDelete is NOT called when findByIdAndUpdate throws', async () => {
+      User.findByIdAndUpdate.mockRejectedValue(new Error('Write conflict'));
+
+      await request(app).patch('/api/user/me').send({ name: 'X' });
+
+      expect(cacheDelete).not.toHaveBeenCalled();
+    });
+
+    test('CACHE – updateMe still returns correct updated user after cache invalidation', async () => {
+      const updatedInstance = {
+        ...User._mockInstance,
+        name: 'Post-Cache Name',
+        toPublic: jest.fn().mockReturnValue({
+          id: 'user-123',
+          name: 'Post-Cache Name',
+          email: 'test@example.com',
+          role: 'user',
+        }),
+      };
+      User.findByIdAndUpdate.mockResolvedValue(updatedInstance);
+
+      const res = await request(app).patch('/api/user/me').send({ name: 'Post-Cache Name' });
+
+      expect(res.status).toBe(200);
+      expect(res.body.user.name).toBe('Post-Cache Name');
+      expect(cacheDelete).toHaveBeenCalledWith('user:user-123');
     });
   });
 });

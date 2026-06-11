@@ -2,13 +2,21 @@ import { redis } from "../../config/redis";
 
 export const CacheService = {
     async get(key) {
-        return await redis.get(key);
+        const data = await redis.get(key);
+
+        if(!data) return null;
+
+        return JSON.parse(data);
     },
 
     async set(key, value, ttl = 3600) {
-        return await redis.set(key, value, {
+        return await redis.set(
+            key, 
+            JSON.stringify(value), 
+            {
             ex: ttl,
-        });
+            }
+    );
     },
 
     async del(key) {
@@ -16,6 +24,8 @@ export const CacheService = {
     },
 
     async clearPattern(pattern){
-        throw new Error("Use key tagging strategy instead of patterns");
+        throw new Error(
+            "Use key tagging strategy instead of patterns"
+        );
     }
 }

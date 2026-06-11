@@ -1,10 +1,24 @@
 import User from '../models/user.model.js';
 import { sendResponse } from '../library/utils.js';
 import cloudinary from '../../config/cloudinary.js';
+import { CacheKeys } from '../cache/cache.keys.js';
+import { cacheWrapper, cacheDelete } from '../cache/cache.wrapper.js';
 
 export const getME = async(req, res) => {
     try {
-        const user = await User.findById(req.user.id);
+        const userId = req.user.id; 
+
+        const user = await cacheWrapper({
+            key: CacheKeys.user(userId),
+            ttl: 3600,
+            fetchFunction: async () => {
+                const user = await User.findById(userId);
+
+                if (!user) return null;
+
+                return user.toPublic();
+            }
+        });
 
         if(!user) {
           return  res.status(404).json({ message: 'User not found' });
@@ -15,7 +29,7 @@ export const getME = async(req, res) => {
             200,
             true,
             'Profile fetched successfully',
-            { user: user.toPublic() }
+            { user }
         );
 
     } catch (error) {
@@ -26,7 +40,9 @@ export const getME = async(req, res) => {
 
 export const updateMe = async (req, res) => {
     try {
-        const user = await User.findById(req.user.id);
+        const userId = req.user.id;
+
+        const user = await User.findById(userId);
 
         if (!user){
             return res.status(404).json({ message: "User not found" });
@@ -63,13 +79,15 @@ export const updateMe = async (req, res) => {
 
 
         const updatedUser = await User.findByIdAndUpdate(
-            req.user.id,
+            userId,
             updates,
             {
                 new: true,
                 runValidators: true
             }
         );
+
+        await cacheDelete(CacheKeys.user(userId));
 
         sendResponse(
             res,
