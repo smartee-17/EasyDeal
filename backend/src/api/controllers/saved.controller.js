@@ -1,14 +1,13 @@
 import { sendResponse } from '../library/utils.js';
 import Saved from '../models/saved.model.js';
+import mongoose from 'mongoose';
 
 export const getSavedProducts = async (req, res) => {
   try {
     const userId = req.user.id;
-    const savedProducts = await Saved.find({ userId })
-      .populate('productId')
-      .populate('userId');
+    const savedProducts = await Saved.find({ userId }).populate('productId');
 
-    if (!savedProducts) {
+    if (savedProducts.length === 0) {
       return res
         .status(404)
         .json({ success: false, message: 'No saved products found' });
@@ -24,7 +23,9 @@ export const addProductToSaved = async (req, res) => {
   try {
     const { productId } = req.params;
     const userId = req.user.id;
-
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(400).json({ message: 'Invalid product ID format' });
+    }
     if (!productId) {
       return res
         .status(400)
@@ -41,9 +42,10 @@ export const addProductToSaved = async (req, res) => {
 
     const savedProduct = await Saved.create({ productId, userId });
 
-    sendResponse(res, 200, true, 'Product added to saved', savedProduct);
+    sendResponse(res, 201, true, 'Product added to saved', savedProduct);
   } catch (error) {
-    sendResponse(res, 500, false, 'Server error');
+    console.error(`Error adding product to saved: ${error.message}`);
+    return res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 

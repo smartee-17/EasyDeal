@@ -6,10 +6,10 @@ const router = express.Router();
 
 router.get('/', protect, controller.getSavedProducts);
 
+router.get('/check/:productId', protect, controller.checkProductInSaved);
+
 router.post('/:productId', protect, controller.addProductToSaved);
 
 router.delete('/:productId', protect, controller.removeProductFromSaved);
-
-router.get('/check/:productId', protect, controller.checkProductInSaved);
 
 export default router;

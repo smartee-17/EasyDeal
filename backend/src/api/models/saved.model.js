@@ -16,4 +16,6 @@ const savedSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+savedSchema.index({ productId: 1, userId: 1 }, { unique: true });
+
 export default mongoose.model('Saved', savedSchema);
