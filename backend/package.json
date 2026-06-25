@@ -10,7 +10,7 @@
     "test:watch": "cross-env NODE_ENV=test jest --watch",
     "test:ui": "cross-env NODE_ENV=test jest",
     "test:coverage": "cross-env NODE_ENV=test jest --coverage",
-    "test:ci": "cross-env NODE_ENV=test jest --coverage --ci"
+    "test:ci": "cross-env NODE_ENV=test jest --ci"
   },
   "keywords": [],
   "author": "",

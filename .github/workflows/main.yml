@@ -48,13 +48,6 @@ jobs:
         run: npm test
         working-directory: ./backend
 
-        
-      - name: Upload coverage report
-        uses:  actions/upload-artifact@v4
-        with: 
-          name: coverage-report
-          path: ./backend/coverage/
-
       - name: Upload HTML test report 
         uses: actions/upload-artifact@v4
         with: 
