@@ -1,4 +1,4 @@
-import { CacheService } from "./cache.service";
+import { CacheService } from "./cache.service.js";
 
 export const cacheWrapper = async ({
     key, 
@@ -11,8 +11,6 @@ export const cacheWrapper = async ({
         console.log(`Cache gotten ${key}`);
         return cached
     }
-
-    console.log(`Cache miss ${key}`);
 
     const result = await fetchFunction();
 

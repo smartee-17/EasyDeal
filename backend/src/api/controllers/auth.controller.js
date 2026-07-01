@@ -290,7 +290,7 @@ export const forgotPassword = async (req, res) => {
 
     await user.save({ validateBeforeSave: false });
 
-    await sendVerifictionComms({
+    sendVerifictionComms({
       email: user.email,
       type: EMAIL_TYPES.PASSWORD_RESET,
       payload: {
