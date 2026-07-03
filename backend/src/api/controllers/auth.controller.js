@@ -295,7 +295,7 @@ export const forgotPassword = async (req, res) => {
       type: EMAIL_TYPES.PASSWORD_RESET,
       payload: {
         username: user.username,
-        verifyUrl: `${process.env.CLIENT_URL}/reset-password/${rawToken}`,
+        resetUrl: `${process.env.CLIENT_URL}/reset-password/${rawToken}`,
       },
     });
 
