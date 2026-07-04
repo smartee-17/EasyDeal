@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { sendResponse } from '../library/utils.js';
 import Category from '../models/category.model.js';
 
@@ -113,4 +114,14 @@ export const deleteCategory = async (req, res) => {
     console.log(`Error deleting category: ${error}`);
     return res.status(500).json({ message: 'Internal server error' });
   }
+=======
+import { CATEGORY_ENUM } from '../library/constants/category.constants.js';
+
+export const getAllCategories = (req, res) => {
+  return res.status(200).json({
+    success: true,
+    message: 'Categories retrieved successfully',
+    data: CATEGORY_ENUM,
+  });
+>>>>>>> 19f8c752c7439a1e2d1256921bd63921916910f5
 };
