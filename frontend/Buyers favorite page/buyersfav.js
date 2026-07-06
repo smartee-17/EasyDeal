@@ -53,7 +53,7 @@ function renderFavorites() {
          
         </div>
       </div>
-      ${product.inStock ? '<button class="btn-cart">Add to Cart</button>' : '<button class="btn-disabled" disabled>Unavailable</button>'}
+      ${product.inStock ? '<button class="btn-cart">View Product</button>' : '<button class="btn-disabled" disabled>Unavailable</button>'}
     `;
 
     grid.appendChild(card);
