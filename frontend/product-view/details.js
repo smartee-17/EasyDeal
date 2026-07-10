@@ -11,11 +11,13 @@ import {
 const params = new URLSearchParams(window.location.search);
 const productID = params.get("id");
 
+
 document.addEventListener("DOMContentLoaded", init);
 
 async function init() {
   if (!productID || productID === "undefined" || productID === "null") {
-    renderInvalidLink();
+    document.getElementById("loader")?.classList.add("is-hidden");
+    setupInteractions({});
     return;
   }
 
@@ -40,19 +42,24 @@ async function init() {
 
     renderGallery(currentProduct, {
       track: document.getElementById("galleryTrack"),
-      dotsContainer: document.getElementById("dots"),
+      dotsContainer: document.createElement("div"),
       thumbsContainer: document.querySelector(".gallery__thumbs")
     });
 
-    renderSimilarProducts(products || []);
+    renderSimilarProducts(products || [], products || []);
     setupInteractions(currentProduct);
 
   } catch (err) {
     console.error("Initialization Failed:", err);
     document.getElementById("loader")?.classList.add("is-hidden");
-    renderServerWakeup();
-    setTimeout(() => {
-        window.location.href = window.location.href;
-        }, 10000);
+    const main = document.querySelector(".product-detail");
+    if (main) {
+      main.innerHTML = `
+        <div style="padding:40px;text-align:center;font-family:inherit">
+          <h3>Error loading product</h3>
+          <p style="color:red;font-size:0.85rem;word-break:break-all">${err.message}</p>
+        </div>
+      `;
+    }
   }
 }
