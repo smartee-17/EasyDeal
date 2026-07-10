@@ -23,7 +23,7 @@ const productSchema = new mongoose.Schema(
       {
         url: { type: String },
         publicId: { type: String },
-        alt: { short: String, standard: String, detailed: String },
+        alt: { type: String },
       },
     ],
     seller: {
@@ -31,6 +31,13 @@ const productSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
+    specifications: [
+      {
+        key: { type: String, required: true },
+        label: { type: String },
+        value: { type: mongoose.Schema.Types.Mixed, required: true },
+      },
+    ],
     isAvailable: { type: Boolean, default: true },
   },
   { timestamps: true },
