@@ -31,6 +31,7 @@ const productSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
+    location: { type: String, required: true },
     specifications: [
       {
         key: { type: String, required: true },

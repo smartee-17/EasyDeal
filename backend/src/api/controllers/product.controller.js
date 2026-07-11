@@ -1,6 +1,7 @@
 import { sendResponse } from '../library/utils.js';
 import Product from '../models/product.model.js';
 import Tag from '../models/tag.model.js';
+import User from '../models/user.model.js';
 import cloudinary, { upload } from '../../config/cloudinary.js';
 import { generateAltText } from '../library/visionAi.js';
 import { CATEGORY_ATTRIBUTES } from '../library/constants/categoryAttributes.constants.js';
@@ -151,10 +152,76 @@ const normalizeSpecifications = (category, specifications = []) => {
 
 export const getAllProducts = async (req, res) => {
   try {
-    const { category } = req.query;
-    const filter = category ? { category } : {};
+    const {
+      category, // comma-separated, e.g. "electronics,fashion"
+      minPrice,
+      maxPrice,
+      verifiedOnly, // "true" | "false"
+      condition, // comma-separated, e.g. "Brand new,Like new"
+      location, // comma-separated, e.g. "Delhi,Noida"
+    } = req.query;
+
+    const filter = {};
+
+    // Categories — checkboxes imply multi-select, so support a comma list
+    // while still working with a single value like before.
+    if (category) {
+      const categories = category
+        .split(',')
+        .map((c) => c.trim())
+        .filter(Boolean);
+      if (categories.length > 0) {
+        filter.category =
+          categories.length > 1 ? { $in: categories } : categories[0];
+      }
+    }
+
+    // Price range
+    if (minPrice || maxPrice) {
+      filter.price = {};
+      if (minPrice) filter.price.$gte = Number(minPrice);
+      if (maxPrice) filter.price.$lte = Number(maxPrice);
+    }
+
+    // Product condition — this isn't a top-level Product field in the schema
+    // I've seen; it lives inside `specifications` as { key: 'condition', value }.
+    // Update this block if condition is actually stored differently.
+    if (condition) {
+      const conditions = condition
+        .split(',')
+        .map((c) => c.trim())
+        .filter(Boolean);
+      if (conditions.length > 0) {
+        filter.specifications = {
+          $elemMatch: { key: 'condition', value: { $in: conditions } },
+        };
+      }
+    }
+
+    // Location — I don't have the schema for this field, so this assumes a
+    // top-level `location` string on Product. If location actually lives on
+    // the seller instead, move it into the verifiedOnly lookup below.
+    if (location) {
+      const locations = location
+        .split(',')
+        .map((l) => l.trim())
+        .filter(Boolean);
+      if (locations.length > 0) {
+        filter.location = { $in: locations };
+      }
+    }
+
+    // Verified sellers only — assumes the seller/User model has an
+    // `isVerified` boolean. Adjust the field name if yours differs.
+    if (verifiedOnly === 'true') {
+      const verifiedSellerIds = await User.find({ isVerified: true }).distinct(
+        '_id',
+      );
+      filter.seller = { $in: verifiedSellerIds };
+    }
+
     const products = await Product.find(filter)
-      .populate('category', 'name')
+      .populate('category', 'name') // no-op since category is a String, not a ref — see earlier note
       .populate('seller', 'name whatsappNumber');
 
     return sendResponse(
@@ -198,8 +265,15 @@ export const getProductById = async (req, res) => {
 export const createProduct = async (req, res) => {
   try {
     const { _id } = req.user;
-    const { title, description, category, price, tags, specifications } =
-      req.body;
+    const {
+      title,
+      description,
+      category,
+      price,
+      tags,
+      location,
+      specifications,
+    } = req.body;
 
     if (req.files && req.files.length > 5) {
       return res.status(400).json({ message: 'Maximum of 5 images allowed' });
@@ -273,6 +347,7 @@ export const createProduct = async (req, res) => {
       price,
       images,
       tags: tagIds,
+      location,
       specifications: normalizedSpecifications,
       seller: _id,
     });
@@ -295,8 +370,15 @@ export const updateProduct = async (req, res) => {
   try {
     const { _id: userId } = req.user;
     const { id } = req.params;
-    const { title, description, category, price, isAvailable, specifications } =
-      req.body;
+    const {
+      title,
+      description,
+      category,
+      price,
+      isAvailable,
+      location,
+      specifications,
+    } = req.body;
 
     const product = await Product.findById(id);
 
@@ -367,6 +449,7 @@ export const updateProduct = async (req, res) => {
     product.description = description || product.description;
     product.category = category || product.category;
     product.price = price || product.price;
+    product.location = location || product.location;
     product.isAvailable = isAvailable ?? product.isAvailable;
 
     // Persist changes to MongoDB
