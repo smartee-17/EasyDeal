@@ -2,40 +2,146 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Easy Deal</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="../assets/images/favicons/favicon-32.png" />
-    <link rel="stylesheet" href="../shared/global.css" />
-    <link rel="stylesheet" href="./homepage.css" />
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="homepage.css" />
   </head>
   <body>
-    <header class="header">
-      <img
-        src="../assets/images/logos/logo-light-rect.svg"
-        alt="Easy Deal logo"
-        class="header__img"
-      />
-      <input type="search" class="header__search" placeholder="search" />
+    <header>
+      <div class="homepage-header-logo">
+        <img src="Assets/icons/image 59.png" alt="EasyDeal logo" />
+        <h2>Easy</h2>
+        <span>Deal</span>
+      </div>
+      <div class="homepage-search-container">
+        <img src="Assets/icons/search.png" alt="Search icon" />
+        <input
+          class="homepage-header-search"
+          type="search"
+          placeholder=" Search products"
+        />
+      </div>
+      <div class="homepage-header-btn">
+        <button class="header-login">Login</button>
+        <button class="header-signup">Sign up</button>
+      </div>
     </header>
-    <main class="homepage">
-      <section class="hero">
-        <div class="hero__latest">
-          <h1 class="hero__heading">
-            The New MacBook Pro. Supercharged by M3.
-          </h1>
-          <p class="hero__paragraph">
-            Mind-blowing speed. Liquid Retina XDR display. Up to 22 hours of
-            battery life. The pro laptop you’ve been waiting for.
-          </p>
-          <button class="hero__btn">Shop the Pro</button>
-        </div>
-      </section>
-      <nav class="category-bar" aria-label="Product Categories">
-        <ul class="category-bar__list"></ul>
-      </nav>
-      <section class="products"></section>
-    </main>
 
-    <script src="../shared/utils.js"></script>
-    <script src="./homepage.js"></script>
+    <section class="homepage-hero">
+      <div class="homepage-hero-txt">
+        <h1>Buy & Sell Anything Instantly</h1>
+        <p>
+          Discover great deals, list your products, and connect directly with
+          buyers and sellers through WhatsApp.
+        </p>
+        <div class="hero-btns">
+          <button class="browse">Browse Products</button>
+          <button class="Sellitem">+ Sell an item</button>
+        </div>
+      </div>
+      <div class="homepage-hero-imgs">
+        <img class="h1" src="Assets/images/2.png" alt="" />
+        <img class="h2" src="Assets/images/4.png" alt="" />
+        <img class="h3" src="Assets/images/6.png" alt="" />
+        <img class="h4" src="Assets/images/1.png" alt="" />
+        <img class="h5" src="Assets/images/5.png" alt="" />
+        <img class="h6" src="Assets/images/3.png" alt="" />
+      </div>
+    </section>
+    <section class="homepage-categories">
+      <h2>Explore by Categories</h2>
+      <div class="categories-scroll">
+        <div class="categories-list"></div>
+      </div>
+      <button class="slide-arrow-btn slide-arrow-btn--left" id="slideLeftBtn">
+        <img src="Assets/icons/image 79.png" alt="" />
+      </button>
+      <button class="slide-arrow-btn slide-arrow-btn--right" id="slideRightBtn">
+        <img src="Assets/icons/image 79.png" alt="" />
+      </button>
+    </section>
+    <section class="cards">
+      <div class="exp explore">
+        <h2 class="exp-text explore-text">Explore products</h2>
+        <a href="#" class="view-all-link">View All</a>
+        <div class="products"></div>
+      </div>
+
+      <div class="exp fresh">
+        <h2 class="exp-text fresh-txt">Fresh Listings</h2>
+        <a href="#" class="view-all-link">View All</a>
+        <div class="products"></div>
+      </div>
+
+      <div class="exp trend">
+        <h2 class="exp-text trend-txt">Trending products</h2>
+        <a href="#" class="view-all-link">View All</a>
+        <div class="products"></div>
+      </div>
+    </section>
+
+    <footer class="homepage-footer">
+      <div class="homepage-footer-content">
+        <div class="brands">
+          <div class="footer-logo">
+            <img src="Assets/icons/image 60.png" alt="Easy Deal logo black" />
+            <h3 class="logo-name">EasyDeal</h3>
+          </div>
+          <p class="brands-txt">
+            Buy and sell products easily. Connect directly with sellers through
+            WhatsApp.
+          </p>
+          <div class="footer-brand-logos">
+            <a href="#"><img src="Assets/insta.png" alt="" /></a>
+            <a href="#"><img src="Assets/xlogo.png" alt="" /></a>
+            <a href="#"><img src="Assets/linkdin.png" alt="" /></a>
+            <a href="#"><img src="Assets/github.png" alt="" /></a>
+          </div>
+          <p class="copyright-txt">© 2026 EasyDeal. All rights reserved.</p>
+        </div>
+        <div class="legalvs">
+          <div class="footer-content-nav">
+            <div class="marketplace-content">
+              <h4 class="mariketplace-content-title content-title">
+                Marketplace
+              </h4>
+              <div class="footer-links">
+                <a href="">Browse Products </a>
+                <a href="">Categories </a>
+                <a href="">Saved Items </a>
+                <a href="">Sell a Product</a>
+              </div>
+            </div>
+            <div class="company-content">
+              <h4 class="company-content-title content-title">Company</h4>
+              <div class="footer-links">
+                <a href="">About </a>
+                <a href="">Contact</a>
+                <a href="">Partners</a>
+              </div>
+            </div>
+            <div class="support-content">
+              <h4 class="Support-content-title content-title">Support</h4>
+              <div class="footer-links">
+                <a href="">Help Center </a>
+                <a href="">Contact Us</a>
+                <a href="">FAQs</a>
+              </div>
+            </div>
+          </div>
+          <div class="legal">
+            <a href="#">Privacy policy</a>
+            <a href="#">Terms of service</a>
+            <a href="#">Cookies settings</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script src="homepage.js"></script>
   </body>
 </html>
