@@ -8,11 +8,7 @@ import { CATEGORY_ATTRIBUTES } from '../library/constants/categoryAttributes.con
 
 /**
  * Parses tags from the request body into a clean array of tag name strings.
- * Handles three shapes the client might send:
- *   - a real array (application/json requests): ["samsung", "smartphones"]
- *   - a JSON string (multipart form-data): '["samsung", "smartphones"]'
- *   - a JS-style stringified array (bad client serialization):
- *     "[ 'samsung', 'smartphones' ]"
+ * Handles a real array, a JSON string, or a JS-style stringified array.
  *
  * @param {string | string[]} rawTags
  * @returns {string[]}
@@ -25,7 +21,6 @@ const parseTagNames = (rawTags) => {
   }
 
   if (typeof rawTags === 'string') {
-    // Try proper JSON first
     try {
       const parsed = JSON.parse(rawTags);
       if (Array.isArray(parsed)) {
@@ -35,7 +30,6 @@ const parseTagNames = (rawTags) => {
       // Not valid JSON — fall through to manual parsing below
     }
 
-    // Fallback: handle a JS-style array string, e.g. "[ 'samsung', 'smartphones' ]"
     const stripped = rawTags.trim().replace(/^\[/, '').replace(/\]$/, '');
     return stripped
       .split(',')
@@ -48,8 +42,7 @@ const parseTagNames = (rawTags) => {
 
 /**
  * Resolves an array of tag names into Tag ObjectIds, creating any
- * tags that don't already exist. This is required because Product.tags
- * stores ObjectId references, not raw strings.
+ * tags that don't already exist.
  *
  * @param {string[]} tagNames
  * @returns {Promise<import('mongoose').Types.ObjectId[]>}
@@ -81,10 +74,6 @@ const resolveTagIds = async (tagNames) => {
  * Validates submitted specifications against the attribute template
  * defined for the given category.
  *
- * - Ensures all required attributes are present
- * - Ensures values for "select" type attributes are within the allowed options
- * - Ignores validation for categories with no template (falls back to free-form specs)
- *
  * @param {string} category
  * @param {Array<{key: string, label?: string, value: any}>} specifications
  * @returns {{ valid: boolean, message?: string }}
@@ -92,7 +81,6 @@ const resolveTagIds = async (tagNames) => {
 const validateSpecifications = (category, specifications = []) => {
   const template = CATEGORY_ATTRIBUTES[category];
 
-  // No template defined for this category — allow any specs through
   if (!template) {
     return { valid: true };
   }
@@ -101,7 +89,6 @@ const validateSpecifications = (category, specifications = []) => {
     (specifications || []).map((spec) => [spec.key, spec.value]),
   );
 
-  // Check required attributes are present
   const requiredKeys = template
     .filter((attr) => attr.required)
     .map((attr) => attr.key);
@@ -114,7 +101,6 @@ const validateSpecifications = (category, specifications = []) => {
     };
   }
 
-  // Check select-type attributes have valid values
   for (const attr of template) {
     if (attr.type === 'select' && providedMap.has(attr.key)) {
       const value = providedMap.get(attr.key);
@@ -132,8 +118,7 @@ const validateSpecifications = (category, specifications = []) => {
 
 /**
  * Normalizes incoming specifications into the { key, label, value } shape
- * stored on the Product document, filling in labels from the template
- * when the client only sends key/value.
+ * stored on the Product document.
  *
  * @param {string} category
  * @param {Array<{key: string, label?: string, value: any}>} specifications
@@ -156,15 +141,12 @@ export const getAllProducts = async (req, res) => {
       category, // comma-separated, e.g. "electronics,fashion"
       minPrice,
       maxPrice,
-      verifiedOnly, // "true" | "false"
       condition, // comma-separated, e.g. "Brand new,Like new"
       location, // comma-separated, e.g. "Delhi,Noida"
     } = req.query;
 
     const filter = {};
 
-    // Categories — checkboxes imply multi-select, so support a comma list
-    // while still working with a single value like before.
     if (category) {
       const categories = category
         .split(',')
@@ -176,16 +158,12 @@ export const getAllProducts = async (req, res) => {
       }
     }
 
-    // Price range
     if (minPrice || maxPrice) {
       filter.price = {};
       if (minPrice) filter.price.$gte = Number(minPrice);
       if (maxPrice) filter.price.$lte = Number(maxPrice);
     }
 
-    // Product condition — this isn't a top-level Product field in the schema
-    // I've seen; it lives inside `specifications` as { key: 'condition', value }.
-    // Update this block if condition is actually stored differently.
     if (condition) {
       const conditions = condition
         .split(',')
@@ -198,9 +176,6 @@ export const getAllProducts = async (req, res) => {
       }
     }
 
-    // Location — I don't have the schema for this field, so this assumes a
-    // top-level `location` string on Product. If location actually lives on
-    // the seller instead, move it into the verifiedOnly lookup below.
     if (location) {
       const locations = location
         .split(',')
@@ -211,17 +186,8 @@ export const getAllProducts = async (req, res) => {
       }
     }
 
-    // Verified sellers only — assumes the seller/User model has an
-    // `isVerified` boolean. Adjust the field name if yours differs.
-    if (verifiedOnly === 'true') {
-      const verifiedSellerIds = await User.find({ isVerified: true }).distinct(
-        '_id',
-      );
-      filter.seller = { $in: verifiedSellerIds };
-    }
-
     const products = await Product.find(filter)
-      .populate('category', 'name') // no-op since category is a String, not a ref — see earlier note
+      .populate('category', 'name')
       .populate('seller', 'name whatsappNumber');
 
     return sendResponse(
@@ -287,7 +253,6 @@ export const createProduct = async (req, res) => {
 
     const tagIds = await resolveTagIds(tagNames);
 
-    // specifications may arrive as a JSON string when sent via multipart/form-data
     let parsedSpecifications = [];
     if (specifications) {
       try {
@@ -323,8 +288,6 @@ export const createProduct = async (req, res) => {
         try {
           aiDescription = await generateAltText(cloudinaryUrl, description);
         } catch (visionError) {
-          // AI alt-text generation is a nice-to-have, not critical —
-          // fall back to a generic alt text instead of failing the request.
           console.error(`generateAltText failed: ${visionError.message}`);
           aiDescription = null;
         }
@@ -386,21 +349,17 @@ export const updateProduct = async (req, res) => {
       return res.status(404).json({ message: 'Product not found' });
     }
 
-    // Multiple images from Cloudinary
     if (req.files && req.files.length > 5) {
       return res.status(400).json({ message: 'Maximum of 5 images allowed' });
     }
 
-    // Optional: Ensure only the seller can update their own product
     if (product.seller.toString() !== userId.toString()) {
       return res
         .status(403)
         .json({ message: 'Not authorized to update this product' });
     }
 
-    // Handle new images if they are provided in the request
     if (req.files && req.files.length > 0) {
-      // 1. Purge old images from Cloudinary concurrently to boost performance
       if (product.images && product.images.length > 0) {
         const deletionPromises = product.images.map((image) =>
           cloudinary.uploader.destroy(image.publicId),
@@ -408,14 +367,12 @@ export const updateProduct = async (req, res) => {
         await Promise.all(deletionPromises);
       }
 
-      // 2. Map and assign the new Cloudinary files to the product document
       product.images = req.files.map((file) => ({
-        url: file.path, // Provided by the Cloudinary multer storage engine
-        publicId: file.filename, // Vital for future deletions
+        url: file.path,
+        publicId: file.filename,
       }));
     }
 
-    // Handle specifications update — validate against the (possibly new) category
     if (specifications !== undefined) {
       let parsedSpecifications = [];
       try {
@@ -444,7 +401,6 @@ export const updateProduct = async (req, res) => {
       );
     }
 
-    // Update text fields (fallback to existing values if not provided in req.body)
     product.title = title || product.title;
     product.description = description || product.description;
     product.category = category || product.category;
@@ -452,7 +408,6 @@ export const updateProduct = async (req, res) => {
     product.location = location || product.location;
     product.isAvailable = isAvailable ?? product.isAvailable;
 
-    // Persist changes to MongoDB
     await product.save();
 
     return sendResponse(
