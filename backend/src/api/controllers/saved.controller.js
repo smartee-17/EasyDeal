@@ -1,0 +1,100 @@
+import { sendResponse } from '../library/utils.js';
+import Saved from '../models/saved.model.js';
+import mongoose from 'mongoose';
+
+export const getSavedProducts = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const savedProducts = await Saved.find({ userId }).populate('productId');
+
+    if (savedProducts.length === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: 'No saved products found' });
+    }
+
+    sendResponse(res, 200, true, 'Saved products retrieved', savedProducts);
+  } catch (error) {
+    sendResponse(res, 500, false, 'Server error');
+  }
+};
+
+export const addProductToSaved = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const userId = req.user.id;
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(400).json({ message: 'Invalid product ID format' });
+    }
+    if (!productId) {
+      return res
+        .status(400)
+        .json({ success: false, message: 'Product ID is required' });
+    }
+
+    const existingSavedProduct = await Saved.findOne({ productId, userId });
+
+    if (existingSavedProduct) {
+      return res
+        .status(400)
+        .json({ success: false, message: 'Product is already saved' });
+    }
+
+    const savedProduct = await Saved.create({ productId, userId });
+
+    sendResponse(res, 201, true, 'Product added to saved', savedProduct);
+  } catch (error) {
+    console.error(`Error adding product to saved: ${error.message}`);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+export const removeProductFromSaved = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const userId = req.user.id;
+
+    if (!productId) {
+      return res
+        .status(400)
+        .json({ success: false, message: 'Product ID is required' });
+    }
+
+    const savedProduct = await Saved.findOneAndDelete({ productId, userId });
+
+    if (!savedProduct) {
+      return res
+        .status(404)
+        .json({ success: false, message: 'Product not found in saved' });
+    }
+
+    sendResponse(res, 200, true, 'Product removed from saved', savedProduct);
+  } catch (error) {
+    sendResponse(res, 500, false, 'Server error');
+  }
+};
+
+export const checkProductInSaved = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const userId = req.user.id;
+
+    if (!productId) {
+      return res
+        .status(400)
+        .json({ success: false, message: 'Product ID is required' });
+    }
+
+    const savedProduct = await Saved.findOne({ productId, userId });
+
+    if (!savedProduct) {
+      return res
+        .status(404)
+        .json({ success: false, message: 'Product not found in saved' });
+    }
+
+    sendResponse(res, 200, true, 'Product found in saved', savedProduct);
+  } catch (error) {
+    sendResponse(res, 500, false, 'Server error');
+  }
+};

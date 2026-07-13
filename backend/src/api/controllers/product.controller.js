@@ -1,12 +1,15 @@
 import { sendResponse } from '../library/utils.js';
 import Product from '../models/product.model.js';
 import cloudinary, { upload } from '../../config/cloudinary.js';
+import { generateAltText } from '../library/visionAi.js';
 
 export const getAllProducts = async (req, res) => {
   try {
-    // TODO: We use populate after user model is defined
-    // const products = await Product.find().populate('seller', 'name');
-    const products = await Product.find();
+    const { category } = req.query;
+    const filter = category ? { category } : {};
+    const products = await Product.find(filter)
+      .populate('category', 'name')
+      .populate('seller', 'name whatsappNumber');
 
     return sendResponse(
       res,
@@ -25,9 +28,9 @@ export const getProductById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // TODO: We use populate after user model is defined
-    // const product = await Product.findById(id).populate('seller', 'name');
-    const product = await Product.findById(id);
+    const product = await Product.findById(id)
+      .populate('category', 'name')
+      .populate('seller', 'name whatsappNumber');
 
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
@@ -49,25 +52,25 @@ export const getProductById = async (req, res) => {
 export const createProduct = async (req, res) => {
   try {
     const { _id } = req.user;
-    const { title, description, category, price } = req.body;
+    const { title, description, category, price, tags } = req.body;
 
-    // Multiple images from Cloudinary
     if (req.files && req.files.length > 5) {
       return res.status(400).json({ message: 'Maximum of 5 images allowed' });
     }
 
-    // Process images and generate alts
+    const parsedTags = tags ? (Array.isArray(tags) ? tags : [tags]) : [];
+
+    if (parsedTags.length > 5) {
+      return res.status(400).json({ message: 'Maximum of 5 tags allowed' });
+    }
+
     const images = await Promise.all(
       (req.files || []).map(async (file, index) => {
         const cloudinaryUrl = file.path;
-
-        // Call the separate AI function
         const aiDescription = await generateAltText(cloudinaryUrl, description);
-
         return {
           url: cloudinaryUrl,
           publicId: file.filename,
-          // Use AI description if it exists, otherwise use fallback title
           alt: {
             detailed:
               aiDescription !== null
@@ -92,11 +95,11 @@ export const createProduct = async (req, res) => {
       category,
       price,
       images,
+      tags: parsedTags, // ← add this
       seller: _id,
     });
 
     await product.save();
-
     return sendResponse(
       res,
       201,
