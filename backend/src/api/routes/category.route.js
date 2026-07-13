@@ -5,4 +5,6 @@ const router = express.Router();
 
 router.get('/', controller.getAllCategories);
 
+router.get('/:category/attributes', controller.getCategoryAttributes);
+
 export default router;
