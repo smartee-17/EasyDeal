@@ -29,11 +29,19 @@ export function renderProductInfo(product, elements) {
   set("metaLocation", product.location);
   set("metaPosted", product.posted);
 
-  // Specs list
+  // Specs list from real API
   const specsList = document.querySelector(".specs-list");
-  if (specsList && product.specs?.length) {
+  if (specsList && product.specifications?.length) {
+    specsList.innerHTML = product.specifications.map(s =>
+      `<li><strong>${s.label}:</strong> ${s.value}</li>`
+    ).join("");
+  } else if (specsList && product.specs?.length) {
     specsList.innerHTML = product.specs.map(s => `<li>${s}</li>`).join("");
   }
+
+  // Location from real API
+  const set2 = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val || ""; };
+  set2("metaLocation", product.location || product.seller?.location || "");
 
   // Logistics section
   const logisticsSection = document.querySelector(".logistics-section");
@@ -230,12 +238,21 @@ export function setupInteractions(currentProduct) {
     openWA(btn.dataset.phone, text);
   });
 
+  document.addEventListener("click", (e) => {
+    const heartBtn = e.target.closest(".product-card__heart-btn");
+    if (!heartBtn) return;
+    const saved = heartBtn.classList.toggle("is-saved");
+    heartBtn.innerHTML = saved
+      ? `<i class="fa-solid fa-heart" style="color:#e11d48"></i>`
+      : `<i class="fa-regular fa-heart"></i>`;
+  });
+
   const wishlist = document.getElementById("wishlist");
   wishlist?.addEventListener("click", () => {
     const saved = wishlist.classList.toggle("is-saved");
     wishlist.innerHTML = saved
-      ? `<i class="fa-solid fa-heart"></i> Saved`
-      : `<i class="fa-regular fa-heart"></i> Save`;
+      ? `<i class="fa-solid fa-heart" style="color:#e11d48"></i>`
+      : `<i class="fa-regular fa-heart"></i>`;
   });
 
   document.querySelectorAll(".tabs__btn").forEach(btn => {
