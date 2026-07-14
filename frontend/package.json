@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "http-server -p 5500 -o"
   },
   "type": "module",
   "keywords": [],
@@ -12,5 +13,8 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^1.15.0"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
   }
 }

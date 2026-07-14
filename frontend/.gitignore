@@ -25,3 +25,9 @@ yarn-error.log*
 
 # OS files
 .DS_Store
+
+# Test outputs
+coverage/
+html-report/
+junit/
+*.lcov
