@@ -1,4 +1,4 @@
-import { registerUser } from "./authService.js";
+import { registerUser } from "../Services/authService.js";
 
 /* Signup form submission */
 const signupForm = document.querySelector('.form');
@@ -24,9 +24,9 @@ signupForm.addEventListener('submit', async (e) => {
     signupForm.removeAttribute('data-submitting');
 
     if (data.user.role === 'admin') {
-      window.location.href = '../Admin/admin.html';
+      window.location.href = '../../Admin/admin.html';
     } else {
-      window.location.href = '..';
+      window.location.href = '../../Homepage/homepage.html';
     }
   } catch (err) {
     // UI Error Handling
