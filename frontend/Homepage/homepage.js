@@ -5,6 +5,7 @@ const leftArrow = document.getElementById("slideLeftBtn");
 const rightArrow = document.getElementById("slideRightBtn");
 
 let allProductsData = [];
+let allCategoriesData = [];
 
 async function fetchData() {
   try {
@@ -12,10 +13,11 @@ async function fetchData() {
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
 
     let result = await res.json();
-
     allProductsData = result.data;
+    console.log(result);
+    console.log("Sample product from API:", allProductsData[0]);
 
-    renderCategories(allProductsData);
+    await renderCategories();
 
     if (productsContainer.length > 0) {
       renderProducts("All Products");
@@ -30,31 +32,53 @@ async function fetchData() {
   }
 }
 
-function renderCategories(data) {
+async function renderCategories() {
   if (!categoriesContainer) return;
 
-  let categories = [
-    "All Products",
-    ...new Set(data.map((item) => item.category)),
-  ];
+  try {
+    const response = await fetch(
+      "https://easydeal.onrender.com/api/categories",
+    );
+    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
-  categoriesContainer.innerHTML = categories
-    .map(
-      (cat) =>
-        `<li class="category-bar__item"><button class="category-bar__item-btn ${cat === "All Products" ? "active" : ""}">${cat}</button></li>`,
-    )
-    .join("");
+    const { data } = await response.json();
+    console.log("Categories API response:", data);
 
-  document.querySelectorAll(".category-bar__item-btn").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      document
+    const categoryLabels = data
+      .map((item) => item.label || item.name || item)
+      .filter(Boolean);
+
+    const categories = ["All Products", ...new Set(categoryLabels)];
+    allCategoriesData = categories;
+
+    categoriesContainer.innerHTML = categories
+      .map(
+        (cat) => `
+        <li class="category-bar__item">
+          <button class="category-bar__item-btn ${cat === "All Products" ? "active" : ""}">
+            ${cat}
+          </button>
+        </li>`,
+      )
+      .join("");
+
+    categoriesContainer.addEventListener("click", (e) => {
+      const clickedBtn = e.target.closest(".category-bar__item-btn");
+      if (!clickedBtn) return;
+
+      categoriesContainer
         .querySelectorAll(".category-bar__item-btn")
-        .forEach((b) => b.classList.remove("active"));
-      e.target.classList.add("active");
+        .forEach((btn) => btn.classList.remove("active"));
 
-      renderProducts(e.target.textContent);
+      clickedBtn.classList.add("active");
+
+      const selectedCategory = clickedBtn.textContent.trim();
+
+      renderProducts(selectedCategory);
     });
-  });
+  } catch (error) {
+    console.error("Failed to render categories:", error);
+  }
 }
 
 function renderProducts(categoryFilter) {
@@ -65,7 +89,21 @@ function renderProducts(categoryFilter) {
   const filtered =
     categoryFilter === "All Products"
       ? allProductsData
-      : allProductsData.filter((p) => p.category === categoryFilter);
+      : allProductsData.filter((p) => {
+          const prodCategory = (
+            p.label ||
+            p.category?.label ||
+            p.category?.name ||
+            p.category ||
+            ""
+          )
+            .toString()
+            .trim()
+            .toLowerCase();
+          const targetCategory = categoryFilter.toString().trim().toLowerCase();
+
+          return prodCategory === targetCategory;
+        });
 
   const displayLimitData = filtered.slice(0, 4);
 
@@ -73,11 +111,10 @@ function renderProducts(categoryFilter) {
     productsContainer.forEach((pro) => {
       pro.innerHTML += `
         <div class="product-card" id="${product._id}">
-        <div class="product-card-img__container">
-          <img class="product-card__image" src="${product.images[0]?.url || "Assets/placeholder.png"}" alt="${product.images[0]?.alt?.standard || "Product Image"}" />
-          <img class="product-card_greentick" src="Assets/icons/image 4.png" alt="green-tick-icon">
-          <img class="product-card_heart" src="Assets/icons/image 77.png" alt="heart-icon-outline">
-          <img class="product-card_heart-red hidden" src="Assets/heart.png" alt="heart-icon-outline">
+          <div class="product-card-img__container">
+            <img class="product-card__image" src="${product.images[0]?.url || "Assets/placeholder.png"}" alt="${product.images[0]?.alt?.standard || "Product Image"}" />
+            <img class="product-card_greentick" src="Assets/icons/correct-success-icon.svg" alt="Verified" />
+            <img class="product-card_heart" src="Assets/icons/heart-icon.svg" data-liked="false" alt="Favorite" />
           </div>
           <div class="card-info">
             <div class="pt">
@@ -86,7 +123,8 @@ function renderProducts(categoryFilter) {
             </div>
             <p class="product-card_description">${product.description}</p>
             <button class="product-card__button">
-              <img src="Assets/icons/image 101.png" alt="WhatsApp logo"> WhatsApp
+              <img src="Assets/icons/whatsapp-icon.svg" class="icon" alt="WhatsApp" />
+              WhatsApp
             </button>
           </div>
         </div>
@@ -98,25 +136,17 @@ function renderProducts(categoryFilter) {
 function bindHeartEvents() {
   productsContainer.forEach((container) => {
     container.addEventListener("click", (event) => {
-      const clickedHeart = event.target.closest(
-        ".product-card_heart, .product-card_heart-red",
-      );
-      if (!clickedHeart) return;
+      const heartImg = event.target.closest(".product-card_heart");
+      if (!heartImg) return;
 
-      const card = clickedHeart.closest(".product-card");
-      if (!card) return;
+      const isLiked = heartImg.getAttribute("data-liked") === "true";
 
-      const outlineHeart = card.querySelector(".product-card_heart");
-      const filledHeart = card.querySelector(".product-card_heart-red");
-
-      if (!outlineHeart || !filledHeart) return;
-
-      if (filledHeart.classList.contains("hidden")) {
-        outlineHeart.classList.add("hidden");
-        filledHeart.classList.remove("hidden");
+      if (isLiked) {
+        heartImg.src = "Assets/icons/heart-icon.svg";
+        heartImg.setAttribute("data-liked", "false");
       } else {
-        outlineHeart.classList.remove("hidden");
-        filledHeart.classList.add("hidden");
+        heartImg.src = "Assets/icons/heart-filled-icon.svg";
+        heartImg.setAttribute("data-liked", "true");
       }
     });
   });
@@ -124,6 +154,7 @@ function bindHeartEvents() {
 
 fetchData();
 bindHeartEvents();
+
 leftArrow?.addEventListener("click", () => {
   if (categoriesScrollContainer) {
     categoriesScrollContainer.scrollBy({ left: -220, behavior: "smooth" });
