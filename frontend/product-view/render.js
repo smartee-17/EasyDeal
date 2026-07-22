@@ -52,9 +52,10 @@ export function renderProductInfo(product, elements) {
   // Specs list from real API
   const specsList = document.querySelector(".specs-list");
   if (specsList && product.specifications?.length) {
-    specsList.innerHTML = product.specifications.map(s =>
-      `<li><strong>${s.label}:</strong> ${s.value}</li>`
-    ).join("");
+    specsList.innerHTML = product.specifications.map(s => {
+      const label = s.label.replace(/_/g, " ").split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
+      return `<li><strong>${label}:</strong> ${s.value}</li>`;
+    }).join("");
   } else if (specsList && product.specs?.length) {
     specsList.innerHTML = product.specs.map(s => `<li>${s}</li>`).join("");
   }
