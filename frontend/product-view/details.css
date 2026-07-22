@@ -464,10 +464,11 @@
 }
 
 .product-info__title {
-  font-size: clamp(1.75rem, 3.5vw, 2.4rem);
+  font-size: clamp(0.95rem, 2.5vw, 2.4rem);
   font-weight: 700;
   margin: 0 0 16px 0;
   color: var(--color-text);
+  word-break: break-word;
 }
 
 .metadata-list {
