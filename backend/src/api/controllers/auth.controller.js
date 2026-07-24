@@ -5,7 +5,6 @@ import {
   generateSecureToken,
   hashToken
 } from '../library/token.js';
-import bcrypt from 'bcryptjs';
 import { sendResponse } from '../library/utils.js';
 import { sendEmail } from '../library/email/emailService/index.js';
 import EMAIL_TYPES from '../library/email/emailTypes/index.js';
@@ -144,7 +143,9 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    if (user.role === 'admin') {
+    const admin = user.role === 'admin';
+
+    if (admin) {
       user.lastLoginAt = new Date();
       user.loginCount = (user.loginCount || 0) + 1;
       await user.save({ validateBeforeSave: false });
