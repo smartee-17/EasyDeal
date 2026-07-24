@@ -464,10 +464,11 @@
 }
 
 .product-info__title {
-  font-size: clamp(1.75rem, 3.5vw, 2.4rem);
+  font-size: clamp(0.95rem, 2.5vw, 2.4rem);
   font-weight: 700;
   margin: 0 0 16px 0;
   color: var(--color-text);
+  word-break: break-word;
 }
 
 .metadata-list {
@@ -1091,4 +1092,16 @@
   justify-content: center;
   margin-top: 16px;
   margin-bottom: 8px;
+}
+
+.price-comparison-box,
+.component-condition-card,
+.specifications-section,
+.logistics-section {
+  overflow: hidden;
+  max-height: 0;
+  margin-top: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  transition: max-height 0.7s cubic-bezier(0.4, 0, 0.2, 1), padding 0.7s ease, margin 0.7s ease;
 }

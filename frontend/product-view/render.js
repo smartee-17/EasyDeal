@@ -25,16 +25,37 @@ export function renderProductInfo(product, elements) {
   // Meta fields
   const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val || ""; };
   set("metaCategory", product.category);
-  set("metaCondition", product.condition);
-  set("metaLocation", product.location);
-  set("metaPosted", product.posted);
+
+  // Get condition from specifications array
+  const conditionSpec = product.specifications?.find(s => s.key === "condition");
+  set("metaCondition", conditionSpec?.value || product.condition || "");
+
+  // Location
+  set("metaLocation", product.location || "");
+
+  // Calculate posted date from createdAt
+  if (product.createdAt) {
+    const created = new Date(product.createdAt);
+    const now = new Date();
+    const diffMs = now - created;
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    let posted = "";
+    if (diffDays === 0) posted = "Today";
+    else if (diffDays === 1) posted = "Yesterday";
+    else if (diffDays < 7) posted = `${diffDays} days ago`;
+    else if (diffDays < 30) posted = `${Math.floor(diffDays / 7)} week${Math.floor(diffDays / 7) > 1 ? "s" : ""} ago`;
+    else if (diffDays < 365) posted = `${Math.floor(diffDays / 30)} month${Math.floor(diffDays / 30) > 1 ? "s" : ""} ago`;
+    else posted = `${Math.floor(diffDays / 365)} year${Math.floor(diffDays / 365) > 1 ? "s" : ""} ago`;
+    set("metaPosted", posted);
+  }
 
   // Specs list from real API
   const specsList = document.querySelector(".specs-list");
   if (specsList && product.specifications?.length) {
-    specsList.innerHTML = product.specifications.map(s =>
-      `<li><strong>${s.label}:</strong> ${s.value}</li>`
-    ).join("");
+    specsList.innerHTML = product.specifications.map(s => {
+      const label = s.label.replace(/_/g, " ").split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
+      return `<li><strong>${label}:</strong> ${s.value}</li>`;
+    }).join("");
   } else if (specsList && product.specs?.length) {
     specsList.innerHTML = product.specs.map(s => `<li>${s}</li>`).join("");
   }
