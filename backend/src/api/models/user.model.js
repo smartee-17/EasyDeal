@@ -32,6 +32,7 @@ const userSchema = new mongoose.Schema(
 
     // Admin
     isBlocked: { type: Boolean, default: false },
+    isDeleted: { type: Boolean, default: false},
 
     // Verification flags
     isEmailVerified: { type: Boolean, default: false },
@@ -44,7 +45,8 @@ const userSchema = new mongoose.Schema(
     resetPasswordToken: { type: String, select: false },
     resetPasswordExpires: { type: Date, select: false },
 
-    lastLoginAt: { type: Date}
+    lastLoginAt: { type: Date},
+    deletedAt: { type: Date, default: null },
   },
   { 
     timestamps: true,
