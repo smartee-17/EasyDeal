@@ -7,17 +7,14 @@ const adminSchema = new mongoose.Schema({
         default: ["*"]
     },
 
-    lastLoginAt: { type: Date},
     loginCount: { type: Number, default: 0}
 
 });
 
-adminSchema.pre("save", function (next) {
+adminSchema.pre("save", async function () {
     if (this.isNew) {
         this.isEmailVerified = true;
     }
-
-    next();
 });
 
 const Admin = User.discriminator("admin", adminSchema);
