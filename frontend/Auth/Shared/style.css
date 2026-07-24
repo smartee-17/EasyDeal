@@ -1,8 +1,15 @@
 :root {
-  --logo-url: url('../../assets/images/logos/logo-light-rect.svg');
+  --logo-url: url("../../assets/images/logos/logo-light-rect.svg");
 }
 [data-theme="dark"] {
-  --logo-url: url('../../assets/images/logos/logo-dark-rect.svg');
+  --logo-url: url("../../assets/images/logos/logo-dark-rect.svg");
+}
+
+input,
+label {
+  font-family: inherit;
+  color: inherit;
+  font-size: inherit;
 }
 
 /* Component styles */
@@ -10,21 +17,22 @@
   display: grid;
   place-items: center;
   min-height: 100vh;
+  background-color: var(--color-bg-login);
 }
 .main {
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
   padding: 2rem;
-  border-radius: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rem;
+  display: grid;
+  gap: 52px;
+  grid-template-columns: repeat(2, 1fr);
+  width: 1230px;
+  height: 660px;
+  background-color: transparent;
 }
 .form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  margin-top: 50px;
 }
 .logo {
   width: 200px;
@@ -45,19 +53,307 @@
   background: none;
   border: none;
   position: absolute;
-  right: 0.5rem;
+  right: 130px;
   bottom: 0;
+  top: 24px;
 }
 .form__error-msg {
+  position: absolute;
   color: var(--color-error);
   margin: 0;
-  font-size: 0.875rem;
   height: 1rem; /* Reserve space for error messages to prevent layout shift */
+  font-weight: 500;
+  font-size: 14px;
+  top: 55px;
 }
+
+.warning-img {
+  display: inline-block;
+  font-size: 20px;
+}
+
 .form__submit-button {
   cursor: pointer;
   [data-submitting] & {
     opacity: 0.8;
     cursor: initial;
-  }	
+  }
+}
+
+/* SHOWCASE AKA LEFT SIDE */
+
+.showcase {
+  border-radius: 0.2rem;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 3px 10px 10px rgb(0 0 0/0.25);
+}
+
+.showcase > * {
+  flex: 1;
+}
+
+.showcase__img img {
+  border-radius: 0.2rem;
+}
+
+.showcase__description--logo {
+  max-height: 51px;
+  max-width: 51px;
+  margin-bottom: -1.7rem;
+}
+
+.showcase__description {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-color: #000;
+  color: #fff;
+}
+
+.showcase__description p {
+  font-weight: 600;
+  font-size: 18px;
+  max-width: 80%;
+  margin: 0 auto;
+}
+
+.showcase__description--highlight-dark {
+  color: var(--color-text-highlight-dark);
+}
+
+/* FORM SIDE */
+
+.form__logo {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form__logo h2 {
+  font-size: 18px;
+  letter-spacing: -1px;
+}
+
+.form__logo__img {
+  max-width: 84px;
+  max-height: 84px;
+  margin-bottom: -30px;
+}
+
+.form__email-input,
+.form__password-input,
+.form__phone-input,
+.form__username-input,
+.form__name-input {
+  border-radius: 3px;
+  padding: 10px;
+  outline: none;
+  border: none;
+  width: 80%;
+}
+
+.form__field label {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.signin {
+  margin-top: 45px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.signin__btn {
+  cursor: pointer;
+  border: none;
+  display: block;
+  max-width: 72px;
+  max-height: 32px;
+  padding: 8px 17px;
+  background-color: #000;
+  color: #fff;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.form__signup-link {
+  font-size: 12px;
+  color: #000;
+  font-weight: 600;
+}
+
+.form__signup-link a {
+  color: currentColor;
+}
+
+.form__field-forget {
+  color: #000;
+  font-weight: 500;
+  position: absolute;
+  right: 115px;
+  top: -3px;
+}
+
+input:user-invalid {
+  border: 1px solid red;
+}
+
+/* SOCIALS */
+
+.socials__container {
+  display: flex;
+  gap: 18px;
+}
+
+.socials__link:link,
+.socials__link:visited {
+  text-decoration: none;
+  display: inline-block;
+  max-width: 33.47px;
+  max-height: 33.47px;
+}
+
+/* SIGN UP */
+
+/* RADIO BUTTONS */
+.role-switch {
+  display: flex;
+  gap: 0;
+}
+
+.role-option {
+  cursor: pointer;
+  border-radius: 34px;
+}
+
+.role-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.role-option span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+  height: 44px;
+  padding: 0 16px;
+  border: 1px solid #bc9c9c;
+  background: #ffffff;
+  color: #000000;
+  user-select: none;
+  transition: 0.2s ease;
+  border-radius: 3px;
+}
+
+.role-option input:checked + span {
+  background: #7e4246;
+  color: #fff;
+}
+
+.role-option:has(input:checked) {
+  border: none;
+}
+
+/* SIGNUP ACTION */
+
+.signup {
+  text-align: center;
+  margin-top: 28px;
+}
+
+.signup__btn {
+  border: none;
+  background-color: #000;
+  color: #fff;
+  border-radius: 3px;
+  display: inline-block;
+  padding: 8px 17px;
+}
+
+/* SIGN UP ERROR MESSEGES */
+
+.name-err::before {
+  display: block;
+  content: "Name should contain only letters.";
+  color: #ff0000;
+  position: absolute;
+  font-weight: 500;
+  font-size: 12px;
+  top: 60px;
+}
+
+.name-err {
+  padding-bottom: 26px;
+}
+.name-space-err::before {
+  display: block;
+  content: "There can't be more than one space between names.";
+  color: #ff0000;
+  position: absolute;
+  font-weight: 500;
+  font-size: 12px;
+  top: 60px;
+}
+
+.name-space-err {
+  padding-bottom: 26px;
+}
+.phone-err::before {
+  display: block;
+  content: "Please enter a valid phone number.";
+  color: #ff0000;
+  position: absolute;
+  font-weight: 500;
+  font-size: 12px;
+  top: 60px;
+}
+
+.phone-err {
+  padding-bottom: 26px;
+}
+.email-err::before {
+  display: block;
+  content: "Please enter a valid email address.";
+  color: #ff0000;
+  position: absolute;
+  font-weight: 500;
+  font-size: 12px;
+  top: 60px;
+}
+
+.email-err {
+  padding-bottom: 26px;
+}
+.email-err::before {
+  display: block;
+  content: "Please enter a valid email address.";
+  color: #ff0000;
+  position: absolute;
+  font-weight: 500;
+  font-size: 12px;
+  top: 60px;
+}
+
+.email-err {
+  padding-bottom: 26px;
+}
+.password-err::before {
+  display: block;
+  content: "Password must be at least 8 characters long.";
+  color: #ff0000;
+  position: absolute;
+  font-weight: 500;
+  font-size: 12px;
+  top: 60px;
+}
+
+.password-err {
+  padding-bottom: 26px;
 }
