@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EasyDeal - My Favorites</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="buyersfav.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header class="favorites-header">
+        <div>
+          <h1>My Favorites</h1>
+          <p id="item-count">0 saved items</p>
+        </div>
+      </header>
+
+      <main id="favorites-grid" class="grid"></main>
+
+      <section id="empty-state" class="empty-state hidden">
+        <div class="empty-icon">❤️‍🔥</div>
+        <h3>Your favorites list is empty</h3>
+        <p>Explore products and tap the heart icon to save items here.</p>
+        <button class="btn-shop">Continue Shopping</button>
+      </section>
+    </div>
+
+    <script src="buyersfav.js"></script>
+  </body>
+</html>
