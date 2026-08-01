@@ -3,10 +3,7 @@ import { redis } from "../../config/redis.js";
 export const CacheService = {
     async get(key) {
         const data = await redis.get(key);
-
-        if(!data) return null;
-
-        return JSON.parse(data);
+        return data;
     },
 
     async set(key, value, ttl = 3600) {

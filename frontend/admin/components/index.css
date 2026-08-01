@@ -1,0 +1,10 @@
+/* ============================================================
+   EASYDEAL — COMPONENT STYLE ENTRY POINT
+   ============================================================ */
+
+@import "./icons/icons.css";
+@import "./navbar/navbar.css";
+@import "./footer/footer.css";
+@import "./sidebar/sidebar.css";
+@import "./toast/toast.css";
+@import "./modal/modal.css";
