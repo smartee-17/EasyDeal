@@ -5,7 +5,7 @@
    Prefix: /api (from app.js)
    ============================================================ */
 
-const BASE_URL = 'http://localhost:3000/api';
+const BASE_URL = 'http://localhost:3000/api' || 'https://easydeal.onrender.com/api/';
 
 export function getBaseUrl() {
   return BASE_URL;
