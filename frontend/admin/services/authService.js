@@ -51,19 +51,13 @@ export async function logout() {
 }
 
 export async function getMe() {
-  console.log("Calling /user/me");
-
   try {
     const response = await fetch(buildUrl('/user/me'), {
       ...defaultFetchOptions,
       method: 'GET',
     });
 
-    console.log("Status:", response.status);
-
     const result = await response.json();
-
-    console.log(result);
 
     if (!response.ok) {
       return { success: false, message: result.message || 'Not authenticated' };

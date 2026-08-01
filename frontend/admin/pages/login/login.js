@@ -61,10 +61,6 @@ form.addEventListener('submit', async (e) => {
     }
 
     showToast({ type: 'success', title: 'Welcome back', message: 'Login successful.' });
-
-    console.log(window.location.pathname);
-    console.log('../dashboard/dashboard.html');
-
     redirectToDashboard();  
   } catch (error) {
     console.error('[Login] unexpected error:', error);
