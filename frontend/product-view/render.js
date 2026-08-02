@@ -1,5 +1,7 @@
 import { openWA } from "../shared/utils.js";
 
+const CLIENT_URL = "http://localhost:5500/product-view/details";
+
 export function renderProductInfo(product, elements) {
   const { titleEl, priceEl, descEl } = elements;
   if (titleEl) titleEl.textContent = product.title;
@@ -156,6 +158,7 @@ export function renderGallery(product, elements) {
 function createCard(p) {
   return `
     <div class="product-card">
+    <a href="${CLIENT_URL}?id=${p._id}" class="product-card__link">
       <div class="product-card__img-container">
         <span class="product-card__profile-badge"><i class="fa-solid fa-circle-user"></i></span>
         <button class="product-card__heart-btn"><i class="fa-regular fa-heart"></i></button>
@@ -177,12 +180,13 @@ function createCard(p) {
             <i class="fa-solid fa-location-dot"></i> ${p.location || ""}
           </div>
         </div>
+        </div>
+        </a>
         <button class="product-card__chat-btn"
           data-phone="${p.seller?.whatsapp || ""}"
           data-title="${p.title}">
           <i class="fa-brands fa-whatsapp"></i> Whatsapp
         </button>
-      </div>
     </div>`;
 }
 
