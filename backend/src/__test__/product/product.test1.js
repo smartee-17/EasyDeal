@@ -1,6 +1,5 @@
-import express from 'express';
 import request from 'supertest';
-import productRoutes from '../../api/routes/product.route.js';
+import app from '../../app.js';
 import Product from '../../api/models/product.model.js';
 
 let consoleSpy;
@@ -39,17 +38,6 @@ jest.mock('../../api/middlewares/auth.middleware.js', () => ({
 }));
 
 jest.mock('../../api/models/product.model.js');
-
-// ─── MINIMAL TEST APP ─────────────────────────────────────────────────────────
-
-const buildApp = () => {
-  const app = express();
-  app.use(express.json());
-  app.use('/api/products', productRoutes);
-  return app;
-};
-
-const app = buildApp();
 
 // ─── Grab destroy spy ─────────────────────────────────────────────────────────
 const mockDestroy = jest.requireMock('../../config/cloudinary.js').default.uploader
