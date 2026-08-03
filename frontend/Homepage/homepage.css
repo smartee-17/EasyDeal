@@ -611,10 +611,11 @@ header {
   .h6 {
     width: 100%;
     max-width: 140px;
-    height: auto;
+    height: 150px;
     aspect-ratio: 1 / 1.4;
     margin-top: 0;
     grid-area: auto;
+    object-fit: cover;
   }
 
   .cards {
@@ -723,7 +724,7 @@ header {
   .h6 {
     width: 100%;
     max-width: 100px;
-    height: auto;
+    height: 120px;
     aspect-ratio: 1 / 1.4;
     margin-top: 0;
     grid-area: auto;
