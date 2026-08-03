@@ -19,7 +19,7 @@ const isTest = process.env.NODE_ENV === 'test';
 const authLimiter = isTest ? (req, res, next) => next () 
 : rateLimit({
   windowMs:        15 * 60 * 1000,
-  max:             10,
+  max:             20,
   standardHeaders: true,
   legacyHeaders:   false,
   message: {
