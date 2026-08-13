@@ -5,6 +5,8 @@ import User from '../models/user.model.js';
 import cloudinary, { upload } from '../../config/cloudinary.js';
 import { generateAltText } from '../library/visionAi.js';
 import { CATEGORY_ATTRIBUTES } from '../library/constants/categoryAttributes.constants.js';
+import { cacheWrapper, cacheDelete } from '../cache/cache.wrapper.js';
+import { CacheKeys } from '../cache/cache.keys.js';
 
 /**
  * Parses tags from the request body into a clean array of tag name strings.
@@ -207,9 +209,16 @@ export const getProductById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const product = await Product.findById(id)
-      .populate('category', 'name')
-      .populate('seller', 'name whatsappNumber');
+    const product = await cacheWrapper({
+      key: CacheKeys.product(id),
+      ttl: 3600,
+      fetchFunction: async () => {
+        return await Product.findById(id)
+          .populate('category', 'name')
+          .populate('seller', 'name whatsappNumber')
+          .lean();
+      },
+    });
 
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
@@ -246,7 +255,6 @@ export const createProduct = async (req, res) => {
     }
 
     const tagNames = parseTagNames(tags);
-
     if (tagNames.length > 5) {
       return res.status(400).json({ message: 'Maximum of 5 tags allowed' });
     }
@@ -280,28 +288,11 @@ export const createProduct = async (req, res) => {
       parsedSpecifications,
     );
 
-    const images = await Promise.all(
-      (req.files || []).map(async (file, index) => {
-        const cloudinaryUrl = file.path;
-
-        let aiDescription = null;
-        try {
-          aiDescription = await generateAltText(cloudinaryUrl, description);
-        } catch (visionError) {
-          console.error(`generateAltText failed: ${visionError.message}`);
-          aiDescription = null;
-        }
-
-        return {
-          url: cloudinaryUrl,
-          publicId: file.filename,
-          alt:
-            aiDescription !== null
-              ? `${title} - ${aiDescription.detailed}`
-              : `${title} - Image ${index + 1}`,
-        };
-      }),
-    );
+    const images = (req.files || []).map((file, index) => ({
+      url: file.path,
+      publicId: file.filename,
+      alt: `${title} - Image ${index + 1}`,
+    }));
 
     const product = new Product({
       title,
@@ -316,13 +307,43 @@ export const createProduct = async (req, res) => {
     });
 
     await product.save();
-    return sendResponse(
-      res,
-      201,
-      true,
-      'Product created successfully',
-      product,
-    );
+
+    // Respond immediately — user isn't stuck waiting on AI
+    sendResponse(res, 201, true, 'Product created successfully', product);
+
+    // Fire-and-forget: generate real AI alt text in the background,
+    // then patch the saved product afterward
+    (async () => {
+      try {
+        const updatedImages = await Promise.all(
+          product.images.map(async (image) => {
+            try {
+              const aiDescription = await generateAltText(
+                image.url,
+                description,
+              );
+              return {
+                ...image.toObject(),
+                alt: aiDescription
+                  ? `${title} - ${aiDescription.detailed}`
+                  : image.alt,
+              };
+            } catch (visionError) {
+              console.error(`generateAltText failed: ${visionError.message}`);
+              return image; // keep fallback alt on failure
+            }
+          }),
+        );
+
+        product.images = updatedImages;
+        await product.save();
+
+        // Cache was never set for a brand-new product, so nothing to invalidate here.
+        // But if you're caching getAllProducts later, invalidate that here too.
+      } catch (bgError) {
+        console.error(`Background alt-text update failed: ${bgError.message}`);
+      }
+    })();
   } catch (error) {
     console.error(`Error in createProduct: ${error.message}`);
     return res.status(500).json({ message: 'Internal server error' });
@@ -410,6 +431,8 @@ export const updateProduct = async (req, res) => {
 
     await product.save();
 
+    await cacheDelete(CacheKeys.product(id));
+
     return sendResponse(
       res,
       200,
@@ -432,6 +455,9 @@ export const deleteProduct = async (req, res) => {
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
+
+    // Invalidate cache — product no longer exists
+    await cacheDelete(CacheKeys.product(id));
 
     if (product.images && product.images.length > 0) {
       for (const image of product.images) {
