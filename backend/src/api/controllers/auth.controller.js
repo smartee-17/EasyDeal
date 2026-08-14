@@ -3,7 +3,7 @@ import {
   generateAccessToken,
   setAuthCookie,
   generateSecureToken,
-  hashToken
+  hashToken,
 } from '../library/token.js';
 import { sendResponse } from '../library/utils.js';
 import { sendEmail } from '../library/email/emailService/index.js';
@@ -38,24 +38,32 @@ export const register = async (req, res) => {
     } = req.body;
 
     if (!name || !email || !password || !phone) {
-      return res
-        .status(400)
-        .json({ message: 'Please fill all required fields' });
+      return sendResponse(res, 400, false, 'Please fill all required fields');
     }
 
     if (role === 'admin') {
-      return res
-        .status(403)
-        .json({
-          message: 'Admin accounts cannot be created via this endpoint',
-        });
+      return sendResponse(
+        res,
+        403,
+        false,
+        'Admin accounts cannot be created via this endpoint',
+      );
+      // return res.status(403).json({
+      //   message: 'Admin accounts cannot be created via this endpoint',
+      // });
     }
 
     const validRoles = ['user', 'seller'];
     if (!validRoles.includes(role)) {
-      return res.status(400).json({
-        message: `Invalid role. Must be one of: ${validRoles.join(', ')}`,
-      });
+      return sendResponse(
+        res,
+        400,
+        false,
+        `Invalid role. Must be one of: ${validRoles.join(', ')}`,
+      );
+      // return res.status(400).json({
+      //   message: `Invalid role. Must be one of: ${validRoles.join(', ')}`,
+      // });
     }
 
     const existingUser = await User.findOne({
@@ -68,7 +76,8 @@ export const register = async (req, res) => {
           : existingUser.username === username
             ? 'Username'
             : 'Phone';
-      return res.status(400).json({ message: `${field} already in use` });
+      return sendResponse(res, 400, false, `${field} already in use`);
+      // return res.status(400).json({ message: `${field} already in use` });
     }
 
     // Email verification token
@@ -116,9 +125,15 @@ export const login = async (req, res) => {
     const { emailOrUsername, password, rememberMe = false } = req.body;
 
     if (!emailOrUsername || !password) {
-      return res
-        .status(400)
-        .json({ message: 'email or username and password are required' });
+      return sendResponse(
+        res,
+        400,
+        false,
+        'Email or username and password are required',
+      );
+      // return res
+      //   .status(400)
+      //   .json({ message: 'email or username and password are required' });
     }
 
     const user = await User.findOne({
@@ -129,18 +144,26 @@ export const login = async (req, res) => {
     }).select('+password');
 
     if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return sendResponse(res, 401, false, 'Invalid credentials');
+      // return res.status(401).json({ message: 'Invalid credentials' });
     }
 
     if (user.isBlocked) {
-      return res
-        .status(401)
-        .json({ message: 'This account has been suspended. Contact support.' });
+      return sendResponse(
+        res,
+        401,
+        false,
+        'This account has been suspended. Contact support',
+      );
+      // return res
+      //   .status(401)
+      //   .json({ message: 'This account has been suspended. Contact support.' });
     }
 
     const passwordMatch = await user.matchPassword(password);
     if (!passwordMatch) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return sendResponse(res, 401, false, 'Invalid credentials');
+      // return res.status(401).json({ message: 'Invalid credentials' });
     }
 
     const admin = user.role === 'admin';
@@ -159,29 +182,24 @@ export const login = async (req, res) => {
     });
   } catch (error) {
     console.error('[Auth] login error:', error.message);
-    return res.status(500).json({ message: 'Server error during login' });
+    return sendResponse(res, 500, false, 'Server error during login');
+    // return res.status(500).json({ message: 'Server error during login' });
   }
 };
 
 // Logout
 export const logout = async (req, res) => {
-  try{ 
-    res.clearCookie("token");
+  try {
+    res.clearCookie('token');
 
-    return sendResponse(
-      res, 
-      200,
-      true, 
-      "Logged out successfully",
-      null
-    );
-  } 
-  catch(error) {
+    return sendResponse(res, 200, true, 'Logged out successfully', null);
+  } catch (error) {
     console.error('[Auth] logout error:', error.message);
 
-    return res.status(500).json({
-      message: 'Server error during logout'
-    });
+    return sendResponse(res, 500, false, 'Server error during logout');
+    // return res.status(500).json({
+    //   message: 'Server error during logout',
+    // });
   }
 };
 
@@ -196,9 +214,15 @@ export const verifyEmail = async (req, res) => {
     });
 
     if (!user) {
-      return res
-        .status(400)
-        .json({ message: 'Verification link is invalid or has expired' });
+      return sendResponse(
+        res,
+        400,
+        false,
+        'Verification link is invalid or has expired',
+      );
+      // return res
+      //   .status(400)
+      //   .json({ message: 'Verification link is invalid or has expired' });
     }
 
     user.isEmailVerified = true;
@@ -206,10 +230,12 @@ export const verifyEmail = async (req, res) => {
     user.emailVerificationTokenExpire = undefined;
     await user.save({ validateBeforeSave: false });
 
-    return res.status(200).json({ message: 'Email verified successfully' });
+    return sendResponse(res, 200, true, 'Email verified successfully');
+    // return res.status(200).json({ message: 'Email verified successfully' });
   } catch (error) {
     console.error('[Auth] verifyEmail error:', error.message);
-    return res.status(500).json({ message: 'Server error' });
+    return sendResponse(res, 500, false, 'Server error');
+    // return res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -218,19 +244,27 @@ export const resendVerification = async (req, res) => {
     const { email } = req.body;
 
     if (!email) {
-      return res.status(400).json({ message: 'email is required' });
+      return sendResponse(res, 400, false, 'Email is required');
+      // return res.status(400).json({ message: 'email is required' });
     }
 
     const user = await User.findOne({ email: email.toLowerCase() });
 
     if (!user) {
-      return res
-        .status(200)
-        .json({ message: 'if an account exists, a new code has been sent' });
+      return sendResponse(
+        res,
+        200,
+        true,
+        'If an account exits, a new code has been sent',
+      );
+      // return res
+      //   .status(200)
+      //   .json({ message: 'if an account exists, a new code has been sent' });
     }
 
     if (user.isEmailVerified) {
-      return res.status(400).json({ message: 'Email is already verified' });
+      return sendResponse(res, 400, false, 'Email is already verified');
+      // return res.status(400).json({ message: 'Email is already verified' });
     }
 
     const { raw: rawEmailToken, hashed: hashedEmailToken } =
@@ -255,7 +289,8 @@ export const resendVerification = async (req, res) => {
     });
   } catch (error) {
     console.error('[Auth] resendVerification error:', error.message);
-    return res.status(500).json({ message: 'Server error' });
+    return sendResponse(res, 500, false, 'Server error');
+    // return res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -264,11 +299,11 @@ export const forgotPassword = async (req, res) => {
     const { email } = req.body;
 
     if (!email) {
-      return res.status(400).json({
-        message: 'email is required',
-      });
+      return sendResponse(res, 400, false, 'Email is required');
+      // return res.status(400).json({
+      //   message: 'email is required',
+      // });
     }
-
 
     const user = await User.findOne({
       email: email.toLowerCase(),
@@ -279,11 +314,11 @@ export const forgotPassword = async (req, res) => {
         res,
         200,
         true,
-        "If an account exists for this email, a reset link has been sent"
+        'If an account exists for this email, a reset link has been sent',
       );
     }
 
-    const { raw: rawToken, hashed} = generateSecureToken();
+    const { raw: rawToken, hashed } = generateSecureToken();
 
     user.resetPasswordToken = hashed;
 
@@ -300,26 +335,33 @@ export const forgotPassword = async (req, res) => {
       },
     });
 
-
     return sendResponse(
       res,
       200,
       true,
-      "If an account exists for this email, a reset link has been sent"
+      'If an account exists for this email, a reset link has been sent',
     );
-  } 
-  catch (error) {
-    console.error("[Auth] forgotPassword error:", error.message);
-    return res.status(500).json({ message: "Server error" });
+  } catch (error) {
+    console.error('[Auth] forgotPassword error:', error.message);
+    return sendResponse(res, 500, false, 'Server error');
+    // return res.status(500).json({ message: 'Server error' });
   }
-}
+};
 export const resetPassword = async (req, res) => {
-  try{
+  try {
     const { token } = req.params;
     const { newPassword } = req.body;
 
     if (!newPassword || newPassword.length < 6) {
-      return res.status(400).json({ message: "New password must be at least 6 characters" });
+      return sendResponse(
+        res,
+        400,
+        false,
+        'New password must be at least 6 characters',
+      );
+      // return res
+      //   .status(400)
+      //   .json({ message: 'New password must be at least 6 characters' });
     }
 
     const hashed = hashToken(token);
@@ -327,10 +369,18 @@ export const resetPassword = async (req, res) => {
     const user = await User.findOne({
       resetPasswordToken: hashed,
       resetPasswordExpires: { $gt: new Date() },
-    }).select("+resetPasswordToken +resetPasswordExpires");
+    }).select('+resetPasswordToken +resetPasswordExpires');
 
-    if(!user) {
-      return res.status(400).json({ message: "Reset link is invalid or has expired"});
+    if (!user) {
+      return sendResponse(
+        res,
+        400,
+        false,
+        'Reset link is invalid or has expired',
+      );
+      // return res
+      //   .status(400)
+      //   .json({ message: 'Reset link is invalid or has expired' });
     }
 
     user.password = newPassword;
@@ -339,10 +389,18 @@ export const resetPassword = async (req, res) => {
 
     await user.save();
 
-    return res.json({ message: "Password reset successful. You can now log in."})
-  } 
-  catch (error) {
-    console.error("[Auth] resetPassword error:", error.message);
-    return res.status(500).json({ message: "Server error" });
+    return sendResponse(
+      res,
+      200,
+      true,
+      'Password reset successful. You can now log in.',
+    );
+    // return res.json({
+    //   message: 'Password reset successful. You can now log in.',
+    // });
+  } catch (error) {
+    console.error('[Auth] resetPassword error:', error.message);
+    return sendResponse(res, 500, false, 'Server error');
+    // return res.status(500).json({ message: 'Server error' });
   }
 };
