@@ -30,12 +30,21 @@ const STAT_CONFIG = [
 ];
 
 async function loadDashboard() {
- const authed = await initAuthGuard();
+  const authed = await initAuthGuard();
   if (!authed) return;
 
   try {
     const response = await getDashboardStats();
-    const stats = response.data?.stats || {};
+
+    // Temporary development logging — remove once verified in production
+    console.log('[Dashboard] Overview response:', response);
+    console.log('[Dashboard] Overview data:', response.data);
+
+    if (!response.success) {
+      throw new Error(response.message || 'Failed to fetch dashboard stats');
+    }
+
+    const stats = response.data || {};
     renderStats(stats);
     renderOverview(stats);
   } catch (error) {
@@ -49,6 +58,9 @@ async function loadDashboard() {
 function renderStats(stats) {
   statsGrid.innerHTML = STAT_CONFIG.map(cfg => {
     const value = getNestedValue(stats, cfg.key);
+    if (value === undefined) {
+      console.error(`[Dashboard] Required stat field missing: ${cfg.key}`);
+    }
     return `
       <div class="stat-card">
         <div class="stat-card__header">
@@ -87,16 +99,21 @@ function renderOverview(stats) {
 }
 
 function getNestedValue(obj, path) {
-  return path.split('.').reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : 0), obj);
+  return path.split('.').reduce((acc, key) => {
+    if (acc === undefined || acc === null) return undefined;
+    return acc[key] !== undefined ? acc[key] : undefined;
+  }, obj);
 }
 
 function formatNumber(n) {
+  if (n === undefined || n === null) return '—';
   const num = Number(n);
   if (Number.isNaN(num)) return '—';
   return num.toLocaleString();
 }
 
 function formatCurrency(n) {
+  if (n === undefined || n === null) return '—';
   const num = Number(n);
   if (Number.isNaN(num)) return '—';
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);

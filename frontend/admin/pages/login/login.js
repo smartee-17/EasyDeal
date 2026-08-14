@@ -60,8 +60,15 @@ form.addEventListener('submit', async (e) => {
       return;
     }
 
-    showToast({ type: 'success', title: 'Welcome back', message: 'Login successful.' });
-    redirectToDashboard();  
+    showToast({
+      type: 'success',
+      title: 'Welcome back',
+      message: 'Login successful. Redirecting in 10 seconds...'
+    });
+
+    setTimeout(() => {
+      redirectToDashboard();
+    }, 10 * 1000);  
   } catch (error) {
     console.error('[Login] unexpected error:', error);
     showAlert('An unexpected error occurred. Please try again.');

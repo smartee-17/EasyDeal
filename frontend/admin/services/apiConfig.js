@@ -1,11 +1,21 @@
 /* ============================================================
    EASYDEAL — API CONFIGURATION
    Purpose: Centralized backend URL and fetch defaults
-   Backend: http://localhost:3000 (from server.js)
-   Prefix: /api (from app.js)
+   Backend: Localhost / Render
+   Prefix: /api
    ============================================================ */
+const hostname = window.location.hostname;
 
-const BASE_URL = 'http://localhost:3000/api' || 'https://easydeal.onrender.com/api/';
+const isPrivateNetworkHost =
+  hostname === 'localhost' ||
+  hostname === '127.0.0.1' ||
+  /^192\.168\.\d{1,3}\.\d{1,3}$/.test(hostname) ||
+  /^10\.\d{1,3}\.\d{1,3}$/.test(hostname) ||
+  /^172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}$/.test(hostname);
+
+const BASE_URL = isPrivateNetworkHost
+  ? `http://${hostname}:3000/api`
+  : 'https://easydeal.onrender.com/api';
 
 export function getBaseUrl() {
   return BASE_URL;
@@ -15,7 +25,7 @@ export const defaultFetchOptions = {
   credentials: 'include',
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json',
+    Accept: 'application/json',
   },
 };
 
