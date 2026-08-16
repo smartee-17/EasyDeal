@@ -201,7 +201,8 @@ export const getAllProducts = async (req, res) => {
     );
   } catch (error) {
     console.error(`Error in getAllProducts: ${error.message}`);
-    return res.status(500).json({ message: 'Internal server error' });
+    return sendResponse(res, 500, false, 'Internal server error');
+    // return res.status(500).json({ message: 'Internal server error' });
   }
 };
 
@@ -221,7 +222,8 @@ export const getProductById = async (req, res) => {
     });
 
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+      return sendResponse(res, 404, false, 'Product not found');
+      // return res.status(404).json({ message: 'Product not found' });
     }
 
     return sendResponse(
@@ -233,7 +235,8 @@ export const getProductById = async (req, res) => {
     );
   } catch (error) {
     console.error(`Error in getProduct: ${error.message}`);
-    return res.status(500).json({ message: 'Internal server error' });
+    return sendResponse(res, 500, false, 'Internal server error');
+    // return res.status(500).json({ message: 'Internal server error' });
   }
 };
 
@@ -251,12 +254,14 @@ export const createProduct = async (req, res) => {
     } = req.body;
 
     if (req.files && req.files.length > 5) {
-      return res.status(400).json({ message: 'Maximum of 5 images allowed' });
+      return sendResponse(res, 400, false, 'Maximum of 5 images allowed');
+      // return res.status(400).json({ message: 'Maximum of 5 images allowed' });
     }
 
     const tagNames = parseTagNames(tags);
     if (tagNames.length > 5) {
-      return res.status(400).json({ message: 'Maximum of 5 tags allowed' });
+      return sendResponse(res, 400, false, 'Maximum of 5 tags allowed');
+      // return res.status(400).json({ message: 'Maximum of 5 tags allowed' });
     }
 
     const tagIds = await resolveTagIds(tagNames);
@@ -269,9 +274,10 @@ export const createProduct = async (req, res) => {
             ? JSON.parse(specifications)
             : specifications;
       } catch (parseError) {
-        return res
-          .status(400)
-          .json({ message: 'Invalid specifications format' });
+        return sendResponse(res, 400, false, 'Invalid specifications format');
+        // return res
+        //   .status(400)
+        //   .json({ message: 'Invalid specifications format' });
       }
     }
 
@@ -280,7 +286,8 @@ export const createProduct = async (req, res) => {
       parsedSpecifications,
     );
     if (!specValidation.valid) {
-      return res.status(400).json({ message: specValidation.message });
+      return sendResponse(res, 400, false, specValidation.message);
+      // return res.status(400).json({ message: specValidation.message });
     }
 
     const normalizedSpecifications = normalizeSpecifications(
@@ -346,7 +353,8 @@ export const createProduct = async (req, res) => {
     })();
   } catch (error) {
     console.error(`Error in createProduct: ${error.message}`);
-    return res.status(500).json({ message: 'Internal server error' });
+    return sendResponse(res, 500, false, 'Internal server error');
+    // return res.status(500).json({ message: 'Internal server error' });
   }
 };
 
@@ -367,17 +375,25 @@ export const updateProduct = async (req, res) => {
     const product = await Product.findById(id);
 
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+      return sendResponse(res, 404, false, 'Product not found');
+      // return res.status(404).json({ message: 'Product not found' });
     }
 
     if (req.files && req.files.length > 5) {
-      return res.status(400).json({ message: 'Maximum of 5 images allowed' });
+      return sendResponse(res, 400, false, 'Maximum of 5 images allowed');
+      // return res.status(400).json({ message: 'Maximum of 5 images allowed' });
     }
 
     if (product.seller.toString() !== userId.toString()) {
-      return res
-        .status(403)
-        .json({ message: 'Not authorized to update this product' });
+      return sendResponse(
+        res,
+        403,
+        false,
+        'Not authorized to update this product',
+      );
+      // return res
+      //   .status(403)
+      //   .json({ message: 'Not authorized to update this product' });
     }
 
     if (req.files && req.files.length > 0) {
@@ -402,9 +418,10 @@ export const updateProduct = async (req, res) => {
             ? JSON.parse(specifications)
             : specifications;
       } catch (parseError) {
-        return res
-          .status(400)
-          .json({ message: 'Invalid specifications format' });
+        return sendResponse(res, 400, false, 'Invalid specifications format');
+        // return res
+        //   .status(400)
+        //   .json({ message: 'Invalid specifications format' });
       }
 
       const effectiveCategory = category || product.category;
@@ -413,7 +430,8 @@ export const updateProduct = async (req, res) => {
         parsedSpecifications,
       );
       if (!specValidation.valid) {
-        return res.status(400).json({ message: specValidation.message });
+        return sendResponse(res, 400, false, specValidation.message);
+        // return res.status(400).json({ message: specValidation.message });
       }
 
       product.specifications = normalizeSpecifications(
@@ -442,7 +460,8 @@ export const updateProduct = async (req, res) => {
     );
   } catch (error) {
     console.error(`Error in updateProduct: ${error.message}`);
-    return res.status(500).json({ message: 'Internal server error' });
+    return sendResponse(res, 500, false, 'Internal server error');
+    // return res.status(500).json({ message: 'Internal server error' });
   }
 };
 
@@ -453,7 +472,8 @@ export const deleteProduct = async (req, res) => {
     const product = await Product.findByIdAndDelete(id);
 
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+      return sendResponse(res, 404, false, 'Product not found');
+      // return res.status(404).json({ message: 'Product not found' });
     }
 
     // Invalidate cache — product no longer exists
@@ -474,6 +494,7 @@ export const deleteProduct = async (req, res) => {
     );
   } catch (error) {
     console.error(`Error in deleteProduct: ${error.message}`);
-    return res.status(500).json({ message: 'Internal server error' });
+    return sendResponse(res, 500, false, 'Internal server error');
+    // return res.status(500).json({ message: 'Internal server error' });
   }
 };
