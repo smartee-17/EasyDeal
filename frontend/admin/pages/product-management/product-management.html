@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>Product Management — EasyDeal Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../global/index.css" />
+  <link rel="stylesheet" href="../../components/index.css" />
+  <link rel="stylesheet" href="./product-management.css" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../../assets/images/logos/icon-light.svg">
+</head>
+<body>
+  <div class="admin-layout">
+    <div class="backdrop" aria-hidden="true"></div>
+
+    <aside class="admin-layout__sidebar" aria-label="Admin navigation">
+      <div class="sidebar">
+        <div class="sidebar__header">
+          <a href="../dashboard/dashboard.html" class="sidebar__brand">
+            <div style="width:1.75rem;height:1.75rem;background:var(--color-primary);border-radius:var(--radius-sm);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.875rem;">E</div>
+            <span>Easy<span style="color:var(--color-primary)">Deal</span></span>
+          </a>
+          <button type="button" class="sidebar__close" aria-label="Close navigation menu">
+            <span data-render-icon="close"></span>
+          </button>
+        </div>
+        <nav class="sidebar__nav" aria-label="Sidebar">
+          <span class="sidebar__section-title">Main</span>
+          <a href="../dashboard/dashboard.html" class="sidebar__link" data-icon="dashboard">
+            <span data-render-icon="dashboard"></span> Dashboard Overview
+          </a>
+          <a href="../products/products.html" class="sidebar__link" data-icon="products">
+            <span data-render-icon="products"></span> Products
+          </a>
+          <a href="./product-management.html" class="sidebar__link" data-icon="product-management">
+            <span data-render-icon="product-management"></span> Product Management
+          </a>
+          <a href="../users/users.html" class="sidebar__link" data-icon="users">
+            <span data-render-icon="users"></span> User Management
+          </a>
+        </nav>
+        <div class="sidebar__footer">
+          <button type="button" class="sidebar__logout" data-icon="logout">
+            <span data-render-icon="logout"></span> Log Out
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <div class="admin-layout__main">
+      <header class="navbar navbar--admin" role="banner">
+        <div class="navbar__left">
+          <a href="../dashboard/dashboard.html" class="navbar__logo">
+            <div style="width:2rem;height:2rem;background:var(--color-primary);border-radius:var(--radius-sm);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1rem;">E</div>
+            <span>Easy<span class="navbar__logo-accent">Deal</span></span>
+          </a>
+        </div>
+        <div class="navbar__center">
+          <div class="navbar__search">
+            <span class="navbar__search-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </span>
+            <input type="search" class="navbar__search-input" placeholder="Search..." aria-label="Search" />
+            <button type="button" class="navbar__search-clear" aria-label="Clear search">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="navbar__right">
+          <button type="button" class="navbar__icon-btn navbar__search-toggle" aria-label="Open search" aria-expanded="false"></button>
+          <button type="button" class="navbar__icon-btn navbar__theme-btn" aria-label="Toggle theme">
+            <span class="icon--sun" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            </span>
+            <span class="icon--moon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </span>
+          </button>
+          <button type="button" class="navbar__icon-btn navbar__hamburger" aria-label="Open navigation menu" aria-expanded="false"></button>
+        </div>
+      </header>
+
+      <div class="navbar__search-mobile" aria-hidden="true">
+        <div class="navbar__search">
+          <span class="navbar__search-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </span>
+          <input type="search" class="navbar__search-input" placeholder="Search..." aria-label="Search" />
+        </div>
+      </div>
+
+      <main class="admin-layout__content">
+        <div class="page-header">
+          <h1 class="page-header__title">Product Management</h1>
+          <p class="page-header__subtitle">Advanced product tools coming soon.</p>
+        </div>
+        <div class="data-table-wrap" style="padding:var(--space-16);text-align:center;">
+          <div style="color:var(--color-text-tertiary);margin-bottom:var(--space-4);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          </div>
+          <h2 style="font-size:var(--font-size-h4);color:var(--color-text-primary);margin-bottom:var(--space-2);">Under Construction</h2>
+          <p style="color:var(--color-text-muted);max-width:400px;margin:0 auto;">This page is a placeholder for advanced product management features. Check back later.</p>
+        </div>
+      </main>
+
+      <footer class="footer footer--admin" role="contentinfo">
+        <div class="footer__bottom">
+          <p class="footer__copyright">&copy; 2026 EasyDeal. All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script type="module" src="./product-management.js"></script>
+</body>
+</html>
