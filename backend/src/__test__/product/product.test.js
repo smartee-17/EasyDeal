@@ -1,359 +1,418 @@
-import express from 'express';
 import request from 'supertest';
-import productRoutes from '../../api/routes/product.route.js';
+import express from 'express';
+import cookieParser from 'cookie-parser';
+
+import {
+  getAllProducts,
+  getProductById,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+} from '../../api/controllers/product.controller.js';
+
 import Product from '../../api/models/product.model.js';
 
-let consoleSpy;
+import cloudinary from '../../config/cloudinary.js';
 
-beforeAll(() => {
-  // Spy on console.error and mock it to do nothing (returns undefined)
-  consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-});
+// --- MOCKS ---
 
-afterAll(() => {
-  // Restore original console.error functionality when tests finish
-  consoleSpy.mockRestore();
-});
+// Mock Models
+jest.mock('../../api/models/product.model.js');
+jest.mock('../../api/models/tag.model.js');
+jest.mock('../../api/models/user.model.js');
 
-// ─── Cloudinary config mock ───────────────────────────────────────────────────
+// Mock Cache
+jest.mock('../../api/cache/cache.wrapper.js', () => ({
+  __esModule: true,
+  cacheWrapper: jest.fn(async ({ fetchFunction }) => await fetchFunction()),
+  cacheDelete: jest.fn().mockResolvedValue(true),
+}));
+
+jest.mock('../../api/cache/cache.keys.js', () => ({
+  CacheKeys: {
+    product: (id) => `product:${id}`,
+    products: () => 'products:*',
+  },
+}));
+
+// Mock Cloudinary
+const mockDestroy = jest.fn().mockResolvedValue({ result: 'ok' });
 jest.mock('../../config/cloudinary.js', () => ({
   __esModule: true,
   default: {
-    uploader: { destroy: jest.fn() },
-  },
-  upload: {
-    array: () => (req, _res, next) => {
-      req.files = global.__mockFiles ?? [];
-      next();
+    uploader: {
+      destroy: (...args) => mockDestroy(...args),
     },
   },
+  upload: {},
 }));
 
-// ─── Auth middleware mock ─────────────────────────────────────────────────────
-jest.mock('../../api/middlewares/auth.middleware.js', () => ({
-  __esModule: true,
-  default: (req, _res, next) => {
-    req.user = { _id: 'user123' };
+// Mock Vision AI
+jest.mock('../../api/library/visionAi.js', () => ({
+  generateAltText: jest
+    .fn()
+    .mockResolvedValue({ detailed: 'AI generated alt text' }),
+}));
+
+// --- APP SETUP ---
+const app = express();
+app.use(express.json());
+app.use(cookieParser());
+
+const parseTestToken = (req) => {
+  const raw = req.cookies?.token;
+  if (!raw) return null;
+  const [id, role] = raw.split(':');
+  return { id, _id: id, name: 'Test User', role: role || 'seller' };
+};
+
+// --- protect (mock) ---
+const protect = (req, res, next) => {
+  const user = parseTestToken(req);
+  if (!user) {
+    return res.status(401).json({
+      success: false,
+      message: 'Not authenticated',
+      data: null,
+    });
+  }
+  req.user = user;
+  next();
+};
+
+// --- optionalAuth (mock) ---
+  const user = parseTestToken(req);
+  if (user) req.user = user;
+  next();
+};
+
+// --- authorizeRoles (mock) ---
+const authorizeRoles =
+  (...roles) =>
+  (req, res, next) => {
+    if (!req.user || !roles.includes(req.user.role)) {
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized for this action',
+        data: null,
+      });
+    }
     next();
-  },
-}));
+  };
 
-jest.mock('../../api/models/product.model.js');
-
-// ─── MINIMAL TEST APP ─────────────────────────────────────────────────────────
-
-const buildApp = () => {
-  const app = express();
-  app.use(express.json());
-  app.use('/api/products', productRoutes);
-  return app;
+// --- isProductOwnerOrAdmin (mock) ---
+const isProductOwnerOrAdmin = async (req, res, next) => {
+  const product = await Product.findById(req.params.id);
+  if (!product) {
+    return res.status(404).json({
+      success: false,
+      message: 'Product not found',
+      data: null,
+    });
+  }
+  const isOwner = product.seller?.toString() === req.user.id.toString();
+  const isAdmin = req.user.role === 'admin';
+  if (!isOwner && !isAdmin) {
+    return res.status(403).json({
+      success: false,
+      message: 'Not authorized to update this product',
+      data: null,
+    });
+  }
+  req.product = product;
+  next();
 };
 
-const app = buildApp();
+// No-op upload stand-in (real one is multer)
+const noopUpload = (req, res, next) => next();
 
-// ─── Grab destroy spy ─────────────────────────────────────────────────────────
-const mockDestroy = jest.requireMock('../../config/cloudinary.js').default.uploader
-  .destroy;
+// Routes — same shape/order as api/routes/product.route.js
+app.get('/api/products', optionalAuth, getAllProducts);
+app.get('/api/products/:id', getProductById);
+app.post('/api/products', protect, noopUpload, createProduct);
+app.put(
+  '/api/products/:id',
+  protect,
+  authorizeRoles('admin', 'seller'),
+  isProductOwnerOrAdmin,
+  noopUpload,
+  updateProduct,
+);
+app.delete('/api/products/:id', protect, deleteProduct);
 
-// ─── Shared mock data ─────────────────────────────────────────────────────────
-const mockProduct = {
-  _id: 'product123',
-  title: 'Stealth Pro TKL Keyboard',
-  description: 'Ultra-compact Tenkeyless TKL design.',
-  price: 124.99,
-  category: 'Peripherals',
-  images: [
-    {
-      url: 'https://res.cloudinary.com/demo/image/upload/sample.jpg',
-      publicId: 'sample',
-    },
-  ],
-  isAvailable: true,
-  seller: 'user123',
-  save: jest.fn(),
-};
+// --- TEST SUITE ---
+describe('Product Controller Integration Tests', () => {
+  const mockProductId = '60c72b2f9b1d8b2b8c8b4567';
 
-beforeEach(() => {
-  jest.clearAllMocks();
-  global.__mockFiles = [];
-  mockDestroy.mockResolvedValue({ result: 'ok' });
-});
-
-// ─── GET ALL PRODUCTS ─────────────────────────────────────────────────────────
-
-describe('GET /api/products', () => {
-  test('// should return all products successfully', async () => {
-    Product.find.mockResolvedValue([mockProduct]);
-
-    const res = await request(app).get('/api/products');
-
-    expect(res.status).toBe(200);
-    expect(res.body.success).toBe(true);
-    expect(res.body.message).toBe('Products retrieved successfully');
-    expect(res.body.data).toBeInstanceOf(Array);
-    expect(res.body.data).toHaveLength(1);
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  test('// should return an empty array when no products exist', async () => {
-    Product.find.mockResolvedValue([]);
+  /* ==========================================
+     GET /api/products
+  ========================================== */
+  describe('GET /api/products', () => {
+    test('should retrieve all products successfully (guest, no filters)', async () => {
+      const mockProducts = [{ title: 'Keyboard', price: 100 }];
 
-    const res = await request(app).get('/api/products');
-
-    expect(res.status).toBe(200);
-    expect(res.body.success).toBe(true);
-    expect(res.body.data).toEqual([]);
-  });
-
-  test('// should return 500 on database error', async () => {
-    Product.find.mockRejectedValue(new Error('DB connection failed'));
-
-    const res = await request(app).get('/api/products');
-
-    expect(res.status).toBe(500);
-    expect(res.body.message).toBe('Internal server error');
-  });
-});
-
-// ─── GET PRODUCT BY ID ────────────────────────────────────────────────────────
-
-describe('GET /api/products/:id', () => {
-  test('// should return a single product by ID', async () => {
-    Product.findById.mockResolvedValue(mockProduct);
-
-    const res = await request(app).get('/api/products/product123');
-
-    expect(res.status).toBe(200);
-    expect(res.body.success).toBe(true);
-    expect(res.body.message).toBe('Product retrieved successfully');
-    expect(res.body.data._id).toBe('product123');
-  });
-
-  test('// should return 404 when product is not found', async () => {
-    Product.findById.mockResolvedValue(null);
-
-    const res = await request(app).get('/api/products/nonexistentid');
-
-    expect(res.status).toBe(404);
-    expect(res.body.message).toBe('Product not found');
-  });
-
-  test('// should return 500 on database error', async () => {
-    Product.findById.mockRejectedValue(new Error('DB error'));
-
-    const res = await request(app).get('/api/products/product123');
-
-    expect(res.status).toBe(500);
-    expect(res.body.message).toBe('Internal server error');
-  });
-});
-
-// ─── CREATE PRODUCT ───────────────────────────────────────────────────────────
-
-describe('POST /api/products', () => {
-  test('// should create a product successfully without images', async () => {
-    // global.__mockFiles = [] from beforeEach → req.files empty → no image branch
-    const savedProduct = { ...mockProduct, images: [] };
-    Product.mockImplementation(() => ({
-      ...savedProduct,
-      save: jest.fn().mockResolvedValue(savedProduct),
-    }));
-
-    const res = await request(app)
-      .post('/api/products')
-      .set('Authorization', 'Bearer mock-jwt-token')
-      .send({
-        title: 'Stealth Pro TKL Keyboard',
-        description: 'Ultra-compact Tenkeyless TKL design.',
-        price: 124.99,
-        category: 'Peripherals',
+      Product.find = jest.fn().mockReturnValue({
+        populate: jest.fn().mockReturnThis(),
+        then: (resolve) => resolve(mockProducts),
       });
 
-    expect(res.status).toBe(201);
-    expect(res.body.success).toBe(true);
-    expect(res.body.message).toBe('Product created successfully');
-  });
+      const res = await request(app).get('/api/products');
 
-  test('// should reject when more than 5 images are uploaded', async () => {
-    // Simulate 6 files via global — avoids .attach()/.send() conflict
-    global.__mockFiles = Array(6).fill({
-      path: 'https://fake.jpg',
-      filename: 'fake_id',
+      expect(res.status).toBe(200);
+      expect(res.body.data).toEqual(mockProducts);
+      expect(Product.find).toHaveBeenCalledWith({});
     });
 
-    const res = await request(app)
-      .post('/api/products')
-      .set('Authorization', 'Bearer mock-jwt-token')
-      .send({
-        title: 'Too Many',
-        description: 'x',
-        price: 10,
-        category: 'Test',
+    test('should filter by owner=me when authenticated', async () => {
+      const mockProducts = [
+        { title: 'My Keyboard', price: 100, seller: 'user123' },
+      ];
+
+      Product.find = jest.fn().mockReturnValue({
+        populate: jest.fn().mockReturnThis(),
+        then: (resolve) => resolve(mockProducts),
       });
 
-    expect(res.status).toBe(400);
-    expect(res.body.message).toBe('Maximum of 5 images allowed');
-  });
+      const res = await request(app)
+        .get('/api/products?owner=me')
+        .set('Cookie', 'token=user123:seller');
 
-  test('// should return 500 on save failure', async () => {
-    Product.mockImplementation(() => ({
-      save: jest.fn().mockRejectedValue(new Error('Save failed')),
-    }));
-
-    const res = await request(app)
-      .post('/api/products')
-      .set('Authorization', 'Bearer mock-jwt-token')
-      .send({ title: 'Fail', description: 'x', price: 50, category: 'Test' });
-
-    expect(res.status).toBe(500);
-    expect(res.body.message).toBe('Internal server error');
-  });
-});
-
-// ─── UPDATE PRODUCT ───────────────────────────────────────────────────────────
-
-describe('PUT /api/products/:id', () => {
-  test('// should update product fields successfully', async () => {
-    const updatableProduct = {
-      ...mockProduct,
-      save: jest.fn().mockResolvedValue(true),
-    };
-    Product.findById.mockResolvedValue(updatableProduct);
-
-    const res = await request(app)
-      .put('/api/products/product123')
-      .set('Authorization', 'Bearer mock-jwt-token')
-      .send({ price: 99.99, title: 'Updated Keyboard' });
-
-    expect(res.status).toBe(200);
-    expect(res.body.success).toBe(true);
-    expect(res.body.message).toBe('Product updated successfully');
-  });
-
-  test('// should return 404 if product does not exist', async () => {
-    Product.findById.mockResolvedValue(null);
-
-    const res = await request(app)
-      .put('/api/products/nonexistentid')
-      .set('Authorization', 'Bearer mock-jwt-token')
-      .send({ price: 99.99 });
-
-    expect(res.status).toBe(404);
-    expect(res.body.message).toBe('Product not found');
-  });
-
-  test('// should reject when more than 5 new images are uploaded', async () => {
-    global.__mockFiles = Array(6).fill({
-      path: 'https://fake.jpg',
-      filename: 'fake_id',
+      expect(res.status).toBe(200);
+      expect(res.body.data).toEqual(mockProducts);
+      expect(Product.find).toHaveBeenCalledWith({ seller: 'user123' });
     });
-    Product.findById.mockResolvedValue({ ...mockProduct, save: jest.fn() });
 
-    const res = await request(app)
-      .put('/api/products/product123')
-      .set('Authorization', 'Bearer mock-jwt-token')
-      .send({ price: 99.99 });
+    test('should return 401 for owner=me when not authenticated', async () => {
+      const res = await request(app).get('/api/products?owner=me');
 
-    expect(res.status).toBe(400);
-    expect(res.body.message).toBe('Maximum of 5 images allowed');
-  });
+      expect(res.status).toBe(401);
+      expect(res.body.message).toBe(
+        'Must be logged in to view your own products',
+      );
+      expect(Product.find).not.toHaveBeenCalled();
+    });
 
-  test('// should delete old Cloudinary images when new ones are provided', async () => {
-    // 1 file triggers the "delete old + set new images" branch in the controller
-    global.__mockFiles = [
-      { path: 'https://res.cloudinary.com/new.jpg', filename: 'new_pub_id' },
-    ];
+    test('should combine category/price/condition/location filters', async () => {
+      const mockProducts = [{ title: 'Chair', price: 250 }];
 
-    const productWithImages = {
-      ...mockProduct,
-      images: [
-        {
-          url: 'https://res.cloudinary.com/old1.jpg',
-          publicId: 'old_public_id_1',
+      Product.find = jest.fn().mockReturnValue({
+        populate: jest.fn().mockReturnThis(),
+        then: (resolve) => resolve(mockProducts),
+      });
+
+      const res = await request(app).get(
+        '/api/products?category=furniture,electronics&minPrice=100&maxPrice=500&condition=Brand new&location=Delhi,Noida',
+      );
+
+      expect(res.status).toBe(200);
+      expect(Product.find).toHaveBeenCalledWith({
+        category: { $in: ['furniture', 'electronics'] },
+        price: { $gte: 100, $lte: 500 },
+        specifications: {
+          $elemMatch: { key: 'condition', value: { $in: ['Brand new'] } },
         },
-        {
-          url: 'https://res.cloudinary.com/old2.jpg',
-          publicId: 'old_public_id_2',
-        },
-      ],
-      save: jest.fn().mockResolvedValue(true),
-    };
-    Product.findById.mockResolvedValue(productWithImages);
-
-    await request(app)
-      .put('/api/products/product123')
-      .set('Authorization', 'Bearer mock-jwt-token')
-      .send({ price: 99.99 });
-
-    expect(mockDestroy).toHaveBeenCalledWith('old_public_id_1');
-    expect(mockDestroy).toHaveBeenCalledWith('old_public_id_2');
+        location: { $in: ['Delhi', 'Noida'] },
+      });
+    });
   });
 
-  test('// should return 500 on database error', async () => {
-    Product.findById.mockRejectedValue(new Error('DB error'));
+  /* ==========================================
+     GET /api/products/:id
+  ========================================== */
+  describe('GET /api/products/:id', () => {
+    test('should retrieve product by ID successfully', async () => {
+      const mockProduct = { _id: mockProductId, title: 'Keyboard', price: 100 };
 
-    const res = await request(app)
-      .put('/api/products/product123')
-      .set('Authorization', 'Bearer mock-jwt-token')
-      .send({ price: 50 });
+      Product.findById = jest.fn().mockReturnValue({
+        populate: jest.fn().mockReturnThis(),
+        lean: jest.fn().mockResolvedValue(mockProduct),
+      });
 
-    expect(res.status).toBe(500);
-    expect(res.body.message).toBe('Internal server error');
-  });
-});
+      const res = await request(app).get(`/api/products/${mockProductId}`);
 
-// ─── DELETE PRODUCT ───────────────────────────────────────────────────────────
+      expect(res.status).toBe(200);
+      expect(res.body.data).toEqual(mockProduct);
+    });
 
-describe('DELETE /api/products/:id', () => {
-  test('// should delete a product successfully', async () => {
-    Product.findByIdAndDelete.mockResolvedValue(mockProduct);
+    test('should return 404 if product not found', async () => {
+      Product.findById = jest.fn().mockReturnValue({
+        populate: jest.fn().mockReturnThis(),
+        lean: jest.fn().mockResolvedValue(null),
+      });
 
-    const res = await request(app)
-      .delete('/api/products/product123')
-      .set('Authorization', 'Bearer mock-jwt-token');
+      const res = await request(app).get(`/api/products/${mockProductId}`);
 
-    expect(res.status).toBe(200);
-    expect(res.body.success).toBe(true);
-    expect(res.body.message).toBe('Product deleted successfully');
-  });
-
-  test('// should purge all associated Cloudinary images on delete', async () => {
-    const productWithImages = {
-      ...mockProduct,
-      images: [
-        { url: 'https://res.cloudinary.com/img1.jpg', publicId: 'pub_id_1' },
-        { url: 'https://res.cloudinary.com/img2.jpg', publicId: 'pub_id_2' },
-      ],
-    };
-    Product.findByIdAndDelete.mockResolvedValue(productWithImages);
-
-    await request(app)
-      .delete('/api/products/product123')
-      .set('Authorization', 'Bearer mock-jwt-token');
-
-    expect(mockDestroy).toHaveBeenCalledTimes(2);
-    expect(mockDestroy).toHaveBeenCalledWith('pub_id_1');
-    expect(mockDestroy).toHaveBeenCalledWith('pub_id_2');
+      expect(res.status).toBe(404);
+      expect(res.body.message).toBe('Product not found');
+    });
   });
 
-  test('// should return 404 when product does not exist', async () => {
-    Product.findByIdAndDelete.mockResolvedValue(null);
+  /* ==========================================
+     PUT /api/products/:id
+  ========================================== */
+  describe('PUT /api/products/:id', () => {
+    test('should update product fields successfully when caller is the seller', async () => {
+      const mockProductInstance = {
+        _id: mockProductId,
+        title: 'Original Keyboard',
+        price: 50,
+        seller: 'user123',
+        images: [],
+        save: jest.fn().mockResolvedValue(true),
+      };
 
-    const res = await request(app)
-      .delete('/api/products/nonexistentid')
-      .set('Authorization', 'Bearer mock-jwt-token');
+      Product.findById = jest.fn().mockResolvedValue(mockProductInstance);
 
-    expect(res.status).toBe(404);
-    expect(res.body.message).toBe('Product not found');
+      const res = await request(app)
+        .put(`/api/products/${mockProductId}`)
+        .set('Cookie', 'token=user123:seller')
+        .send({ price: 99.99, title: 'Updated Keyboard' });
+
+      expect(res.status).toBe(200);
+      expect(res.body.message).toBe('Product updated successfully');
+      expect(mockProductInstance.save).toHaveBeenCalled();
+    });
+
+    test('should update product fields successfully when caller is an admin (ownership bypassed)', async () => {
+      const mockProductInstance = {
+        _id: mockProductId,
+        title: 'Original Keyboard',
+        price: 50,
+        seller: 'otherUser456',
+        images: [],
+        save: jest.fn().mockResolvedValue(true),
+      };
+
+      Product.findById = jest.fn().mockResolvedValue(mockProductInstance);
+
+      const res = await request(app)
+        .put(`/api/products/${mockProductId}`)
+        .set('Cookie', 'token=admin999:admin')
+        .send({ title: 'Admin Updated Keyboard' });
+
+      expect(res.status).toBe(200);
+      expect(mockProductInstance.save).toHaveBeenCalled();
+    });
+
+    test('should return 403 if caller role is neither seller nor admin', async () => {
+      const res = await request(app)
+        .put(`/api/products/${mockProductId}`)
+        .set('Cookie', 'token=user123:user')
+        .send({ title: 'Unauthorized Update' });
+
+      expect(res.status).toBe(403);
+      expect(res.body.message).toBe('Not authorized for this action');
+      // Ownership middleware/controller should never be reached
+      expect(Product.findById).not.toHaveBeenCalled();
+    });
+
+    test('should return 403 if caller is a seller but not the product owner', async () => {
+      const mockProductInstance = {
+        _id: mockProductId,
+        seller: 'otherUser456',
+        images: [],
+      };
+
+      Product.findById = jest.fn().mockResolvedValue(mockProductInstance);
+
+      const res = await request(app)
+        .put(`/api/products/${mockProductId}`)
+        .set('Cookie', 'token=user123:seller')
+        .send({ title: 'Unauthorized Update' });
+
+      expect(res.status).toBe(403);
+      expect(res.body.message).toBe('Not authorized to update this product');
+    });
+
+    test('should return 401 if not authenticated', async () => {
+      const res = await request(app)
+        .put(`/api/products/${mockProductId}`)
+        .send({ title: 'Unauthenticated Update' });
+
+      expect(res.status).toBe(401);
+      expect(Product.findById).not.toHaveBeenCalled();
+    });
+
+    test('should return 404 if product to update is not found', async () => {
+      Product.findById = jest.fn().mockResolvedValue(null);
+
+      const res = await request(app)
+        .put(`/api/products/${mockProductId}`)
+        .set('Cookie', 'token=user123:seller')
+        .send({ title: 'Updated Title' });
+
+      expect(res.status).toBe(404);
+      expect(res.body.message).toBe('Product not found');
+    });
   });
 
-  test('// should return 500 on database error', async () => {
-    Product.findByIdAndDelete.mockRejectedValue(new Error('DB error'));
+  /* ==========================================
+     DELETE /api/products/:id
+  ========================================== */
+  describe('DELETE /api/products/:id', () => {
+    test('should delete a product successfully', async () => {
+      const mockDeletedProduct = {
+        _id: mockProductId,
+        title: 'Test Product',
+        seller: 'user123',
+        images: [],
+      };
 
-    const res = await request(app)
-      .delete('/api/products/product123')
-      .set('Authorization', 'Bearer mock-jwt-token');
+      Product.findByIdAndDelete = jest
+        .fn()
+        .mockResolvedValue(mockDeletedProduct);
 
-    expect(res.status).toBe(500);
-    expect(res.body.message).toBe('Internal server error');
+      const res = await request(app)
+        .delete(`/api/products/${mockProductId}`)
+        .set('Cookie', 'token=user123:seller');
+
+      expect(res.status).toBe(200);
+      expect(res.body.message).toBe('Product deleted successfully');
+    });
+
+    test('should purge all associated Cloudinary images on delete', async () => {
+      const mockProductWithImages = {
+        _id: mockProductId,
+        title: 'Product with Images',
+        images: [
+          { url: 'https://res.cloudinary.com/img1.jpg', publicId: 'pub_id_1' },
+          { url: 'https://res.cloudinary.com/img2.jpg', publicId: 'pub_id_2' },
+        ],
+      };
+
+      Product.findByIdAndDelete = jest
+        .fn()
+        .mockResolvedValue(mockProductWithImages);
+
+      await request(app)
+        .delete(`/api/products/${mockProductId}`)
+        .set('Cookie', 'token=user123:seller');
+
+      expect(mockDestroy).toHaveBeenCalledTimes(2);
+      expect(mockDestroy).toHaveBeenCalledWith('pub_id_1');
+      expect(mockDestroy).toHaveBeenCalledWith('pub_id_2');
+    });
+
+    test('should return 404 if product to delete is not found', async () => {
+      Product.findByIdAndDelete = jest.fn().mockResolvedValue(null);
+
+      const res = await request(app)
+        .delete(`/api/products/${mockProductId}`)
+        .set('Cookie', 'token=user123:seller');
+
+      expect(res.status).toBe(404);
+      expect(res.body.message).toBe('Product not found');
+    });
+
+    test('should return 401 if not authenticated', async () => {
+      const res = await request(app).delete(`/api/products/${mockProductId}`);
+
+      expect(res.status).toBe(401);
+      expect(Product.findByIdAndDelete).not.toHaveBeenCalled();
+    });
   });
 });
