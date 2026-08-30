@@ -1,316 +1,258 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="125" failures="6" errors="0" time="35.675">
-  <testsuite name="Admin Controller" errors="0" failures="0" skipped="0" timestamp="2026-07-24T16:06:23" time="18.563" tests="46">
-    <testcase classname="Admin Controller Auth failures GET /dashboard/stats → 401 when protect middleware rejects" name="Admin Controller Auth failures GET /dashboard/stats → 401 when protect middleware rejects" time="0.246">
+<testsuites name="jest tests" tests="123" failures="0" errors="0" time="25.831">
+  <testsuite name="POST /api/auth/register" errors="0" failures="0" skipped="1" timestamp="2026-08-30T22:12:19" time="16.113" tests="29">
+    <testcase classname="POST /api/auth/register // should create a new user successfully" name="POST /api/auth/register // should create a new user successfully" time="0.254">
     </testcase>
-    <testcase classname="Admin Controller Auth failures PATCH /users/:id/block → 401 when protect middleware rejects" name="Admin Controller Auth failures PATCH /users/:id/block → 401 when protect middleware rejects" time="0.046">
+    <testcase classname="POST /api/auth/register // should fail when required fields are missing" name="POST /api/auth/register // should fail when required fields are missing" time="0.069">
     </testcase>
-    <testcase classname="Admin Controller getDashboardStats 200 – returns dashboard stats successfully" name="Admin Controller getDashboardStats 200 – returns dashboard stats successfully" time="0.077">
+    <testcase classname="POST /api/auth/register // should fail if email already exists" name="POST /api/auth/register // should fail if email already exists" time="0.08">
     </testcase>
-    <testcase classname="Admin Controller getDashboardStats 500 – on unexpected DB error" name="Admin Controller getDashboardStats 500 – on unexpected DB error" time="0.1">
+    <testcase classname="POST /api/auth/register // should fail if username already exists" name="POST /api/auth/register // should fail if username already exists" time="0.055">
     </testcase>
-    <testcase classname="Admin Controller getAllUsers 200 – returns all active users with public profiles" name="Admin Controller getAllUsers 200 – returns all active users with public profiles" time="0.039">
+    <testcase classname="POST /api/auth/register // should reject admin role creation" name="POST /api/auth/register // should reject admin role creation" time="0.068">
     </testcase>
-    <testcase classname="Admin Controller getAllUsers 200 – queries users with isDeleted false filter" name="Admin Controller getAllUsers 200 – queries users with isDeleted false filter" time="0.069">
+    <testcase classname="POST /api/auth/register // should fail if role is invalid" name="POST /api/auth/register // should fail if role is invalid" time="0.118">
     </testcase>
-    <testcase classname="Admin Controller getAllUsers 200 – returns empty array when no users exist" name="Admin Controller getAllUsers 200 – returns empty array when no users exist" time="0.074">
+    <testcase classname="POST /api/auth/login // should login successfully with valid credentials" name="POST /api/auth/login // should login successfully with valid credentials" time="0.073">
     </testcase>
-    <testcase classname="Admin Controller getAllUsers 500 – on unexpected DB error" name="Admin Controller getAllUsers 500 – on unexpected DB error" time="0.066">
+    <testcase classname="POST /api/auth/login // should fail with wrong password" name="POST /api/auth/login // should fail with wrong password" time="0.068">
     </testcase>
-    <testcase classname="Admin Controller getSingleUser 200 – returns single user profile" name="Admin Controller getSingleUser 200 – returns single user profile" time="0.049">
+    <testcase classname="POST /api/auth/login // should fail if user does not exist" name="POST /api/auth/login // should fail if user does not exist" time="0.071">
     </testcase>
-    <testcase classname="Admin Controller getSingleUser 200 – queries DB with id from req.params" name="Admin Controller getSingleUser 200 – queries DB with id from req.params" time="0.037">
+    <testcase classname="POST /api/auth/login // should fail if user account is blocked" name="POST /api/auth/login // should fail if user account is blocked" time="0.075">
     </testcase>
-    <testcase classname="Admin Controller getSingleUser 400 – invalid user ID format" name="Admin Controller getSingleUser 400 – invalid user ID format" time="0.047">
+    <testcase classname="POST /api/auth/login // should fail if emailOrUsername or password is missing" name="POST /api/auth/login // should fail if emailOrUsername or password is missing" time="0.078">
     </testcase>
-    <testcase classname="Admin Controller getSingleUser 404 – user not found" name="Admin Controller getSingleUser 404 – user not found" time="0.033">
+    <testcase classname="POST /api/auth/logout // should logout successfully and clear cookie" name="POST /api/auth/logout // should logout successfully and clear cookie" time="0.098">
     </testcase>
-    <testcase classname="Admin Controller getSingleUser 500 – on unexpected DB error" name="Admin Controller getSingleUser 500 – on unexpected DB error" time="0.03">
+    <testcase classname="POST /api/auth/logout // should still succeed even if no cookie is present" name="POST /api/auth/logout // should still succeed even if no cookie is present" time="0.12">
     </testcase>
-    <testcase classname="Admin Controller blockUser 200 – blocks user successfully" name="Admin Controller blockUser 200 – blocks user successfully" time="0.045">
+    <testcase classname="POST /api/auth/logout // should not crash when malformed request is sent" name="POST /api/auth/logout // should not crash when malformed request is sent" time="0.067">
     </testcase>
-    <testcase classname="Admin Controller blockUser 200 – queries DB with id from req.params" name="Admin Controller blockUser 200 – queries DB with id from req.params" time="0.041">
+    <testcase classname="GET /api/auth/verify-email/:token // should verify email with a valid token" name="GET /api/auth/verify-email/:token // should verify email with a valid token" time="0.156">
     </testcase>
-    <testcase classname="Admin Controller blockUser 400 – invalid user ID" name="Admin Controller blockUser 400 – invalid user ID" time="0.053">
+    <testcase classname="GET /api/auth/verify-email/:token // should fail with an invalid token" name="GET /api/auth/verify-email/:token // should fail with an invalid token" time="0.15">
     </testcase>
-    <testcase classname="Admin Controller blockUser 404 – user not found" name="Admin Controller blockUser 404 – user not found" time="0.057">
+    <testcase classname="GET /api/auth/verify-email/:token // should fail if token is expired" name="GET /api/auth/verify-email/:token // should fail if token is expired" time="0.058">
     </testcase>
-    <testcase classname="Admin Controller blockUser 409 – user is already blocked" name="Admin Controller blockUser 409 – user is already blocked" time="0.049">
+    <testcase classname="GET /api/auth/verify-email/:token // should fail if token is malformed" name="GET /api/auth/verify-email/:token // should fail if token is malformed" time="0.07">
     </testcase>
-    <testcase classname="Admin Controller blockUser 500 – on unexpected DB error" name="Admin Controller blockUser 500 – on unexpected DB error" time="0.06">
+    <testcase classname="POST /api/auth/resend-verification // should resend verification email for an unverified user" name="POST /api/auth/resend-verification // should resend verification email for an unverified user" time="0.09">
     </testcase>
-    <testcase classname="Admin Controller unblockUser 200 – unblocks user successfully" name="Admin Controller unblockUser 200 – unblocks user successfully" time="0.055">
+    <testcase classname="POST /api/auth/resend-verification // should return generic message if user is not found (security)" name="POST /api/auth/resend-verification // should return generic message if user is not found (security)" time="0.066">
     </testcase>
-    <testcase classname="Admin Controller unblockUser 400 – invalid user ID" name="Admin Controller unblockUser 400 – invalid user ID" time="0.054">
+    <testcase classname="POST /api/auth/resend-verification // should fail if email is already verified" name="POST /api/auth/resend-verification // should fail if email is already verified" time="0.063">
     </testcase>
-    <testcase classname="Admin Controller unblockUser 404 – user not found" name="Admin Controller unblockUser 404 – user not found" time="0.036">
+    <testcase classname="POST /api/auth/resend-verification // should fail if email field is missing" name="POST /api/auth/resend-verification // should fail if email field is missing" time="0.055">
     </testcase>
-    <testcase classname="Admin Controller unblockUser 409 – user is not blocked" name="Admin Controller unblockUser 409 – user is not blocked" time="0.048">
+    <testcase classname="POST /api/auth/forgot-password // should send reset email if user exists" name="POST /api/auth/forgot-password // should send reset email if user exists" time="0.068">
     </testcase>
-    <testcase classname="Admin Controller unblockUser 500 – on unexpected DB error" name="Admin Controller unblockUser 500 – on unexpected DB error" time="0.047">
+    <testcase classname="POST /api/auth/forgot-password // should NOT reveal if email does not exist (security)" name="POST /api/auth/forgot-password // should NOT reveal if email does not exist (security)" time="0.064">
     </testcase>
-    <testcase classname="Admin Controller deleteUser 200 – soft deletes user successfully" name="Admin Controller deleteUser 200 – soft deletes user successfully" time="0.052">
+    <testcase classname="POST /api/auth/forgot-password // should fail if email is missing" name="POST /api/auth/forgot-password // should fail if email is missing" time="0.05">
     </testcase>
-    <testcase classname="Admin Controller deleteUser 400 – invalid user ID" name="Admin Controller deleteUser 400 – invalid user ID" time="0.062">
+    <testcase classname="POST /api/auth/reset-password // should reset password with valid token" name="POST /api/auth/reset-password // should reset password with valid token" time="0.05">
     </testcase>
-    <testcase classname="Admin Controller deleteUser 404 – user not found" name="Admin Controller deleteUser 404 – user not found" time="0.046">
+    <testcase classname="POST /api/auth/reset-password // should fail if password is too short" name="POST /api/auth/reset-password // should fail if password is too short" time="0.052">
     </testcase>
-    <testcase classname="Admin Controller deleteUser 409 – user has already been deleted" name="Admin Controller deleteUser 409 – user has already been deleted" time="0.027">
-    </testcase>
-    <testcase classname="Admin Controller deleteUser 500 – on unexpected DB error" name="Admin Controller deleteUser 500 – on unexpected DB error" time="0.046">
-    </testcase>
-    <testcase classname="Admin Controller restoreUser 200 – restores deleted user successfully" name="Admin Controller restoreUser 200 – restores deleted user successfully" time="0.036">
-    </testcase>
-    <testcase classname="Admin Controller restoreUser 400 – invalid user ID" name="Admin Controller restoreUser 400 – invalid user ID" time="0.028">
-    </testcase>
-    <testcase classname="Admin Controller restoreUser 404 – user not found" name="Admin Controller restoreUser 404 – user not found" time="0.029">
-    </testcase>
-    <testcase classname="Admin Controller restoreUser 409 – user is already active" name="Admin Controller restoreUser 409 – user is already active" time="0.022">
-    </testcase>
-    <testcase classname="Admin Controller restoreUser 500 – on unexpected DB error" name="Admin Controller restoreUser 500 – on unexpected DB error" time="0.027">
-    </testcase>
-    <testcase classname="Admin Controller getAllProducts 200 – returns all products" name="Admin Controller getAllProducts 200 – returns all products" time="0.025">
-    </testcase>
-    <testcase classname="Admin Controller getAllProducts 404 – no products found" name="Admin Controller getAllProducts 404 – no products found" time="0.033">
-    </testcase>
-    <testcase classname="Admin Controller getAllProducts 500 – on unexpected DB error" name="Admin Controller getAllProducts 500 – on unexpected DB error" time="0.03">
-    </testcase>
-    <testcase classname="Admin Controller getSingleProduct 200 – returns single product" name="Admin Controller getSingleProduct 200 – returns single product" time="0.028">
-    </testcase>
-    <testcase classname="Admin Controller getSingleProduct 200 – queries DB with id from req.params" name="Admin Controller getSingleProduct 200 – queries DB with id from req.params" time="0.021">
-    </testcase>
-    <testcase classname="Admin Controller getSingleProduct 400 – invalid product ID" name="Admin Controller getSingleProduct 400 – invalid product ID" time="0.027">
-    </testcase>
-    <testcase classname="Admin Controller getSingleProduct 404 – product not found" name="Admin Controller getSingleProduct 404 – product not found" time="0.027">
-    </testcase>
-    <testcase classname="Admin Controller getSingleProduct 500 – on unexpected DB error" name="Admin Controller getSingleProduct 500 – on unexpected DB error" time="0.025">
-    </testcase>
-    <testcase classname="Admin Controller deleteProduct 200 – deletes product successfully" name="Admin Controller deleteProduct 200 – deletes product successfully" time="0.03">
-    </testcase>
-    <testcase classname="Admin Controller deleteProduct 200 – calls findByIdAndDelete with correct id" name="Admin Controller deleteProduct 200 – calls findByIdAndDelete with correct id" time="0.023">
-    </testcase>
-    <testcase classname="Admin Controller deleteProduct 404 – product not found" name="Admin Controller deleteProduct 404 – product not found" time="0.025">
-    </testcase>
-    <testcase classname="Admin Controller deleteProduct 500 – on unexpected DB error" name="Admin Controller deleteProduct 500 – on unexpected DB error" time="0.033">
-    </testcase>
-  </testsuite>
-  <testsuite name="POST /api/auth/register" errors="0" failures="0" skipped="1" timestamp="2026-07-24T16:06:42" time="9.949" tests="29">
-    <testcase classname="POST /api/auth/register // should create a new user successfully" name="POST /api/auth/register // should create a new user successfully" time="0.233">
-    </testcase>
-    <testcase classname="POST /api/auth/register // should fail when required fields are missing" name="POST /api/auth/register // should fail when required fields are missing" time="0.032">
-    </testcase>
-    <testcase classname="POST /api/auth/register // should fail if email already exists" name="POST /api/auth/register // should fail if email already exists" time="0.046">
-    </testcase>
-    <testcase classname="POST /api/auth/register // should fail if username already exists" name="POST /api/auth/register // should fail if username already exists" time="0.03">
-    </testcase>
-    <testcase classname="POST /api/auth/register // should reject admin role creation" name="POST /api/auth/register // should reject admin role creation" time="0.021">
-    </testcase>
-    <testcase classname="POST /api/auth/register // should fail if role is invalid" name="POST /api/auth/register // should fail if role is invalid" time="0.032">
-    </testcase>
-    <testcase classname="POST /api/auth/login // should login successfully with valid credentials" name="POST /api/auth/login // should login successfully with valid credentials" time="0.025">
-    </testcase>
-    <testcase classname="POST /api/auth/login // should fail with wrong password" name="POST /api/auth/login // should fail with wrong password" time="0.021">
-    </testcase>
-    <testcase classname="POST /api/auth/login // should fail if user does not exist" name="POST /api/auth/login // should fail if user does not exist" time="0.021">
-    </testcase>
-    <testcase classname="POST /api/auth/login // should fail if user account is blocked" name="POST /api/auth/login // should fail if user account is blocked" time="0.022">
-    </testcase>
-    <testcase classname="POST /api/auth/login // should fail if emailOrUsername or password is missing" name="POST /api/auth/login // should fail if emailOrUsername or password is missing" time="0.02">
-    </testcase>
-    <testcase classname="POST /api/auth/logout // should logout successfully and clear cookie" name="POST /api/auth/logout // should logout successfully and clear cookie" time="0.026">
-    </testcase>
-    <testcase classname="POST /api/auth/logout // should still succeed even if no cookie is present" name="POST /api/auth/logout // should still succeed even if no cookie is present" time="0.022">
-    </testcase>
-    <testcase classname="POST /api/auth/logout // should not crash when malformed request is sent" name="POST /api/auth/logout // should not crash when malformed request is sent" time="0.021">
-    </testcase>
-    <testcase classname="GET /api/auth/verify-email/:token // should verify email with a valid token" name="GET /api/auth/verify-email/:token // should verify email with a valid token" time="0.019">
-    </testcase>
-    <testcase classname="GET /api/auth/verify-email/:token // should fail with an invalid token" name="GET /api/auth/verify-email/:token // should fail with an invalid token" time="0.02">
-    </testcase>
-    <testcase classname="GET /api/auth/verify-email/:token // should fail if token is expired" name="GET /api/auth/verify-email/:token // should fail if token is expired" time="0.025">
-    </testcase>
-    <testcase classname="GET /api/auth/verify-email/:token // should fail if token is malformed" name="GET /api/auth/verify-email/:token // should fail if token is malformed" time="0.02">
-    </testcase>
-    <testcase classname="POST /api/auth/resend-verification // should resend verification email for an unverified user" name="POST /api/auth/resend-verification // should resend verification email for an unverified user" time="0.022">
-    </testcase>
-    <testcase classname="POST /api/auth/resend-verification // should return generic message if user is not found (security)" name="POST /api/auth/resend-verification // should return generic message if user is not found (security)" time="0.02">
-    </testcase>
-    <testcase classname="POST /api/auth/resend-verification // should fail if email is already verified" name="POST /api/auth/resend-verification // should fail if email is already verified" time="0.024">
-    </testcase>
-    <testcase classname="POST /api/auth/resend-verification // should fail if email field is missing" name="POST /api/auth/resend-verification // should fail if email field is missing" time="0.023">
-    </testcase>
-    <testcase classname="POST /api/auth/forgot-password // should send reset email if user exists" name="POST /api/auth/forgot-password // should send reset email if user exists" time="0.027">
-    </testcase>
-    <testcase classname="POST /api/auth/forgot-password // should NOT reveal if email does not exist (security)" name="POST /api/auth/forgot-password // should NOT reveal if email does not exist (security)" time="0.021">
-    </testcase>
-    <testcase classname="POST /api/auth/forgot-password // should fail if email is missing" name="POST /api/auth/forgot-password // should fail if email is missing" time="0.017">
-    </testcase>
-    <testcase classname="POST /api/auth/reset-password // should reset password with valid token" name="POST /api/auth/reset-password // should reset password with valid token" time="0.025">
-    </testcase>
-    <testcase classname="POST /api/auth/reset-password // should fail if password is too short" name="POST /api/auth/reset-password // should fail if password is too short" time="0.019">
-    </testcase>
-    <testcase classname="POST /api/auth/reset-password // should fail with invalid or expired token" name="POST /api/auth/reset-password // should fail with invalid or expired token" time="0.029">
+    <testcase classname="POST /api/auth/reset-password // should fail with invalid or expired token" name="POST /api/auth/reset-password // should fail with invalid or expired token" time="0.074">
     </testcase>
     <testcase classname="MANUAL: Resend API config smoke test via /api/auth/resend-verification // should register a temp user and trigger resend-verification against live Resend API" name="MANUAL: Resend API config smoke test via /api/auth/resend-verification // should register a temp user and trigger resend-verification against live Resend API" time="0">
       <skipped/>
     </testcase>
   </testsuite>
-  <testsuite name="User Controller" errors="0" failures="0" skipped="0" timestamp="2026-07-24T16:06:52" time="2.023" tests="32">
-    <testcase classname="User Controller Auth failures GET /me → 401 when protect middleware rejects" name="User Controller Auth failures GET /me → 401 when protect middleware rejects" time="0.101">
+  <testsuite name="Admin Controller" errors="0" failures="0" skipped="0" timestamp="2026-08-30T22:12:36" time="4.094" tests="46">
+    <testcase classname="Admin Controller Auth failures GET /dashboard/stats → 401 when protect middleware rejects" name="Admin Controller Auth failures GET /dashboard/stats → 401 when protect middleware rejects" time="0.15">
     </testcase>
-    <testcase classname="User Controller Auth failures PATCH /me → 401 when protect middleware rejects" name="User Controller Auth failures PATCH /me → 401 when protect middleware rejects" time="0.053">
+    <testcase classname="Admin Controller Auth failures PATCH /users/:id/block → 401 when protect middleware rejects" name="Admin Controller Auth failures PATCH /users/:id/block → 401 when protect middleware rejects" time="0.058">
     </testcase>
-    <testcase classname="User Controller GET /api/user/me 200 – returns public user profile" name="User Controller GET /api/user/me 200 – returns public user profile" time="0.043">
+    <testcase classname="Admin Controller getDashboardStats 200 – returns dashboard stats successfully" name="Admin Controller getDashboardStats 200 – returns dashboard stats successfully" time="0.054">
     </testcase>
-    <testcase classname="User Controller GET /api/user/me 200 – queries DB with id from req.user" name="User Controller GET /api/user/me 200 – queries DB with id from req.user" time="0.019">
+    <testcase classname="Admin Controller getDashboardStats 500 – on unexpected DB error" name="Admin Controller getDashboardStats 500 – on unexpected DB error" time="0.127">
+    </testcase>
+    <testcase classname="Admin Controller getAllUsers 200 – returns all active users with public profiles" name="Admin Controller getAllUsers 200 – returns all active users with public profiles" time="0.055">
+    </testcase>
+    <testcase classname="Admin Controller getAllUsers 200 – queries users with isDeleted false filter" name="Admin Controller getAllUsers 200 – queries users with isDeleted false filter" time="0.066">
+    </testcase>
+    <testcase classname="Admin Controller getAllUsers 200 – returns empty array when no users exist" name="Admin Controller getAllUsers 200 – returns empty array when no users exist" time="0.054">
+    </testcase>
+    <testcase classname="Admin Controller getAllUsers 500 – on unexpected DB error" name="Admin Controller getAllUsers 500 – on unexpected DB error" time="0.066">
+    </testcase>
+    <testcase classname="Admin Controller getSingleUser 200 – returns single user profile" name="Admin Controller getSingleUser 200 – returns single user profile" time="0.054">
+    </testcase>
+    <testcase classname="Admin Controller getSingleUser 200 – queries DB with id from req.params" name="Admin Controller getSingleUser 200 – queries DB with id from req.params" time="0.093">
+    </testcase>
+    <testcase classname="Admin Controller getSingleUser 400 – invalid user ID format" name="Admin Controller getSingleUser 400 – invalid user ID format" time="0.051">
+    </testcase>
+    <testcase classname="Admin Controller getSingleUser 404 – user not found" name="Admin Controller getSingleUser 404 – user not found" time="0.048">
+    </testcase>
+    <testcase classname="Admin Controller getSingleUser 500 – on unexpected DB error" name="Admin Controller getSingleUser 500 – on unexpected DB error" time="0.05">
+    </testcase>
+    <testcase classname="Admin Controller blockUser 200 – blocks user successfully" name="Admin Controller blockUser 200 – blocks user successfully" time="0.04">
+    </testcase>
+    <testcase classname="Admin Controller blockUser 200 – queries DB with id from req.params" name="Admin Controller blockUser 200 – queries DB with id from req.params" time="0.054">
+    </testcase>
+    <testcase classname="Admin Controller blockUser 400 – invalid user ID" name="Admin Controller blockUser 400 – invalid user ID" time="0.059">
+    </testcase>
+    <testcase classname="Admin Controller blockUser 404 – user not found" name="Admin Controller blockUser 404 – user not found" time="0.058">
+    </testcase>
+    <testcase classname="Admin Controller blockUser 409 – user is already blocked" name="Admin Controller blockUser 409 – user is already blocked" time="0.079">
+    </testcase>
+    <testcase classname="Admin Controller blockUser 500 – on unexpected DB error" name="Admin Controller blockUser 500 – on unexpected DB error" time="0.061">
+    </testcase>
+    <testcase classname="Admin Controller unblockUser 200 – unblocks user successfully" name="Admin Controller unblockUser 200 – unblocks user successfully" time="0.07">
+    </testcase>
+    <testcase classname="Admin Controller unblockUser 400 – invalid user ID" name="Admin Controller unblockUser 400 – invalid user ID" time="0.048">
+    </testcase>
+    <testcase classname="Admin Controller unblockUser 404 – user not found" name="Admin Controller unblockUser 404 – user not found" time="0.051">
+    </testcase>
+    <testcase classname="Admin Controller unblockUser 409 – user is not blocked" name="Admin Controller unblockUser 409 – user is not blocked" time="0.052">
+    </testcase>
+    <testcase classname="Admin Controller unblockUser 500 – on unexpected DB error" name="Admin Controller unblockUser 500 – on unexpected DB error" time="0.062">
+    </testcase>
+    <testcase classname="Admin Controller deleteUser 200 – soft deletes user successfully" name="Admin Controller deleteUser 200 – soft deletes user successfully" time="0.084">
+    </testcase>
+    <testcase classname="Admin Controller deleteUser 400 – invalid user ID" name="Admin Controller deleteUser 400 – invalid user ID" time="0.061">
+    </testcase>
+    <testcase classname="Admin Controller deleteUser 404 – user not found" name="Admin Controller deleteUser 404 – user not found" time="0.056">
+    </testcase>
+    <testcase classname="Admin Controller deleteUser 409 – user has already been deleted" name="Admin Controller deleteUser 409 – user has already been deleted" time="0.064">
+    </testcase>
+    <testcase classname="Admin Controller deleteUser 500 – on unexpected DB error" name="Admin Controller deleteUser 500 – on unexpected DB error" time="0.072">
+    </testcase>
+    <testcase classname="Admin Controller restoreUser 200 – restores deleted user successfully" name="Admin Controller restoreUser 200 – restores deleted user successfully" time="0.079">
+    </testcase>
+    <testcase classname="Admin Controller restoreUser 400 – invalid user ID" name="Admin Controller restoreUser 400 – invalid user ID" time="0.055">
+    </testcase>
+    <testcase classname="Admin Controller restoreUser 404 – user not found" name="Admin Controller restoreUser 404 – user not found" time="0.064">
+    </testcase>
+    <testcase classname="Admin Controller restoreUser 409 – user is already active" name="Admin Controller restoreUser 409 – user is already active" time="0.051">
+    </testcase>
+    <testcase classname="Admin Controller restoreUser 500 – on unexpected DB error" name="Admin Controller restoreUser 500 – on unexpected DB error" time="0.059">
+    </testcase>
+    <testcase classname="Admin Controller getAllProducts 200 – returns all products" name="Admin Controller getAllProducts 200 – returns all products" time="0.061">
+    </testcase>
+    <testcase classname="Admin Controller getAllProducts 404 – no products found" name="Admin Controller getAllProducts 404 – no products found" time="0.037">
+    </testcase>
+    <testcase classname="Admin Controller getAllProducts 500 – on unexpected DB error" name="Admin Controller getAllProducts 500 – on unexpected DB error" time="0.049">
+    </testcase>
+    <testcase classname="Admin Controller getSingleProduct 200 – returns single product" name="Admin Controller getSingleProduct 200 – returns single product" time="0.04">
+    </testcase>
+    <testcase classname="Admin Controller getSingleProduct 200 – queries DB with id from req.params" name="Admin Controller getSingleProduct 200 – queries DB with id from req.params" time="0.046">
+    </testcase>
+    <testcase classname="Admin Controller getSingleProduct 400 – invalid product ID" name="Admin Controller getSingleProduct 400 – invalid product ID" time="0.048">
+    </testcase>
+    <testcase classname="Admin Controller getSingleProduct 404 – product not found" name="Admin Controller getSingleProduct 404 – product not found" time="0.049">
+    </testcase>
+    <testcase classname="Admin Controller getSingleProduct 500 – on unexpected DB error" name="Admin Controller getSingleProduct 500 – on unexpected DB error" time="0.044">
+    </testcase>
+    <testcase classname="Admin Controller deleteProduct 200 – deletes product successfully" name="Admin Controller deleteProduct 200 – deletes product successfully" time="0.039">
+    </testcase>
+    <testcase classname="Admin Controller deleteProduct 200 – calls findByIdAndDelete with correct id" name="Admin Controller deleteProduct 200 – calls findByIdAndDelete with correct id" time="0.061">
+    </testcase>
+    <testcase classname="Admin Controller deleteProduct 404 – product not found" name="Admin Controller deleteProduct 404 – product not found" time="0.047">
+    </testcase>
+    <testcase classname="Admin Controller deleteProduct 500 – on unexpected DB error" name="Admin Controller deleteProduct 500 – on unexpected DB error" time="0.04">
+    </testcase>
+  </testsuite>
+  <testsuite name="Product Controller Integration Tests" errors="0" failures="0" skipped="0" timestamp="2026-08-30T22:12:40" time="3.25" tests="16">
+    <testcase classname="Product Controller Integration Tests GET /api/products should retrieve all products successfully (guest, no filters)" name="Product Controller Integration Tests GET /api/products should retrieve all products successfully (guest, no filters)" time="0.055">
+    </testcase>
+    <testcase classname="Product Controller Integration Tests GET /api/products should filter by owner=me when authenticated" name="Product Controller Integration Tests GET /api/products should filter by owner=me when authenticated" time="0.043">
+    </testcase>
+    <testcase classname="Product Controller Integration Tests GET /api/products should return 401 for owner=me when not authenticated" name="Product Controller Integration Tests GET /api/products should return 401 for owner=me when not authenticated" time="0.03">
+    </testcase>
+    <testcase classname="Product Controller Integration Tests GET /api/products should combine category/price/condition/location filters" name="Product Controller Integration Tests GET /api/products should combine category/price/condition/location filters" time="0.025">
+    </testcase>
+    <testcase classname="Product Controller Integration Tests GET /api/products/:id should retrieve product by ID successfully" name="Product Controller Integration Tests GET /api/products/:id should retrieve product by ID successfully" time="0.025">
+    </testcase>
+    <testcase classname="Product Controller Integration Tests GET /api/products/:id should return 404 if product not found" name="Product Controller Integration Tests GET /api/products/:id should return 404 if product not found" time="0.028">
+    </testcase>
+    <testcase classname="Product Controller Integration Tests PUT /api/products/:id should update product fields successfully when caller is the seller" name="Product Controller Integration Tests PUT /api/products/:id should update product fields successfully when caller is the seller" time="0.034">
+    </testcase>
+    <testcase classname="Product Controller Integration Tests PUT /api/products/:id should update product fields successfully when caller is an admin (ownership bypassed)" name="Product Controller Integration Tests PUT /api/products/:id should update product fields successfully when caller is an admin (ownership bypassed)" time="0.025">
+    </testcase>
+    <testcase classname="Product Controller Integration Tests PUT /api/products/:id should return 403 if caller role is neither seller nor admin" name="Product Controller Integration Tests PUT /api/products/:id should return 403 if caller role is neither seller nor admin" time="0.024">
+    </testcase>
+    <testcase classname="Product Controller Integration Tests PUT /api/products/:id should return 403 if caller is a seller but not the product owner" name="Product Controller Integration Tests PUT /api/products/:id should return 403 if caller is a seller but not the product owner" time="0.044">
+    </testcase>
+    <testcase classname="Product Controller Integration Tests PUT /api/products/:id should return 401 if not authenticated" name="Product Controller Integration Tests PUT /api/products/:id should return 401 if not authenticated" time="0.023">
+    </testcase>
+    <testcase classname="Product Controller Integration Tests PUT /api/products/:id should return 404 if product to update is not found" name="Product Controller Integration Tests PUT /api/products/:id should return 404 if product to update is not found" time="0.023">
+    </testcase>
+    <testcase classname="Product Controller Integration Tests DELETE /api/products/:id should delete a product successfully" name="Product Controller Integration Tests DELETE /api/products/:id should delete a product successfully" time="0.022">
+    </testcase>
+    <testcase classname="Product Controller Integration Tests DELETE /api/products/:id should purge all associated Cloudinary images on delete" name="Product Controller Integration Tests DELETE /api/products/:id should purge all associated Cloudinary images on delete" time="0.023">
+    </testcase>
+    <testcase classname="Product Controller Integration Tests DELETE /api/products/:id should return 404 if product to delete is not found" name="Product Controller Integration Tests DELETE /api/products/:id should return 404 if product to delete is not found" time="0.019">
+    </testcase>
+    <testcase classname="Product Controller Integration Tests DELETE /api/products/:id should return 401 if not authenticated" name="Product Controller Integration Tests DELETE /api/products/:id should return 401 if not authenticated" time="0.021">
+    </testcase>
+  </testsuite>
+  <testsuite name="User Controller" errors="0" failures="0" skipped="0" timestamp="2026-08-30T22:12:43" time="1.185" tests="32">
+    <testcase classname="User Controller Auth failures GET /me → 401 when protect middleware rejects" name="User Controller Auth failures GET /me → 401 when protect middleware rejects" time="0.037">
+    </testcase>
+    <testcase classname="User Controller Auth failures PATCH /me → 401 when protect middleware rejects" name="User Controller Auth failures PATCH /me → 401 when protect middleware rejects" time="0.046">
+    </testcase>
+    <testcase classname="User Controller GET /api/user/me 200 – returns public user profile" name="User Controller GET /api/user/me 200 – returns public user profile" time="0.028">
+    </testcase>
+    <testcase classname="User Controller GET /api/user/me 200 – queries DB with id from req.user" name="User Controller GET /api/user/me 200 – queries DB with id from req.user" time="0.026">
     </testcase>
     <testcase classname="User Controller GET /api/user/me 404 – when findById returns null (user deleted mid-session)" name="User Controller GET /api/user/me 404 – when findById returns null (user deleted mid-session)" time="0.021">
     </testcase>
-    <testcase classname="User Controller GET /api/user/me 500 – on unexpected DB error" name="User Controller GET /api/user/me 500 – on unexpected DB error" time="0.06">
+    <testcase classname="User Controller GET /api/user/me 500 – on unexpected DB error" name="User Controller GET /api/user/me 500 – on unexpected DB error" time="0.053">
     </testcase>
-    <testcase classname="User Controller GET /api/user/me CACHE – cacheWrapper is called with correct key and ttl on GET /me" name="User Controller GET /api/user/me CACHE – cacheWrapper is called with correct key and ttl on GET /me" time="0.021">
+    <testcase classname="User Controller GET /api/user/me CACHE – cacheWrapper is called with correct key and ttl on GET /me" name="User Controller GET /api/user/me CACHE – cacheWrapper is called with correct key and ttl on GET /me" time="0.025">
     </testcase>
-    <testcase classname="User Controller GET /api/user/me CACHE – CacheKeys.user is called with the authenticated user id" name="User Controller GET /api/user/me CACHE – CacheKeys.user is called with the authenticated user id" time="0.018">
+    <testcase classname="User Controller GET /api/user/me CACHE – CacheKeys.user is called with the authenticated user id" name="User Controller GET /api/user/me CACHE – CacheKeys.user is called with the authenticated user id" time="0.023">
     </testcase>
-    <testcase classname="User Controller GET /api/user/me CACHE – on cache miss, fetchFunction calls User.findById and returns toPublic result" name="User Controller GET /api/user/me CACHE – on cache miss, fetchFunction calls User.findById and returns toPublic result" time="0.022">
+    <testcase classname="User Controller GET /api/user/me CACHE – on cache miss, fetchFunction calls User.findById and returns toPublic result" name="User Controller GET /api/user/me CACHE – on cache miss, fetchFunction calls User.findById and returns toPublic result" time="0.026">
     </testcase>
-    <testcase classname="User Controller GET /api/user/me CACHE – on cache hit, User.findById is NOT called" name="User Controller GET /api/user/me CACHE – on cache hit, User.findById is NOT called" time="0.018">
+    <testcase classname="User Controller GET /api/user/me CACHE – on cache hit, User.findById is NOT called" name="User Controller GET /api/user/me CACHE – on cache hit, User.findById is NOT called" time="0.033">
     </testcase>
-    <testcase classname="User Controller GET /api/user/me CACHE – response user data matches toPublic format from fetchFunction" name="User Controller GET /api/user/me CACHE – response user data matches toPublic format from fetchFunction" time="0.03">
+    <testcase classname="User Controller GET /api/user/me CACHE – response user data matches toPublic format from fetchFunction" name="User Controller GET /api/user/me CACHE – response user data matches toPublic format from fetchFunction" time="0.023">
     </testcase>
-    <testcase classname="User Controller GET /api/user/me CACHE – 404 when fetchFunction inside cacheWrapper returns null" name="User Controller GET /api/user/me CACHE – 404 when fetchFunction inside cacheWrapper returns null" time="0.031">
+    <testcase classname="User Controller GET /api/user/me CACHE – 404 when fetchFunction inside cacheWrapper returns null" name="User Controller GET /api/user/me CACHE – 404 when fetchFunction inside cacheWrapper returns null" time="0.041">
     </testcase>
-    <testcase classname="User Controller PATCH /api/user/me 200 – updates allowed fields and returns updated profile" name="User Controller PATCH /api/user/me 200 – updates allowed fields and returns updated profile" time="0.03">
+    <testcase classname="User Controller PATCH /api/user/me 200 – updates allowed fields and returns updated profile" name="User Controller PATCH /api/user/me 200 – updates allowed fields and returns updated profile" time="0.024">
     </testcase>
-    <testcase classname="User Controller PATCH /api/user/me 200 – passes { new: true, runValidators: true } to findByIdAndUpdate" name="User Controller PATCH /api/user/me 200 – passes { new: true, runValidators: true } to findByIdAndUpdate" time="0.021">
+    <testcase classname="User Controller PATCH /api/user/me 200 – passes { new: true, runValidators: true } to findByIdAndUpdate" name="User Controller PATCH /api/user/me 200 – passes { new: true, runValidators: true } to findByIdAndUpdate" time="0.028">
     </testcase>
-    <testcase classname="User Controller PATCH /api/user/me 200 – all six allowed fields are forwarded in the update object" name="User Controller PATCH /api/user/me 200 – all six allowed fields are forwarded in the update object" time="0.03">
+    <testcase classname="User Controller PATCH /api/user/me 200 – all six allowed fields are forwarded in the update object" name="User Controller PATCH /api/user/me 200 – all six allowed fields are forwarded in the update object" time="0.022">
     </testcase>
-    <testcase classname="User Controller PATCH /api/user/me 200 – strips non-whitelisted fields (role, password, __v)" name="User Controller PATCH /api/user/me 200 – strips non-whitelisted fields (role, password, __v)" time="0.021">
+    <testcase classname="User Controller PATCH /api/user/me 200 – strips non-whitelisted fields (role, password, __v)" name="User Controller PATCH /api/user/me 200 – strips non-whitelisted fields (role, password, __v)" time="0.022">
     </testcase>
-    <testcase classname="User Controller PATCH /api/user/me 200 – empty body → update object contains no allowed fields" name="User Controller PATCH /api/user/me 200 – empty body → update object contains no allowed fields" time="0.031">
+    <testcase classname="User Controller PATCH /api/user/me 200 – empty body → update object contains no allowed fields" name="User Controller PATCH /api/user/me 200 – empty body → update object contains no allowed fields" time="0.022">
     </testcase>
-    <testcase classname="User Controller PATCH /api/user/me 200 – avatar object is added to update when multer attaches a file" name="User Controller PATCH /api/user/me 200 – avatar object is added to update when multer attaches a file" time="0.021">
+    <testcase classname="User Controller PATCH /api/user/me 200 – avatar object is added to update when multer attaches a file" name="User Controller PATCH /api/user/me 200 – avatar object is added to update when multer attaches a file" time="0.022">
     </testcase>
     <testcase classname="User Controller PATCH /api/user/me 200 – old Cloudinary image is destroyed before saving new one" name="User Controller PATCH /api/user/me 200 – old Cloudinary image is destroyed before saving new one" time="0.02">
     </testcase>
     <testcase classname="User Controller PATCH /api/user/me 200 – cloudinary.destroy is NOT called when user has no prior avatar" name="User Controller PATCH /api/user/me 200 – cloudinary.destroy is NOT called when user has no prior avatar" time="0.021">
     </testcase>
-    <testcase classname="User Controller PATCH /api/user/me 200 – cloudinary.destroy is NOT called when no file is in the request" name="User Controller PATCH /api/user/me 200 – cloudinary.destroy is NOT called when no file is in the request" time="0.06">
+    <testcase classname="User Controller PATCH /api/user/me 200 – cloudinary.destroy is NOT called when no file is in the request" name="User Controller PATCH /api/user/me 200 – cloudinary.destroy is NOT called when no file is in the request" time="0.024">
     </testcase>
-    <testcase classname="User Controller PATCH /api/user/me 404 – when findById returns null" name="User Controller PATCH /api/user/me 404 – when findById returns null" time="0.035">
+    <testcase classname="User Controller PATCH /api/user/me 404 – when findById returns null" name="User Controller PATCH /api/user/me 404 – when findById returns null" time="0.022">
     </testcase>
-    <testcase classname="User Controller PATCH /api/user/me 500 – on DB error from findById" name="User Controller PATCH /api/user/me 500 – on DB error from findById" time="0.058">
+    <testcase classname="User Controller PATCH /api/user/me 500 – on DB error from findById" name="User Controller PATCH /api/user/me 500 – on DB error from findById" time="0.023">
     </testcase>
-    <testcase classname="User Controller PATCH /api/user/me 500 – on DB error from findByIdAndUpdate" name="User Controller PATCH /api/user/me 500 – on DB error from findByIdAndUpdate" time="0.028">
+    <testcase classname="User Controller PATCH /api/user/me 500 – on DB error from findByIdAndUpdate" name="User Controller PATCH /api/user/me 500 – on DB error from findByIdAndUpdate" time="0.025">
     </testcase>
-    <testcase classname="User Controller PATCH /api/user/me 500 – on Cloudinary destroy failure (controller propagates the error)" name="User Controller PATCH /api/user/me 500 – on Cloudinary destroy failure (controller propagates the error)" time="0.023">
+    <testcase classname="User Controller PATCH /api/user/me 500 – on Cloudinary destroy failure (controller propagates the error)" name="User Controller PATCH /api/user/me 500 – on Cloudinary destroy failure (controller propagates the error)" time="0.021">
     </testcase>
-    <testcase classname="User Controller PATCH /api/user/me CACHE – cacheDelete is called with correct key after successful updateMe" name="User Controller PATCH /api/user/me CACHE – cacheDelete is called with correct key after successful updateMe" time="0.019">
+    <testcase classname="User Controller PATCH /api/user/me CACHE – cacheDelete is called with correct key after successful updateMe" name="User Controller PATCH /api/user/me CACHE – cacheDelete is called with correct key after successful updateMe" time="0.03">
     </testcase>
-    <testcase classname="User Controller PATCH /api/user/me CACHE – CacheKeys.user is called with the authenticated user id on updateMe" name="User Controller PATCH /api/user/me CACHE – CacheKeys.user is called with the authenticated user id on updateMe" time="0.017">
+    <testcase classname="User Controller PATCH /api/user/me CACHE – CacheKeys.user is called with the authenticated user id on updateMe" name="User Controller PATCH /api/user/me CACHE – CacheKeys.user is called with the authenticated user id on updateMe" time="0.027">
     </testcase>
-    <testcase classname="User Controller PATCH /api/user/me CACHE – cacheDelete is called even when no fields are changed (empty body)" name="User Controller PATCH /api/user/me CACHE – cacheDelete is called even when no fields are changed (empty body)" time="0.022">
+    <testcase classname="User Controller PATCH /api/user/me CACHE – cacheDelete is called even when no fields are changed (empty body)" name="User Controller PATCH /api/user/me CACHE – cacheDelete is called even when no fields are changed (empty body)" time="0.026">
     </testcase>
-    <testcase classname="User Controller PATCH /api/user/me CACHE – cacheDelete is called after avatar upload succeeds" name="User Controller PATCH /api/user/me CACHE – cacheDelete is called after avatar upload succeeds" time="0.023">
+    <testcase classname="User Controller PATCH /api/user/me CACHE – cacheDelete is called after avatar upload succeeds" name="User Controller PATCH /api/user/me CACHE – cacheDelete is called after avatar upload succeeds" time="0.032">
     </testcase>
-    <testcase classname="User Controller PATCH /api/user/me CACHE – cacheDelete is NOT called when findById returns null (early 404)" name="User Controller PATCH /api/user/me CACHE – cacheDelete is NOT called when findById returns null (early 404)" time="0.019">
+    <testcase classname="User Controller PATCH /api/user/me CACHE – cacheDelete is NOT called when findById returns null (early 404)" name="User Controller PATCH /api/user/me CACHE – cacheDelete is NOT called when findById returns null (early 404)" time="0.033">
     </testcase>
-    <testcase classname="User Controller PATCH /api/user/me CACHE – cacheDelete is NOT called when findByIdAndUpdate throws" name="User Controller PATCH /api/user/me CACHE – cacheDelete is NOT called when findByIdAndUpdate throws" time="0.021">
+    <testcase classname="User Controller PATCH /api/user/me CACHE – cacheDelete is NOT called when findByIdAndUpdate throws" name="User Controller PATCH /api/user/me CACHE – cacheDelete is NOT called when findByIdAndUpdate throws" time="0.027">
     </testcase>
-    <testcase classname="User Controller PATCH /api/user/me CACHE – updateMe still returns correct updated user after cache invalidation" name="User Controller PATCH /api/user/me CACHE – updateMe still returns correct updated user after cache invalidation" time="0.02">
-    </testcase>
-  </testsuite>
-  <testsuite name="GET /api/products" errors="0" failures="6" skipped="0" timestamp="2026-07-24T16:06:54" time="3.124" tests="18">
-    <testcase classname="GET /api/products // should return all products successfully" name="GET /api/products // should return all products successfully" time="0.094">
-      <failure>Error: expect(received).toBe(expected) // Object.is equality
-
-Expected: 200
-Received: 500
-    at Object.toBe (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\src\__test__\product\product.test.js:90:24)
-    at processTicksAndRejections (node:internal/process/task_queues:103:5)</failure>
-    </testcase>
-    <testcase classname="GET /api/products // should return an empty array when no products exist" name="GET /api/products // should return an empty array when no products exist" time="0.033">
-      <failure>Error: expect(received).toBe(expected) // Object.is equality
-
-Expected: 200
-Received: 500
-    at Object.toBe (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\src\__test__\product\product.test.js:102:24)
-    at processTicksAndRejections (node:internal/process/task_queues:103:5)</failure>
-    </testcase>
-    <testcase classname="GET /api/products // should return 500 on database error" name="GET /api/products // should return 500 on database error" time="0.039">
-      <failure>Error: DB connection failed
-    at Object.&lt;anonymous&gt; (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\src\__test__\product\product.test.js:108:36)
-    at Promise.then.completed (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\utils.js:298:28)
-    at new Promise (&lt;anonymous&gt;)
-    at callAsyncCircusFn (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\utils.js:231:10)
-    at _callCircusTest (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\run.js:316:40)
-    at processTicksAndRejections (node:internal/process/task_queues:103:5)
-    at _runTest (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\run.js:252:3)
-    at _runTestsForDescribeBlock (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\run.js:126:9)
-    at _runTestsForDescribeBlock (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\run.js:121:9)
-    at run (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\run.js:71:3)
-    at runAndTransformResultsToJestFormat (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
-    at jestAdapter (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
-    at runTestInternal (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-runner\build\runTest.js:367:16)
-    at runTest (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-runner\build\runTest.js:444:34)</failure>
-    </testcase>
-    <testcase classname="GET /api/products/:id // should return a single product by ID" name="GET /api/products/:id // should return a single product by ID" time="0.031">
-      <failure>Error: expect(received).toBe(expected) // Object.is equality
-
-Expected: 200
-Received: 500
-    at Object.toBe (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\src\__test__\product\product.test.js:125:24)
-    at processTicksAndRejections (node:internal/process/task_queues:103:5)</failure>
-    </testcase>
-    <testcase classname="GET /api/products/:id // should return 404 when product is not found" name="GET /api/products/:id // should return 404 when product is not found" time="0.022">
-      <failure>Error: expect(received).toBe(expected) // Object.is equality
-
-Expected: 404
-Received: 500
-    at Object.toBe (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\src\__test__\product\product.test.js:136:24)
-    at processTicksAndRejections (node:internal/process/task_queues:103:5)</failure>
-    </testcase>
-    <testcase classname="GET /api/products/:id // should return 500 on database error" name="GET /api/products/:id // should return 500 on database error" time="0.03">
-      <failure>Error: DB error
-    at Object.&lt;anonymous&gt; (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\src\__test__\product\product.test.js:141:40)
-    at Promise.then.completed (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\utils.js:298:28)
-    at new Promise (&lt;anonymous&gt;)
-    at callAsyncCircusFn (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\utils.js:231:10)
-    at _callCircusTest (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\run.js:316:40)
-    at processTicksAndRejections (node:internal/process/task_queues:103:5)
-    at _runTest (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\run.js:252:3)
-    at _runTestsForDescribeBlock (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\run.js:126:9)
-    at _runTestsForDescribeBlock (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\run.js:121:9)
-    at run (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\run.js:71:3)
-    at runAndTransformResultsToJestFormat (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
-    at jestAdapter (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
-    at runTestInternal (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-runner\build\runTest.js:367:16)
-    at runTest (C:\Users\EXOTISCH TECH\Desktop\Zi&apos;s work\EasyDeal-real\EasyDeal\backend\node_modules\jest-runner\build\runTest.js:444:34)</failure>
-    </testcase>
-    <testcase classname="POST /api/products // should create a product successfully without images" name="POST /api/products // should create a product successfully without images" time="0.051">
-    </testcase>
-    <testcase classname="POST /api/products // should reject when more than 5 images are uploaded" name="POST /api/products // should reject when more than 5 images are uploaded" time="0.025">
-    </testcase>
-    <testcase classname="POST /api/products // should return 500 on save failure" name="POST /api/products // should return 500 on save failure" time="0.022">
-    </testcase>
-    <testcase classname="PUT /api/products/:id // should update product fields successfully" name="PUT /api/products/:id // should update product fields successfully" time="0.026">
-    </testcase>
-    <testcase classname="PUT /api/products/:id // should return 404 if product does not exist" name="PUT /api/products/:id // should return 404 if product does not exist" time="0.023">
-    </testcase>
-    <testcase classname="PUT /api/products/:id // should reject when more than 5 new images are uploaded" name="PUT /api/products/:id // should reject when more than 5 new images are uploaded" time="0.024">
-    </testcase>
-    <testcase classname="PUT /api/products/:id // should delete old Cloudinary images when new ones are provided" name="PUT /api/products/:id // should delete old Cloudinary images when new ones are provided" time="0.024">
-    </testcase>
-    <testcase classname="PUT /api/products/:id // should return 500 on database error" name="PUT /api/products/:id // should return 500 on database error" time="0.022">
-    </testcase>
-    <testcase classname="DELETE /api/products/:id // should delete a product successfully" name="DELETE /api/products/:id // should delete a product successfully" time="0.027">
-    </testcase>
-    <testcase classname="DELETE /api/products/:id // should purge all associated Cloudinary images on delete" name="DELETE /api/products/:id // should purge all associated Cloudinary images on delete" time="0.049">
-    </testcase>
-    <testcase classname="DELETE /api/products/:id // should return 404 when product does not exist" name="DELETE /api/products/:id // should return 404 when product does not exist" time="0.071">
-    </testcase>
-    <testcase classname="DELETE /api/products/:id // should return 500 on database error" name="DELETE /api/products/:id // should return 500 on database error" time="0.064">
+    <testcase classname="User Controller PATCH /api/user/me CACHE – updateMe still returns correct updated user after cache invalidation" name="User Controller PATCH /api/user/me CACHE – updateMe still returns correct updated user after cache invalidation" time="0.032">
     </testcase>
   </testsuite>
 </testsuites>
