@@ -81,6 +81,7 @@ const protect = (req, res, next) => {
 };
 
 // --- optionalAuth (mock) ---
+const optionalAuth = (req, res, next) => {
   const user = parseTestToken(req);
   if (user) req.user = user;
   next();
