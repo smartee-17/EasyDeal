@@ -1,0 +1,237 @@
+/* ============================================================
+   EASYDEAL — SHARED NAVBAR
+   Purpose: Reusable navbar for public and admin pages
+   ============================================================ */
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  width: 100%;
+  height: var(--navbar-height);
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  padding-inline: var(--space-4);
+  gap: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .navbar {
+    padding-inline: var(--space-6);
+  }
+}
+
+.navbar__left,
+.navbar__right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.navbar__left {
+  min-width: 0;
+}
+
+.navbar__right {
+  margin-left: auto;
+}
+
+.navbar__center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  max-width: 480px;
+  margin-inline: auto;
+}
+
+.navbar__logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-heading);
+  font-weight: var(--font-bold);
+  font-size: 1.25rem;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.navbar__logo img {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
+}
+
+.navbar__logo-accent {
+  color: var(--color-primary);
+}
+
+.navbar__search {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.navbar__search-input {
+  width: 100%;
+  height: var(--button-height-sm);
+  padding-inline: var(--space-10) var(--space-4);
+  font-size: var(--font-size-small);
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  transition: var(--transition-input);
+}
+
+.navbar__search-input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.navbar__search-input:hover,
+.navbar__search-input:focus {
+  border-color: var(--color-border-strong);
+  background-color: var(--color-surface);
+}
+
+.navbar__search-input:focus {
+  box-shadow: var(--shadow-focus);
+  outline: none;
+}
+
+.navbar__search-icon {
+  position: absolute;
+  left: var(--space-3);
+  color: var(--color-text-tertiary);
+  pointer-events: none;
+  display: inline-flex;
+}
+
+.navbar__search-clear {
+  position: absolute;
+  right: var(--space-2);
+  color: var(--color-text-tertiary);
+  padding: var(--space-1);
+  border-radius: var(--radius-sm);
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.navbar__search-clear:hover {
+  background-color: var(--color-surface-hover);
+  color: var(--color-text-primary);
+}
+
+.navbar__search-input:not(:placeholder-shown) ~ .navbar__search-clear,
+.navbar__search-input.has-value ~ .navbar__search-clear {
+  display: inline-flex;
+}
+
+.navbar__search-mobile {
+  display: none;
+  position: fixed;
+  top: var(--navbar-height);
+  left: 0;
+  right: 0;
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+  z-index: var(--z-dropdown);
+  transform: translateY(-8px);
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--transition-all);
+}
+
+.navbar__search-mobile.is-open {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+.navbar__icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  transition: var(--transition-colors);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.navbar__icon-btn:hover {
+  background-color: var(--color-surface-hover);
+  color: var(--color-text-primary);
+}
+
+.navbar__icon-btn:active {
+  background-color: var(--color-surface-active);
+}
+
+.navbar__theme-btn .icon--sun,
+.navbar__theme-btn .icon--moon {
+  display: none;
+}
+
+[data-theme="light"] .navbar__theme-btn .icon--moon,
+:root:not([data-theme]) .navbar__theme-btn .icon--moon,
+html:not([data-theme]) .navbar__theme-btn .icon--moon {
+  display: inline-flex;
+}
+
+[data-theme="dark"] .navbar__theme-btn .icon--sun {
+  display: inline-flex;
+}
+
+.navbar__hamburger {
+  display: none;
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 1023px) {
+  .navbar--admin .navbar__center {
+    display: none;
+  }
+
+  .navbar__hamburger {
+    display: inline-flex;
+  }
+
+  .navbar__search-mobile {
+    display: block;
+  }
+}
+
+@media (max-width: 767px) {
+  .navbar {
+    height: var(--navbar-height-mobile);
+    padding-inline: var(--space-3);
+    gap: var(--space-2);
+  }
+
+  .navbar__logo {
+    font-size: 1.1rem;
+  }
+
+  .navbar__logo img {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+
+  .navbar__icon-btn {
+    width: 36px;
+    height: 36px;
+  }
+}

@@ -1,0 +1,55 @@
+/* ============================================================
+   EASYDEAL — ICON SYSTEM
+   Purpose: Icon sizing, color, and display utilities
+   ============================================================ */
+
+/* ── Base Icon ─────────────────────────────────────────────── */
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--icon-size-md, 24px);
+  height: var(--icon-size-md, 24px);
+  color: currentColor;
+  vertical-align: middle;
+}
+
+.icon svg {
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* ── Size Variants ─────────────────────────────────────────── */
+.icon--xs,
+.icon-xs   { width: var(--icon-size-xs, 16px); height: var(--icon-size-xs, 16px); }
+
+.icon--sm,
+.icon-sm   { width: var(--icon-size-sm, 20px); height: var(--icon-size-sm, 20px); }
+
+.icon--md,
+.icon-md   { width: var(--icon-size-md, 24px); height: var(--icon-size-md, 24px); }
+
+.icon--lg,
+.icon-lg   { width: var(--icon-size-lg, 32px); height: var(--icon-size-lg, 32px); }
+
+.icon--xl,
+.icon-xl   { width: var(--icon-size-xl, 40px); height: var(--icon-size-xl, 40px); }
+
+/* ── Color Utilities ───────────────────────────────────────── */
+.icon--primary   { color: var(--color-primary); }
+.icon--secondary { color: var(--color-text-secondary); }
+.icon--accent    { color: var(--color-accent); }
+.icon--success   { color: var(--color-success); }
+.icon--warning   { color: var(--color-warning); }
+.icon--danger    { color: var(--color-danger); }
+.icon--info      { color: var(--color-info); }
+.icon--muted     { color: var(--color-text-tertiary); }
+
+/* ── Display Modifiers ─────────────────────────────────────── */
+.icon--block { display: flex; }
+
+/* ── Animation ─────────────────────────────────────────────── */
+.icon--spin  { animation: spin 1s linear infinite; }
+.icon--pulse { animation: pulse 2s var(--ease-out) infinite; }
