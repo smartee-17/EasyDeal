@@ -139,14 +139,8 @@ const normalizeSpecifications = (category, specifications = []) => {
 
 export const getAllProducts = async (req, res) => {
   try {
-    const {
-      category, // comma-separated, e.g. "electronics,fashion"
-      minPrice,
-      maxPrice,
-      condition, // comma-separated, e.g. "Brand new,Like new"
-      location, // comma-separated, e.g. "Delhi,Noida"
-    } = req.query;
-
+    const { category, minPrice, maxPrice, condition, location, owner } =
+      req.query;
     const filter = {};
 
     if (category) {
@@ -159,13 +153,11 @@ export const getAllProducts = async (req, res) => {
           categories.length > 1 ? { $in: categories } : categories[0];
       }
     }
-
     if (minPrice || maxPrice) {
       filter.price = {};
       if (minPrice) filter.price.$gte = Number(minPrice);
       if (maxPrice) filter.price.$lte = Number(maxPrice);
     }
-
     if (condition) {
       const conditions = condition
         .split(',')
@@ -177,7 +169,6 @@ export const getAllProducts = async (req, res) => {
         };
       }
     }
-
     if (location) {
       const locations = location
         .split(',')
@@ -186,6 +177,17 @@ export const getAllProducts = async (req, res) => {
       if (locations.length > 0) {
         filter.location = { $in: locations };
       }
+    }
+
+    if (owner === 'me') {
+      if (!req.user) {
+        return res.status(401).json({
+          success: false,
+          message: 'Must be logged in to view your own products',
+          data: null,
+        });
+      }
+      filter.seller = req.user.id;
     }
 
     const products = await Product.find(filter)
@@ -360,7 +362,6 @@ export const createProduct = async (req, res) => {
 
 export const updateProduct = async (req, res) => {
   try {
-    const { _id: userId } = req.user;
     const { id } = req.params;
     const {
       title,
@@ -372,7 +373,7 @@ export const updateProduct = async (req, res) => {
       specifications,
     } = req.body;
 
-    const product = await Product.findById(id);
+    const product = req.product;
 
     if (!product) {
       return sendResponse(res, 404, false, 'Product not found');
@@ -382,18 +383,6 @@ export const updateProduct = async (req, res) => {
     if (req.files && req.files.length > 5) {
       return sendResponse(res, 400, false, 'Maximum of 5 images allowed');
       // return res.status(400).json({ message: 'Maximum of 5 images allowed' });
-    }
-
-    if (product.seller.toString() !== userId.toString()) {
-      return sendResponse(
-        res,
-        403,
-        false,
-        'Not authorized to update this product',
-      );
-      // return res
-      //   .status(403)
-      //   .json({ message: 'Not authorized to update this product' });
     }
 
     if (req.files && req.files.length > 0) {

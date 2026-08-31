@@ -244,7 +244,7 @@ export const resendVerification = async (req, res) => {
     const { email } = req.body;
 
     if (!email) {
-      return sendResponse(res, 400, false, 'Email is required');
+      return sendResponse(res, 400, false, 'email is required');
       // return res.status(400).json({ message: 'email is required' });
     }
 
@@ -255,7 +255,7 @@ export const resendVerification = async (req, res) => {
         res,
         200,
         true,
-        'If an account exits, a new code has been sent',
+        'If an account exists, a new code has been sent',
       );
       // return res
       //   .status(200)
