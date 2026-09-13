@@ -486,6 +486,164 @@ const restoreUser = async (req, res) => {
   }
 }
 
+const getProductsBySearch = async (req, res) => {
+  try {
+    const { search } = req.query;
+
+    if (!search || !search.trim()) {
+      return sendResponse(
+        res,
+        400,
+        false,
+        "Search query is required"
+      );
+    }
+
+    const searchQuery = search.trim();
+
+    // Escape special regex characters from user input
+    const escapedSearchQuery = searchQuery.replace(
+      /[.*+?^${}()|[\]\\]/g,
+      "\\$&"
+    );
+
+    const searchCondition = {
+      $or: [
+        {
+          title: {
+            $regex: escapedSearchQuery,
+            $options: "i"
+          }
+        },
+        {
+          category: {
+            $regex: escapedSearchQuery,
+            $options: "i"
+          }
+        },
+        {
+          tags: {
+            $regex: escapedSearchQuery,
+            $options: "i"
+          }
+        }
+      ]
+    };
+
+    const products = await Product.find(searchCondition)
+      .populate("seller", "name email")
+      .select("title price category tags seller createdAt")
+      .sort({ createdAt: -1 });
+
+    if (products.length === 0) {
+      return sendResponse(
+        res,
+        404,
+        false,
+        "No product found"
+      );
+    }
+
+    return sendResponse(
+      res,
+      200,
+      true,
+      "Products retrieved successfully",
+      { products }
+    );
+  } catch (error) {
+    console.error("[Admin Dashboard]", error);
+
+    return sendResponse(
+      res,
+      500,
+      false,
+      "Server error"
+    );
+  }
+};
+
+const getUsersBySearch = async (req, res) => {
+  try {
+    const { search } = req.query;
+
+    if (!search || !search.trim()) {
+      return sendResponse(
+        res,
+        400,
+        false,
+        "Search query is required"
+      );
+    }
+
+    const searchQuery = search.trim();
+
+    // Escape special regex characters from user input
+    const escapedSearchQuery = searchQuery.replace(
+      /[.*+?^${}()|[\]\\]/g,
+      "\\$&"
+    );
+
+    const searchCondition = {
+      isDeleted: false,
+      $or: [
+        {
+          name: {
+            $regex: escapedSearchQuery,
+            $options: "i"
+          }
+        },
+        {
+          email: {
+            $regex: escapedSearchQuery,
+            $options: "i"
+          }
+        },
+        {
+          phone: {
+            $regex: escapedSearchQuery,
+            $options: "i"
+          }
+        }
+      ]
+    };
+
+    const users = await User.find(searchCondition)
+      .sort({ createdAt: -1 });
+
+    if (users.length === 0) {
+      return sendResponse(
+        res,
+        404,
+        false,
+        "No users found"
+      );
+    }
+
+    const publicUsers = users.map(user => user.toPublic());
+
+    return sendResponse(
+      res,
+      200,
+      true,
+      "Users retrieved successfully",
+      {
+        users: publicUsers,
+        total: publicUsers.length
+      }
+    );
+  } catch (error) {
+    console.error("[Admin Dashboard]", error);
+
+    return sendResponse(
+      res,
+      500,
+      false,
+      "Server error"
+    );
+  }
+};
+
 export {
   getAllProducts,
   deleteProduct,
@@ -499,4 +657,7 @@ export {
   unblockUser,
   deleteUser,
   restoreUser,
+
+  getProductsBySearch,
+  getUsersBySearch,
 };
