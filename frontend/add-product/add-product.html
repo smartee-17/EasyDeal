@@ -5,34 +5,128 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Add New Product - EasyDeal</title>
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" >
   <link rel="stylesheet" href="../shared/global.css">
   <link rel="stylesheet" href="./add-product.css">
 </head>
 
 <body>
+  <header class="add-product-header">
+    <a class="add-product-header__logo" href="/">
+     <div class="add-product-header__logo-icon">
+      <img src="../assets/images/logos/icon-light.svg" alt="ED">
+     </div>
+     <span class="add-product-header__logo-text">
+      Easy<span class="add-product-header__logo-deal">Deal</span>
+     </span>
+    </a>
+  </header>
 
-  <main class="add-product">
+<main class="add-product">
 
-    <header class="add-product-header">
-      <a class="add-product-header__logo" href="/">
-        <div class="add-product-header__logo-icon">
-          <img src="../assets/images/logos/icon-light.svg" alt="ED">
+  <section class="add-product-heading">
+
+    <div class="add-product-heading__content">
+      <h1 class="add-product-heading__title">
+        Add New Product
+      </h1>
+
+      <h2 class="basic-info__title">
+        Basic information
+      </h2>
+
+      <div class="basic-info__form">
+
+        <div class="basic-info__field basic-info__field--name">
+          <label class="basic-info__label" for="product-name">
+            Product name
+          </label>
+
+          <input
+            type="text"
+            id="product-name"
+            class="basic-info__input"
+            placeholder="Item name"
+          >
         </div>
 
-        <span class="add-product-header__logo-text">
-          Easy<span class="add-product-header__logo-deal">Deal</span>
-        </span>
-      </a>
-    </header>
+        <div class="basic-info__field basic-info__field--category">
+
+          <button
+            type="button"
+            class="basic-info__category"
+            id="product-category"
+          >
+            <i class="fa-solid fa-chevron-down basic-info__category-arrow"></i>
+            <span>Select Category</span>
+          </button>
+        </div>
+
+        <div class="basic-info__field basic-info__field--description">
+          <label class="basic-info__label" for="product-description">
+            Description
+          </label>
+
+          <div class="basic-info__textarea-wrapper">
+            <textarea
+              id="product-description"
+              class="basic-info__textarea"
+              maxlength="500"
+              placeholder="Describe your item.....&#10;• Condition&#10;• Dimensions&#10;• Features&#10;• Accessories included"
+            ></textarea>
+
+            <span class="basic-info__counter">
+              0 / 500
+            </span>
+          </div>
+        </div>
+
+      </div>
+    </div>
 
 
-    <section class="add-product-heading">
-      <h1 class="add-product-heading__title">Add New Product</h1>
-    </section>
+    <div class="basic-info__side">
+      <button type="button" class="preview-button">
+        <span>▷</span>
+        Preview
+      </button>
 
+      <div class="basic-info__upload">
 
-  </main>
+        <div class="basic-info__upload-icon">
+          <i class="fa-solid fa-arrow-up-from-bracket"></i>
+        </div>
+
+        <button
+          type="button"
+          class="basic-info__upload-button"
+        >
+          Upload
+        </button>
+
+        <p class="basic-info__upload-text">
+          or drag and drop to upload images
+        </p>
+
+        <p class="basic-info__upload-hint">
+          Upload up to 5 product images
+        </p>
+
+        <input
+          type="file"
+          class="basic-info__file-input"
+          accept="image/*"
+          multiple
+          hidden
+        >
+
+      </div>
+
+    </div>
+
+  </section>
+
+</main>
 
   <script src="./add-product.js"></script>
 </body>
