@@ -32,7 +32,6 @@ body {
 .homepage-search-container img,
 .slide-arrow-btn img,
 .product-card__button img,
-.footer-brand-logos img,
 .product-card_greentick,
 .product-card_heart,
 .product-card_heart-red {
@@ -57,114 +56,11 @@ body {
   height: 1.25rem;
 }
 
-.footer-brand-logos img {
-  width: 2rem;
-  height: 2rem;
-  padding: 0.3rem;
-  color: white;
-}
-
 .product-card_greentick,
 .product-card_heart,
 .product-card_heart-red {
   width: 1.125rem;
   height: 1.125rem;
-}
-
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: var(--color-bg);
-  width: 100%;
-  height: 3.25rem;
-  padding-inline: 10px;
-  box-shadow: 0px 4px 4px 0px #00000040 inset;
-}
-.homepage-header-logo {
-  display: flex;
-  align-items: center;
-}
-.homepage-header-logo img {
-  width: 2.125rem;
-  height: 2.125rem;
-}
-.homepage-header-logo h2 {
-  font-family: "Inter", sans-serif;
-  font-weight: 700;
-  font-size: 1.25rem;
-  line-height: 1;
-  letter-spacing: 0;
-  color: #000000;
-}
-.homepage-header-logo span {
-  font-family: "Inter", sans-serif;
-  font-weight: 700;
-  font-size: 1.25rem;
-  line-height: 1;
-  letter-spacing: 0;
-  color: var(--color-primary);
-}
-.homepage-search-container {
-  position: relative;
-}
-.homepage-search-container img {
-  width: 0.9375rem;
-  height: 0.9375rem;
-  position: absolute;
-  top: 10px;
-  left: 8px;
-}
-.homepage-header-search {
-  width: 27.5625rem;
-  height: 2.3125rem;
-  background-color: var(--color-white);
-  border-radius: 0.3125rem;
-  border: 1px solid var(--color-border);
-  padding-left: 30px;
-}
-.homepage-header-search::placeholder {
-  font-weight: 400;
-  font-size: 0.9375rem;
-}
-.homepage-header-btn {
-  padding-right: 10px;
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-.header-login,
-.header-signup,
-.browse,
-.sellitem {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-}
-.header-login {
-  min-width: 4.5625rem;
-  height: 2rem;
-  padding: 0.4375rem 1.1875rem;
-  border-radius: 3px;
-  border: 2px solid var(--color-primary);
-  color: var(--color-primary);
-  font-weight: 600;
-  font-size: 0.8125rem;
-  white-space: nowrap;
-}
-.header-signup {
-  min-width: 5.125rem;
-  height: 2rem;
-  padding: 0.5rem 1.0625rem;
-  background-color: var(--color-primary);
-  border: none;
-  border-radius: 3px;
-  font-weight: 600;
-  font-size: 0.8125rem;
-  color: var(--color-white);
-  white-space: nowrap;
 }
 
 /* hero section */
@@ -472,118 +368,9 @@ header {
   right: 42px;
 }
 
-.homepage-footer {
-  width: 100%;
-  min-height: 451.0517578125px;
-  padding: 2rem 4rem 2rem 4.375rem;
-  background: var(--color-text);
-  color: var(--color-white);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.homepage-footer-content {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-.footer-logo {
-  display: flex;
-  gap: 3px;
-  align-items: center;
-}
-.footer-logo img {
-  width: 33.69215393066406;
-  height: 33.69215393066406;
-}
-.footer-logo h3 {
-  font-family: "Inter", sans-serif;
-  font-weight: 600;
-  font-size: 20px;
-}
-.brands-txt {
-  font-family: "Inter", sans-serif;
-  font-weight: 500;
-  font-size: 15px;
-  max-width: 400px;
-  line-height: 1.5;
-}
-.brands {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.footer-brand-logos {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-}
-.copyright-txt {
-  font-family: "Inter", sans-serif;
-  font-weight: 500;
-  font-size: 15px;
-}
-.footer-content-nav {
-  display: flex;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
-.footer-links {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding-top: 26px;
-}
-.footer-links a {
-  text-decoration: none;
-  color: white;
-  font-family: "Inter", sans-serif;
-  font-weight: 500;
-  font-size: 13px;
-}
-.content-title {
-  font-family: "Inter", sans-serif;
-  font-weight: 500;
-  font-size: 15px;
-}
-.legalvs {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 3rem;
-  flex: 1;
-  min-width: 280px;
-}
-.legal {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem 2rem;
-  flex-wrap: wrap;
-}
-.legal a {
-  color: var(--color-footer-muted);
-  font-family: "Inter", sans-serif;
-  font-weight: 500;
 
-  font-size: 13px;
-}
-.footer-right {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  padding: 50px 0;
-}
 
 @media (max-width: 1024px) {
-  .homepage-header-search {
-    width: min(24rem, 100%);
-  }
-
   .homepage-hero {
     flex-direction: column;
     gap: 2rem;
@@ -629,70 +416,6 @@ header {
 }
 
 @media (max-width: 780px) {
-  header {
-    flex-wrap: wrap;
-    height: auto;
-    gap: 0.75rem;
-    padding: 0.75rem 0.875rem;
-    align-items: center;
-  }
-  .homepage-header-search::placeholder {
-    font-size: 0.75rem;
-  }
-  .homepage-search-container img {
-    width: 0.7378rem;
-    height: 0.7378rem;
-  }
-  .homepage-header-logo {
-    flex: 1 1 auto;
-    min-width: 0;
-  }
-
-  .homepage-header-logo img {
-    width: 1.6rem;
-    height: 1.6rem;
-  }
-  .homepage-header-logo h2 {
-    font-size: 1rem;
-  }
-  .homepage-header-logo span {
-    font-size: 1rem;
-  }
-
-  .homepage-header-btn {
-    flex: 0 0 auto;
-    justify-content: flex-end;
-    padding-right: 0;
-  }
-
-  .homepage-search-container {
-    order: 3;
-    width: 100%;
-  }
-
-  .homepage-header-search {
-    width: 100%;
-    height: 1.9rem;
-  }
-
-  .homepage-header-btn {
-    width: auto;
-  }
-  .header-login {
-    min-width: 3.5625rem;
-    height: 1.4rem;
-    font-size: 0.7125rem;
-    text-align: center;
-    padding: 5px 8px;
-  }
-  .header-signup {
-    min-width: 4.125rem;
-    height: 1.4rem;
-    font-size: 0.7125rem;
-    text-align: center;
-    padding: 5px 8px;
-  }
-
   .hero-btns {
     width: 100%;
     gap: 0.75rem;
@@ -807,40 +530,6 @@ header {
     top: 18px;
     right: 12px;
   }
-  .homepage-footer {
-    min-height: auto;
-    width: 100%;
-    padding: 2rem 1rem;
-  }
-  .homepage-footer-content {
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-    justify-content: center;
-    align-items: flex-start;
-    margin: 0 auto;
-    gap: 2rem;
-  }
-
-  .brands,
-  .legalvs {
-    width: 100%;
-  }
-
-  .footer-content-nav {
-    width: 100%;
-    gap: 1.25rem;
-  }
-
-  .legal {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-  .footer-right {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
 }
 
 @media (max-width: 560px) {
@@ -852,3 +541,5 @@ header {
     height: 9rem;
   }
 }
+
+
