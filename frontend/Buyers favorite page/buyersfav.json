@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "title": "Wireless Noise-Canceling Headphones",
+    "price": 129.99,
+    "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80",
+    "category": "Electronics",
+    "inStock": true
+  },
+  {
+    "id": 2,
+    "title": "Minimalist Leather Backpack",
+    "price": 79.0,
+    "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&q=80",
+    "category": "Accessories",
+    "inStock": true
+  },
+  {
+    "id": 3,
+    "title": "Mechanical Gaming Keyboard",
+    "price": 89.99,
+    "image": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=500&q=80",
+    "category": "Gaming",
+    "inStock": false
+  }
+]
