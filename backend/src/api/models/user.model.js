@@ -4,16 +4,16 @@ import bcrypt from 'bcryptjs';
 const userSchema = new mongoose.Schema(
   {
     // Auth
-    email: { type: String, required: true, unique: true,  trim: true },
+    email: { type: String, required: true, unique: true, trim: true },
     password: { type: String, required: true, select: false },
     phone: { type: String, required: true },
 
     // Profile
     name: { type: String, required: true },
     username: { type: String, unique: true },
-    avatar: { 
-        url: { type: String },
-        publicId: { type: String },
+    avatar: {
+      url: { type: String },
+      publicId: { type: String },
     },
     bio: { type: String },
 
@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema(
 
     // Admin
     isBlocked: { type: Boolean, default: false },
-    isDeleted: { type: Boolean, default: false},
+    isDeleted: { type: Boolean, default: false },
 
     // Verification flags
     isEmailVerified: { type: Boolean, default: false },
@@ -45,15 +45,13 @@ const userSchema = new mongoose.Schema(
     resetPasswordToken: { type: String, select: false },
     resetPasswordExpires: { type: Date, select: false },
 
-    lastLoginAt: { type: Date},
+    lastLoginAt: { type: Date },
     deletedAt: { type: Date, default: null },
   },
-  { 
+  {
     timestamps: true,
-    discriminatorKey: "role"
+    discriminatorKey: 'role',
   },
-
-  
 );
 
 userSchema.index({ email: 1, phone: 1, username: 1 }, { unique: true });
@@ -73,7 +71,7 @@ userSchema.methods.matchPassword = async function (password) {
 // instance method: safe public view
 userSchema.methods.toPublic = function () {
   const obj = this.toObject();
-  
+
   delete obj.password;
   delete obj.emailVerificationToken;
   delete obj.emailVerificationTokenExpire;
@@ -81,7 +79,7 @@ userSchema.methods.toPublic = function () {
   delete obj.resetPasswordExpire;
 
   return obj;
-}
+};
 
 const User = mongoose.model('User', userSchema);
 

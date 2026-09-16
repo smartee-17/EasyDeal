@@ -1,11 +1,10 @@
 /* ==========================================================================
-   Saved Products page logic
+   Saved Products page logic (Using Global EasyDealAPI Config)
    ========================================================================== */
 
 const CONFIG = {
-  API_BASE: 'http://localhost:3000',
-  SAVED_ENDPOINT: '/api/saved',
-  PRODUCTS_ENDPOINT: '/api/products',
+  SAVED_ENDPOINT: '/saved',
+  PRODUCTS_ENDPOINT: '/products',
   RECOMMENDED_COUNT: 4,
   CURRENCY_PREFIX: '$',
 };
@@ -19,14 +18,18 @@ const state = {
 };
 
 // ---------------------------------------------------------------------------
-// Helpers
+// Helpers (Updated to use global EasyDealAPI)
 // ---------------------------------------------------------------------------
 
 function api(path, options = {}) {
-  return fetch(`${CONFIG.API_BASE}${path}`, {
-    credentials: 'include',
+  // Use the global buildUrl and defaultFetchOptions from config.js
+  const url = window.EasyDealAPI.buildUrl(path);
+  const mergedOptions = {
+    ...window.EasyDealAPI.defaultFetchOptions,
     ...options,
-  }).then(async (res) => {
+  };
+
+  return fetch(url, mergedOptions).then(async (res) => {
     let body = null;
     try {
       body = await res.json();
@@ -55,7 +58,6 @@ function getImage(product) {
   return product?.images?.[0]?.url || '';
 }
 
-// Updated to read phone directly from populated seller
 function getSellerWhatsapp(product) {
   const seller = product?.seller;
   if (seller && typeof seller === 'object') {
@@ -93,6 +95,7 @@ function truncate(str = '', max = 60) {
 let toastTimer = null;
 function showToast(message, isError = false) {
   const toast = document.getElementById('toast');
+  if (!toast) return;
   toast.textContent = message;
   toast.classList.toggle('is-error', isError);
   toast.classList.add('is-visible');
