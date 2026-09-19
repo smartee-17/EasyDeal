@@ -23,25 +23,19 @@
   </header>
 
 <main class="add-product">
-
   <section class="add-product-heading">
-
     <div class="add-product-heading__content">
       <h1 class="add-product-heading__title">
         Add New Product
       </h1>
-
       <h2 class="basic-info__title">
         Basic information
       </h2>
-
       <div class="basic-info__form">
-
         <div class="basic-info__field basic-info__field--name">
           <label class="basic-info__label" for="product-name">
             Product name
           </label>
-
           <input
             type="text"
             id="product-name"
@@ -49,24 +43,45 @@
             placeholder="Item name"
           >
         </div>
-
         <div class="basic-info__field basic-info__field--category">
+  <button
+    type="button"
+    class="basic-info__category"
+    id="product-category"
+    aria-expanded="false"
+  >
+    <i class="fa-solid fa-chevron-down basic-info__category-arrow"></i>
+    <span>Select Category</span>
+  </button>
 
-          <button
-            type="button"
-            class="basic-info__category"
-            id="product-category"
-          >
-            <i class="fa-solid fa-chevron-down basic-info__category-arrow"></i>
-            <span>Select Category</span>
-          </button>
-        </div>
+  <div class="basic-info__category-menu">
 
+    <button type="button" class="basic-info__category-option">
+      📦 &nbsp; Electronics
+    </button>
+
+    <button type="button" class="basic-info__category-option">
+      👕 &nbsp; Clothing
+    </button>
+
+    <button type="button" class="basic-info__category-option">
+      🛋️ &nbsp; Furniture
+    </button>
+
+    <button type="button" class="basic-info__category-option">
+      📚 &nbsp; Books
+    </button>
+
+    <button type="button" class="basic-info__category-option">
+      🏓 &nbsp; Sports
+    </button>
+
+  </div>
+</div>
         <div class="basic-info__field basic-info__field--description">
           <label class="basic-info__label" for="product-description">
             Description
           </label>
-
           <div class="basic-info__textarea-wrapper">
             <textarea
               id="product-description"
@@ -74,44 +89,35 @@
               maxlength="500"
               placeholder="Describe your item.....&#10;• Condition&#10;• Dimensions&#10;• Features&#10;• Accessories included"
             ></textarea>
-
             <span class="basic-info__counter">
               0 / 500
             </span>
           </div>
         </div>
-
       </div>
     </div>
-
 
     <div class="basic-info__side">
       <button type="button" class="preview-button">
         <span>▷</span>
         Preview
       </button>
-
       <div class="basic-info__upload">
-
         <div class="basic-info__upload-icon">
           <i class="fa-solid fa-arrow-up-from-bracket"></i>
         </div>
-
         <button
           type="button"
           class="basic-info__upload-button"
         >
           Upload
         </button>
-
         <p class="basic-info__upload-text">
           or drag and drop to upload images
         </p>
-
         <p class="basic-info__upload-hint">
           Upload up to 5 product images
         </p>
-
         <input
           type="file"
           class="basic-info__file-input"
@@ -119,13 +125,238 @@
           multiple
           hidden
         >
-
       </div>
+    </div>
+  </section>
+<section class="product-meta">
+  <div class="product-meta__section">
+    <h2 class="product-meta__title">Pricing</h2>
+    <div class="product-meta__field">
+      <label for="original-price">Original prize</label>
+      <input
+        type="text"
+        id="original-price"
+        name="original-price"
+        placeholder="$ XX.00"
+      >
+    </div>
+    <div class="product-meta__field">
+      <label for="discount">Discount (%)</label>
+      <input
+        type="text"
+        id="discount"
+        name="discount"
+        placeholder="15"
+      >
+    </div>
+  </div>
+
+  <div class="product-meta__section">
+    <h2 class="product-meta__title">Delivery &amp; Location</h2>
+    <div class="product-meta__field">
+      <label for="location">Location</label>
+      <input
+        type="text"
+        id="location"
+        name="location"
+        placeholder="Delhi, India"
+      >
+    </div>
+    <div class="product-meta__field">
+      <label for="listing-duration">
+        Listing duration <span>(optional)</span>
+      </label>
+      <input
+        type="text"
+        id="listing-duration"
+        name="listing-duration"
+        placeholder="10 days"
+      >
+    </div>
+  </div>
+</section>
+
+<section class="product-detail">
+   <h2 class="product-detail__title">Product detail</h2>
+    <div class="product-detail__field product-detail__condition"> 
+    <label for="condition">Condition</label> 
+    <div class="product-dropdown"> 
+      <button 
+        type="button" 
+        class="product-dropdown__button" 
+        id="condition" 
+        aria-expanded="false" 
+      > 
+        <i class="fa-solid fa-chevron-down product-dropdown__arrow"></i> 
+        <span>Select Condition</span> 
+      </button> 
+ 
+      <div class="product-dropdown__menu"> 
+        <button type="button" class="product-dropdown__option"> 
+        Brand new 
+        </button> 
+ 
+        <button type="button" class="product-dropdown__option"> 
+        Like new 
+        </button> 
+ 
+        <button type="button" class="product-dropdown__option"> 
+          Good condition 
+        </button> 
+ 
+        <button type="button" class="product-dropdown__option"> 
+          Fair condition 
+        </button> 
+ 
+        <button type="button" class="product-dropdown__option"> 
+          Used 
+        </button> 
+      </div> 
+    </div> 
+  </div>
+  <div class="product-detail__field">
+    <label for="brand">Brand</label>
+
+    <div class="product-detail__input-wrapper">
+      <input
+        type="text"
+        id="brand"
+        name="brand"
+      >
+
+      <button
+        type="button"
+        class="product-detail__delete"
+        aria-label="Remove Brand"
+      >
+        <i class="fa-solid fa-trash"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="product-detail__field">
+    <label for="color">Color</label>
+
+    <div class="product-detail__input-wrapper">
+      <input
+        type="text"
+        id="color"
+        name="color"
+      >
+      <button
+        type="button"
+        class="product-detail__delete"
+        aria-label="Remove Color"
+      >
+        <i class="fa-solid fa-trash"></i>
+      </button>
+    </div>
+  </div>
+
+  <button
+    type="button"
+    class="product-detail__add"
+    id="add-product-detail"
+  >
+    <i class="fa-solid fa-plus"></i>
+    Add
+  </button>
+</section>
+
+
+<section class="product-tags">
+  <div class="product-tags__heading">
+    <h2 class="product-tags__title">
+      Tags <span>(maximum 5)</span>
+    </h2>
+
+    <p class="product-tags__description">
+      Tags play a minimal role in helping people find your product.
+    </p>
+  </div>
+
+  <input
+    type="text"
+    class="product-tags__input"
+    id="product-tags-input"
+    aria-label="Product tags"
+  >
+
+  <div class="product-tags__recommended">
+
+    <h3 class="product-tags__recommended-title">
+      <i class="fa-solid fa-sparkles"></i>
+      Recommended Tags
+    </h3>
+
+    <div class="product-tags__list">
+
+      <button type="button" class="product-tags__tag">
+        <span># iPhone</span>
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <button type="button" class="product-tags__tag">
+        <span># Laptop</span>
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <button type="button" class="product-tags__tag">
+        <span># Sneakers</span>
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <button type="button" class="product-tags__tag">
+        <span># Wooden</span>
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <button type="button" class="product-tags__tag">
+        <span># Accessories</span>
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <button type="button" class="product-tags__tag">
+        <span># Wireless</span>
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <button type="button" class="product-tags__tag">
+        <span># Dining</span>
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <button type="button" class="product-tags__tag">
+        <span># Electronics</span>
+        <i class="fa-solid fa-xmark"></i>
+      </button>
 
     </div>
 
-  </section>
+  </div>
 
+</section>
+
+
+<div class="product-actions">
+  <button
+    type="button"
+    class="product-actions__publish"
+    id="publish-listing"
+  >
+    Publish Listing
+  </button>
+
+  <button
+    type="button"
+    class="product-actions__save"
+    id="save-product"
+    aria-label="Save product"
+  >
+    <i class="fa-regular fa-bookmark"></i>
+  </button>
+
+</div>
 </main>
 
   <script src="./add-product.js"></script>
