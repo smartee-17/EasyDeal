@@ -520,12 +520,6 @@ const getProductsBySearch = async (req, res) => {
             $regex: escapedSearchQuery,
             $options: "i"
           }
-        },
-        {
-          tags: {
-            $regex: escapedSearchQuery,
-            $options: "i"
-          }
         }
       ]
     };
