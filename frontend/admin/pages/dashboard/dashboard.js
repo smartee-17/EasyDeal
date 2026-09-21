@@ -9,11 +9,95 @@ import { initSidebar } from '../../components/sidebar/sidebar.js';
 import { initFooter } from '../../components/footer/footer.js';
 import { showToast } from '../../components/toast/toast.js';
 import { initAuthGuard } from '../../services/authService.js';
-import { getDashboardStats } from '../../services/dashboardService.js';
-import { iconUser, iconStore, iconShoppingBag, iconCheck, iconX, iconAlertTriangle } from '../../components/icons/icons.js';
+import { getDashboardStats, searchProducts } from '../../services/dashboardService.js';
+import { iconUser, iconStore, iconShoppingBag, iconCheck, iconX, iconAlertTriangle, iconChevronRight } from '../../components/icons/icons.js';
 
 initTheme();
-initNavbar({ context: 'admin', searchPlaceholder: 'Search dashboard...' });
+
+let searchDebounceTimer = null;
+
+function handleDashboardSearch(query) {
+  const navbar = document.querySelector('.navbar');
+  if (!navbar) return;
+
+  clearTimeout(searchDebounceTimer);
+  searchDebounceTimer = setTimeout(async () => {
+    if (!query.trim()) {
+      closeSearchResults(navbar);
+      return;
+    }
+
+    try {
+      const response = await searchProducts(query);
+      const products = response.data?.products || [];
+      renderSearchResults(navbar, products, handleSearchResultClick);
+    } catch (error) {
+      console.error('[Dashboard] search error:', error);
+      showToast({ type: 'error', title: 'Search failed', message: error.message || 'Could not search products.' });
+      closeSearchResults(navbar);
+    }
+  }, 250);
+}
+
+function handleSearchResultClick(item) {
+  if (item?._id || item?.id) {
+    window.location.href = `../products/products.html?id=${item._id || item.id}`;
+  }
+}
+
+function closeSearchResults(navbar) {
+  const results = navbar.querySelector('.navbar__search-results');
+  if (results) results.remove();
+}
+
+function renderSearchResults(navbar, products, onResultClick) {
+  const searchWrapper = navbar.querySelector('.navbar__search');
+  if (!searchWrapper) return;
+
+  const resultsContainer = document.createElement('div');
+  resultsContainer.className = 'navbar__search-results';
+  resultsContainer.setAttribute('role', 'listbox');
+  resultsContainer.setAttribute('aria-label', 'Search results');
+
+  if (!products || products.length === 0) {
+    resultsContainer.innerHTML = `
+      <div class="navbar__search-result-empty">
+        No products found
+      </div>
+    `;
+  } else {
+    resultsContainer.innerHTML = products.map((product, index) => `
+      <button type="button" class="navbar__search-result-item" data-index="${index}" role="option" tabindex="-1">
+        <span class="navbar__search-result-title">${escapeHtml(product.title || 'Untitled')}</span>
+        <span class="navbar__search-result-subtitle">${escapeHtml(product.category || '—')}</span>
+        <span class="navbar__search-result-icon" aria-hidden="true">${iconChevronRight({ size: 16 })}</span>
+      </button>
+    `).join('');
+
+    resultsContainer.querySelectorAll('.navbar__search-result-item').forEach((btn, index) => {
+      btn.addEventListener('click', () => {
+        const product = products[index];
+        if (product && onResultClick) {
+          onResultClick(product);
+        }
+        closeSearchResults(navbar);
+        const input = navbar.querySelector('.navbar__search-input');
+        if (input) input.value = '';
+      });
+    });
+  }
+
+  searchWrapper.appendChild(resultsContainer);
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+initNavbar({ context: 'admin', searchPlaceholder: 'Search products...', onSearch: handleDashboardSearch });
 initSidebar();
 initFooter();
 
@@ -21,12 +105,12 @@ const statsGrid = document.getElementById('statsGrid');
 const overviewBody = document.getElementById('overviewTableBody');
 
 const STAT_CONFIG = [
-  { key: 'users.total', label: 'Total Users', icon: iconUser, iconClass: 'stat-card__icon--info', meta: 'Active accounts' },
-  { key: 'sellers.total', label: 'Total Sellers', icon: iconStore, iconClass: 'stat-card__icon--primary', meta: 'Registered sellers' },
-  { key: 'users.blocked', label: 'Blocked Users', icon: iconX, iconClass: 'stat-card__icon--danger', meta: 'Suspended accounts' },
-  { key: 'sellers.blocked', label: 'Blocked Sellers', icon: iconAlertTriangle, iconClass: 'stat-card__icon--warning', meta: 'Suspended sellers' },
-  { key: 'sellers.verified', label: 'Verified Sellers', icon: iconCheck, iconClass: 'stat-card__icon--success', meta: 'Approved sellers' },
-  { key: 'products.total', label: 'Total Products', icon: iconShoppingBag, iconClass: 'stat-card__icon--primary', meta: 'Listed items' },
+  { key: 'users.total', label: 'Total Users', icon: iconUser, iconClass: 'stat-card__icon--info', meta: 'Active accounts', link: '../users/users.html' },
+  { key: 'sellers.total', label: 'Total Sellers', icon: iconStore, iconClass: 'stat-card__icon--primary', meta: 'Registered sellers', link: '../users/users.html' },
+  { key: 'users.blocked', label: 'Blocked Users', icon: iconX, iconClass: 'stat-card__icon--danger', meta: 'Suspended accounts', link: '../users/users.html' },
+  { key: 'sellers.blocked', label: 'Blocked Sellers', icon: iconAlertTriangle, iconClass: 'stat-card__icon--warning', meta: 'Suspended sellers', link: '../users/users.html' },
+  { key: 'sellers.verified', label: 'Verified Sellers', icon: iconCheck, iconClass: 'stat-card__icon--success', meta: 'Approved sellers', link: '../users/users.html' },
+  { key: 'products.total', label: 'Total Products', icon: iconShoppingBag, iconClass: 'stat-card__icon--primary', meta: 'Listed items', link: '../products/products.html' },
 ];
 
 async function loadDashboard() {
@@ -35,10 +119,6 @@ async function loadDashboard() {
 
   try {
     const response = await getDashboardStats();
-
-    // Temporary development logging — remove once verified in production
-    console.log('[Dashboard] Overview response:', response);
-    console.log('[Dashboard] Overview data:', response.data);
 
     if (!response.success) {
       throw new Error(response.message || 'Failed to fetch dashboard stats');
@@ -62,14 +142,14 @@ function renderStats(stats) {
       console.error(`[Dashboard] Required stat field missing: ${cfg.key}`);
     }
     return `
-      <div class="stat-card">
+      <a href="${cfg.link}" class="stat-card stat-card--link">
         <div class="stat-card__header">
           <span class="stat-card__icon ${cfg.iconClass}">${cfg.icon({ size: 20 })}</span>
           <span class="stat-card__meta">${cfg.meta}</span>
         </div>
         <div class="stat-card__value">${formatNumber(value)}</div>
         <div class="stat-card__label">${cfg.label}</div>
-      </div>
+      </a>
     `;
   }).join('');
 }
@@ -82,12 +162,6 @@ function renderOverview(stats) {
     { label: 'Verified Sellers', value: formatNumber(getNestedValue(stats, 'sellers.verified')) },
     { label: 'Blocked Sellers', value: formatNumber(getNestedValue(stats, 'sellers.blocked')) },
     { label: 'Total Products', value: formatNumber(getNestedValue(stats, 'products.total')) },
-    { label: 'Total Orders', value: formatNumber(getNestedValue(stats, 'orders.total')) },
-    { label: 'Total Revenue', value: formatCurrency(getNestedValue(stats, 'revenue.total')) },
-    { label: 'Pending Orders', value: formatNumber(getNestedValue(stats, 'orders.pending')) },
-    { label: 'Pending Withdrawals', value: formatNumber(getNestedValue(stats, 'withdrawals.pending')) },
-    { label: 'Pending Disputes', value: formatNumber(getNestedValue(stats, 'disputes.pending')) },
-    { label: 'Pending Refunds', value: formatNumber(getNestedValue(stats, 'refunds.pending')) },
   ];
 
   overviewBody.innerHTML = rows.map(row => `
@@ -110,13 +184,6 @@ function formatNumber(n) {
   const num = Number(n);
   if (Number.isNaN(num)) return '—';
   return num.toLocaleString();
-}
-
-function formatCurrency(n) {
-  if (n === undefined || n === null) return '—';
-  const num = Number(n);
-  if (Number.isNaN(num)) return '—';
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
 }
 
 loadDashboard();

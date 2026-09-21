@@ -78,6 +78,14 @@ export const iconMoreVertical = createIcon('more-vertical',
   `<circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/>`
 );
 
+export const iconRotateCcw = createIcon('rotate-ccw',
+  `<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/>`
+);
+
+export const iconUnlock = createIcon('unlock',
+  `<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>`
+);
+
 /* ════════════════════════════════════════════════════════════
    FEEDBACK & STATUS
    ════════════════════════════════════════════════════════════ */
@@ -290,10 +298,72 @@ export const iconTrash2 = createIcon('trash-2',
   `<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/>`
 );
 
-export const iconRotateCcw = createIcon('rotate-ccw',
-  `<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/>`
+
+/* ════════════════════════════════════════════════════════════
+   CATEGORIES ICON
+   ════════════════════════════════════════════════════════════ */
+
+export const iconBook = createIcon('book',
+  `<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+   <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>`
 );
 
-export const iconUnlock = createIcon('unlock',
-  `<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>`
+export const iconCar = createIcon('car',
+  `<path d="M5 17h14"/>
+   <path d="M5 17l-1-5h16l-1 5"/>
+   <path d="M6 12l1.5-4h9L18 12"/>
+   <circle cx="7" cy="17" r="1.5"/>
+   <circle cx="17" cy="17" r="1.5"/>`
+);
+
+export const iconDumbbell = createIcon('dumbbell',
+  `<path d="M6.5 6.5v11"/>
+   <path d="M17.5 6.5v11"/>
+   <path d="M3 9v6"/>
+   <path d="M21 9v6"/>
+   <path d="M6.5 12h11"/>
+   <path d="M3 10h3.5"/>
+   <path d="M17.5 10H21"/>
+   <path d="M3 14h3.5"/>
+   <path d="M17.5 14H21"/>`
+);
+
+export const iconLaptop = createIcon('laptop',
+  `<path d="M20 16V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v11"/>
+   <path d="M2 16h20l-2 3H4l-2-3z"/>
+   <path d="M8 19h8"/>`
+);
+
+export const iconShirt = createIcon('shirt',
+  `<path d="M20 7l-5-3-3 3-3-3-5 3 2 5h3v9h8v-9h3l2-5z"/>
+   <path d="M9 4c0 1.1.9 2 2 2s2-.9 2-2"/>`
+);
+
+export const iconSparkles = createIcon('sparkles',
+  `<path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/>
+   <path d="M19 15l.75 2.25L22 18l-2.25.75L19 21l-.75-2.25L16 18l2.25-.75L19 15z"/>
+   <path d="M5 15l.5 1.5L7 17l-1.5.5L5 19l-.5-1.5L3 17l1.5-.5L5 15z"/>`
+);
+
+export const iconUtensils = createIcon('utensils',
+  `<path d="M7 3v8"/>
+   <path d="M4 3v5a3 3 0 0 0 6 0V3"/>
+   <path d="M7 11v10"/>
+   <path d="M16 3v18"/>
+   <path d="M16 3c2.5 2 3 5 0 8"/>
+   <path d="M16 11h3"/>`
+);
+
+export const iconTruck = createIcon('truck',
+  `<path d="M3 6h11v11H3z"/>
+   <path d="M14 10h4l3 3v4h-7z"/>
+   <circle cx="7" cy="19" r="2"/>
+   <circle cx="18" cy="19" r="2"/>`
+);
+
+export const iconPackage = createIcon('package',
+  `<path d="M21 16V8l-9-5-9 5v8l9 5 9-5z"/>
+   <path d="M3.3 7.5L12 12l8.7-4.5"/>
+   <path d="M12 22V12"/>
+   <path d="M7.5 5.25L16.5 10"/>`
 );

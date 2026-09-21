@@ -45,6 +45,30 @@ export async function deleteProduct(id) {
   return handleResponse(response);
 }
 
+export async function getProductFull(id) {
+  const response = await fetch(buildUrl(`/products/${id}`), {
+    ...defaultFetchOptions,
+    method: 'GET',
+  });
+  return handleResponse(response);
+}
+
+export async function updateProduct(id, formData) {
+  const headers = {};
+  if (formData instanceof FormData) {
+    // Do not set Content-Type — browser sets it with boundary for multipart
+  } else {
+    headers['Content-Type'] = 'application/json';
+  }
+  const response = await fetch(buildUrl(`/products/${id}`), {
+    credentials: 'include',
+    headers,
+    method: 'PUT',
+    body: formData,
+  });
+  return handleResponse(response);
+}
+
 export async function getAllUsers() {
   const response = await fetch(buildUrl('/admin/users'), {
     ...defaultFetchOptions,
@@ -94,11 +118,17 @@ export async function restoreUser(id) {
 }
 
 export async function searchProducts(query) {
-  console.warn('[DashboardService] searchProducts() is a placeholder.');
-  return { products: [] };
+  const response = await fetch(buildUrl(`/admin/products/search?search=${encodeURIComponent(query)}`), {
+    ...defaultFetchOptions,
+    method: 'GET',
+  });
+  return handleResponse(response);
 }
 
 export async function searchUsers(query) {
-  console.warn('[DashboardService] searchUsers() is a placeholder.');
-  return { users: [] };
+  const response = await fetch(buildUrl(`/admin/users/search?search=${encodeURIComponent(query)}`), {
+    ...defaultFetchOptions,
+    method: 'GET',
+  });
+  return handleResponse(response);
 }

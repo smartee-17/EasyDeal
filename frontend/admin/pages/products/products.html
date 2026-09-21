@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#ffffff" />
-  <title>Products — EasyDeal Admin</title>
+  <title>Product Management — EasyDeal Admin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
@@ -33,11 +33,8 @@
           <a href="../dashboard/dashboard.html" class="sidebar__link" data-icon="dashboard">
             <span data-render-icon="dashboard"></span> Dashboard Overview
           </a>
-          <a href="./products.html" class="sidebar__link" data-icon="products">
-            <span data-render-icon="products"></span> Products
-          </a>
-          <a href="../product-management/product-management.html" class="sidebar__link" data-icon="product-management">
-            <span data-render-icon="product-management"></span> Product Management
+          <a href="./products.html" class="sidebar__link is-active" data-icon="product-management">
+            <span data-render-icon="product-management"></span> Products Management
           </a>
           <a href="../users/users.html" class="sidebar__link" data-icon="users">
             <span data-render-icon="users"></span> User Management
@@ -95,36 +92,88 @@
 
       <main class="admin-layout__content">
         <div class="page-header">
-          <h1 class="page-header__title">Products</h1>
-          <p class="page-header__subtitle">Manage all products on the platform.</p>
+          <div class="page-header__left">
+            <h1 class="page-header__title">Product Management</h1>
+            <p class="page-header__subtitle">Administrators can manage and review marketplace products.</p>
+          </div>
+          <div class="page-header__right">
+            <button type="button" class="btn btn--primary products-add-btn" id="addProductBtn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Product
+            </button>
+          </div>
+        </div>
+
+        <div class="products-filters" id="productsFilters">
+          <div class="products-filters__search">
+            <span class="products-filters__search-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </span>
+            <input type="search" class="products-filters__search-input" placeholder="Search" aria-label="Search products in table" id="tableSearchInput" />
+          </div>
+          <div class="products-filters__dropdowns">
+            <div class="products-filters__select-wrap">
+              <select class="products-filters__select" id="filterCategory" aria-label="Filter by category">
+                <option value="">Category</option>
+              </select>
+              <span class="products-filters__select-icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </div>
+            <div class="products-filters__select-wrap">
+              <select class="products-filters__select" id="filterAvailability" aria-label="Filter by availability">
+                <option value="">Availability</option>
+                <option value="available">Available</option>
+                <option value="unavailable">Unavailable</option>
+              </select>
+              <span class="products-filters__select-icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </div>
+            <div class="products-filters__select-wrap">
+              <select class="products-filters__select" id="filterSeller" aria-label="Filter by seller">
+                <option value="">Seller</option>
+              </select>
+              <span class="products-filters__select-icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </div>
+            <div class="products-filters__select-wrap">
+              <select class="products-filters__select" id="filterLocation" aria-label="Filter by location">
+                <option value="">Location</option>
+              </select>
+              <span class="products-filters__select-icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </div>
+          </div>
         </div>
 
         <div class="data-table-wrap">
-          <div class="table-toolbar">
-            <div class="table-toolbar__left">
-              <h2 class="table-toolbar__title">All Products</h2>
-            </div>
-            <div class="table-toolbar__right" id="productsToolbarRight"></div>
-          </div>
           <div class="table-scroll">
-            <table class="data-table" id="productsTable">
+            <table class="data-table products-table" id="productsTable">
               <thead>
                 <tr>
-                  <th class="data-table__th">Title</th>
-                  <th class="data-table__th">Price</th>
-                  <th class="data-table__th">Category</th>
-                  <th class="data-table__th">Seller</th>
-                  <th class="data-table__th">Seller Email</th>
-                  <th class="data-table__th">Created</th>
-                  <th class="data-table__th" style="width:120px;text-align:right">Actions</th>
+                  <th class="data-table__th" data-label="Product">Product</th>
+                  <th class="data-table__th" data-label="Category">Category</th>
+                  <th class="data-table__th" data-label="Price">Price</th>
+                  <th class="data-table__th" data-label="Seller">Seller</th>
+                  <th class="data-table__th" data-label="Location">Location</th>
+                  <th class="data-table__th" data-label="Tags">Tags</th>
+                  <th class="data-table__th" data-label="Availability">Availability</th>
+                  <th class="data-table__th" data-label="Updated">Updated</th>
+                  <th class="data-table__th" data-label="Actions">Actions</th>
                 </tr>
               </thead>
               <tbody id="productsTableBody">
-                <tr><td colspan="7" class="skeleton" style="height:48px"></td></tr>
-                <tr><td colspan="7" class="skeleton" style="height:48px"></td></tr>
-                <tr><td colspan="7" class="skeleton" style="height:48px"></td></tr>
-                <tr><td colspan="7" class="skeleton" style="height:48px"></td></tr>
-                <tr><td colspan="7" class="skeleton" style="height:48px"></td></tr>
+                <tr><td colspan="9" class="skeleton" style="height:56px"></td></tr>
+                <tr><td colspan="9" class="skeleton" style="height:56px"></td></tr>
+                <tr><td colspan="9" class="skeleton" style="height:56px"></td></tr>
+                <tr><td colspan="9" class="skeleton" style="height:56px"></td></tr>
+                <tr><td colspan="9" class="skeleton" style="height:56px"></td></tr>
+                <tr><td colspan="9" class="skeleton" style="height:56px"></td></tr>
+                <tr><td colspan="9" class="skeleton" style="height:56px"></td></tr>
+                <tr><td colspan="9" class="skeleton" style="height:56px"></td></tr>
               </tbody>
             </table>
           </div>
@@ -135,6 +184,11 @@
             <p class="table-empty__title">No products found</p>
             <p class="table-empty__text">There are no products in the system yet.</p>
           </div>
+        </div>
+
+        <div class="products-pagination" id="productsPagination">
+          <span class="products-pagination__label">Pagination</span>
+          <div class="products-pagination__controls" id="paginationControls"></div>
         </div>
       </main>
 
