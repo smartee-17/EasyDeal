@@ -56,25 +56,45 @@
 
   <div class="basic-info__category-menu">
 
-    <button type="button" class="basic-info__category-option">
+    <button 
+      type="button" 
+      class="basic-info__category-option"
+      data-value="electronics"
+      >
       📦 &nbsp; Electronics
     </button>
 
-    <button type="button" class="basic-info__category-option">
+    <button 
+     type="button" 
+     class="basic-info__category-option"     
+     data-value="clothing"
+     >
       👕 &nbsp; Clothing
     </button>
 
-    <button type="button" class="basic-info__category-option">
+    <button 
+     type="button" 
+     class="basic-info__category-option"
+     data-value="furniture"     
+     >
       🛋️ &nbsp; Furniture
     </button>
 
-    <button type="button" class="basic-info__category-option">
+    <button 
+     type="button" 
+     class="basic-info__category-option"   
+     data-value="books"
+     >
       📚 &nbsp; Books
     </button>
 
-    <button type="button" class="basic-info__category-option">
-      🏓 &nbsp; Sports
-    </button>
+    <button
+      type="button"
+      class="basic-info__category-option"
+      data-value="sports"
+     >
+     🏓 &nbsp; Sports
+   </button>
 
   </div>
 </div>
@@ -98,7 +118,11 @@
     </div>
 
     <div class="basic-info__side">
-      <button type="button" class="preview-button">
+      <button 
+       type="button" 
+       class="preview-button"        
+       id="preview-product"
+       >
         <span>▷</span>
         Preview
       </button>
@@ -125,9 +149,12 @@
           multiple
           hidden
         >
+       <div class="basic-info__preview" id="image-preview"></div>
       </div>
     </div>
   </section>
+
+  
 <section class="product-meta">
   <div class="product-meta__section">
     <h2 class="product-meta__title">Pricing</h2>
@@ -176,92 +203,20 @@
   </div>
 </section>
 
+
 <section class="product-detail">
-   <h2 class="product-detail__title">Product detail</h2>
-    <div class="product-detail__field product-detail__condition"> 
-    <label for="condition">Condition</label> 
-    <div class="product-dropdown"> 
-      <button 
-        type="button" 
-        class="product-dropdown__button" 
-        id="condition" 
-        aria-expanded="false" 
-      > 
-        <i class="fa-solid fa-chevron-down product-dropdown__arrow"></i> 
-        <span>Select Condition</span> 
-      </button> 
- 
-      <div class="product-dropdown__menu"> 
-        <button type="button" class="product-dropdown__option"> 
-        Brand new 
-        </button> 
- 
-        <button type="button" class="product-dropdown__option"> 
-        Like new 
-        </button> 
- 
-        <button type="button" class="product-dropdown__option"> 
-          Good condition 
-        </button> 
- 
-        <button type="button" class="product-dropdown__option"> 
-          Fair condition 
-        </button> 
- 
-        <button type="button" class="product-dropdown__option"> 
-          Used 
-        </button> 
-      </div> 
-    </div> 
-  </div>
-  <div class="product-detail__field">
-    <label for="brand">Brand</label>
+  <h2 class="product-detail__title">Product detail</h2>
 
-    <div class="product-detail__input-wrapper">
-      <input
-        type="text"
-        id="brand"
-        name="brand"
-      >
-
-      <button
-        type="button"
-        class="product-detail__delete"
-        aria-label="Remove Brand"
-      >
-        <i class="fa-solid fa-trash"></i>
-      </button>
-    </div>
-  </div>
-
-  <div class="product-detail__field">
-    <label for="color">Color</label>
-
-    <div class="product-detail__input-wrapper">
-      <input
-        type="text"
-        id="color"
-        name="color"
-      >
-      <button
-        type="button"
-        class="product-detail__delete"
-        aria-label="Remove Color"
-      >
-        <i class="fa-solid fa-trash"></i>
-      </button>
-    </div>
-  </div>
-
-  <button
-    type="button"
-    class="product-detail__add"
-    id="add-product-detail"
+  <div
+    class="product-detail__fields"
+    id="product-detail-fields"
   >
-    <i class="fa-solid fa-plus"></i>
-    Add
-  </button>
+    <p class="product-detail__empty">
+      Select a category to add product details.
+    </p>
+  </div>
 </section>
+
 
 
 <section class="product-tags">
@@ -279,6 +234,7 @@
     type="text"
     class="product-tags__input"
     id="product-tags-input"
+    placeholder="Type a tag and press Enter"
     aria-label="Product tags"
   >
 
@@ -338,7 +294,7 @@
 </section>
 
 
-<div class="product-actions">
+ <div class="product-actions">
   <button
     type="button"
     class="product-actions__publish"
@@ -346,7 +302,6 @@
   >
     Publish Listing
   </button>
-
   <button
     type="button"
     class="product-actions__save"
@@ -355,10 +310,72 @@
   >
     <i class="fa-regular fa-bookmark"></i>
   </button>
+ </div>
 
-</div>
+
+ <div
+  class="product-preview"
+  id="product-preview"
+  aria-hidden="true"
+>
+  <div class="product-preview__overlay"></div>
+  <div class="product-preview__modal">
+    <button
+      type="button"
+      class="product-preview__close"
+      id="close-product-preview"
+      aria-label="Close preview"
+    >
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <div class="product-preview__content">
+      <div class="product-preview__images">
+        <div
+          class="product-preview__main-image"
+          id="preview-main-image"
+        >
+          <span>No image</span>
+        </div>
+        <div
+          class="product-preview__thumbnails"
+          id="preview-thumbnails"
+        ></div>
+      </div>
+      <div class="product-preview__details">
+        <p
+          class="product-preview__category"
+          id="preview-category"
+        ></p>
+        <h2
+          class="product-preview__title"
+          id="preview-title"
+        ></h2>
+        <p
+          class="product-preview__price"
+          id="preview-price"
+        ></p>
+        <p
+          class="product-preview__location"
+          id="preview-location"
+        ></p>
+        <div class="product-preview__description">
+          <h3>Description</h3>
+          <p id="preview-description"></p>
+        </div>
+        <div
+          class="product-preview__specifications"
+          id="preview-specifications"
+        ></div>
+        <div
+          class="product-preview__tags"
+          id="preview-tags"
+        ></div>
+      </div>
+    </div>
+  </div>
+ </div>
 </main>
 
-  <script src="./add-product.js"></script>
+  <script type="module" src="./add-product.js"></script>
 </body>
 </html>
