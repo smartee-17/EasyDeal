@@ -8,7 +8,6 @@ export const cacheWrapper = async ({
     const cached = await CacheService.get(key);
 
     if (cached) {
-        console.log(`Cache gotten ${key}`);
         return cached
     }
 

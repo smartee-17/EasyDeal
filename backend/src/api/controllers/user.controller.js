@@ -21,7 +21,8 @@ export const getME = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return sendResponse(res, 404, false, 'User not found');
+      // return res.status(404).json({ message: 'User not found' });
     }
 
     return sendResponse(res, 200, true, 'Profile fetched successfully', {
@@ -40,7 +41,8 @@ export const updateMe = async (req, res) => {
     const user = await User.findById(userId);
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return sendResponse(res, 404, false, 'User not found');
+      // return res.status(404).json({ message: 'User not found' });
     }
 
     const body = req.body || {};

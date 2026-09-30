@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Product Detail</title>
+
+  <link rel="stylesheet" href="../shared/global.css">
+  <link rel="stylesheet" href="./details.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+<div class="page-loader" id="loader">
+  <div class="page-loader__spinner"></div>
+</div>
+
+<header class="navbar">
+  <div class="navbar__inner">
+    <a class="navbar__logo" href="/">
+      <div class="navbar__logo-icon">
+        <img src="../assets/images/logos/icon-light.svg" alt="ED">
+      </div>
+      <span class="navbar__logo-text">Easy<span class="navbar__logo-deal">Deal</span></span>
+    </a>
+
+    <div class="navbar__search">
+      <i class="fa-solid fa-magnifying-glass navbar__search-icon"></i>
+      <input type="text" class="navbar__search-input" placeholder="Search products">
+    </div>
+
+    <div class="navbar__actions">
+      <a href="#" class="btn-login">Login</a>
+      <a href="#" class="btn-signup">Sign up</a>
+    </div>
+  </div>
+</header>
+
+<main class="product-detail container">
+
+  <div class="product-detail__grid">
+  <div class="product-detail__left">
+    <div class="gallery">
+      <div class="gallery__main">
+        <div class="gallery__track" id="galleryTrack"></div>
+
+        <button class="gallery__btn gallery__btn--prev" id="prev">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+
+        <button class="gallery__btn gallery__btn--next" id="next">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+
+        <button class="btn-wishlist" id="wishlist">
+          <i class="fa-regular fa-heart"></i>
+        </button>
+      </div>
+
+      <div class="gallery__thumbs"></div>
+    </div>
+
+    <div class="price-banner">
+      <span class="price__current"></span>
+    </div>
+
+    <div class="price-comparison-box">
+      <div class="price-row"><span>Market Price:</span> <span class="price__original"></span></div>
+      <div class="price-row"><span>Listed Price:</span> <span class="price__current-dup"></span></div>
+      <div class="price-row"><span>You Save:</span> <span class="price__savings"></span></div>
+    </div>
+
+    <div class="component-condition-card">
+      <h3>Component condition</h3>
+      <ul class="condition-list"></ul>
+      <div class="overall-rating">
+        <i class="fa-solid fa-star"></i> Overall: Like new
+      </div>
+    </div>
+
+  </div>
+
+
+  <div class="product-detail__right">
+
+    <div class="header-container">
+      <div class="title-and-metadata">
+        <h1 class="product-info__title"></h1>
+        
+        <ul class="metadata-list">
+          <li><strong>Category:</strong> <span id="metaCategory">Electronics</span></li>
+          <li><strong>Condition:</strong> <span id="metaCondition">Like New</span></li>
+          <li><strong>Location:</strong> <span id="metaLocation">Delhi, India</span></li>
+          <li><strong>Posted:</strong> <span id="metaPosted">2 days ago</span></li>
+        </ul>
+      </div>
+
+      <div class="seller-profile-card">
+          <span class="seller-verified">
+            <i class="fa-solid fa-circle-check"></i> Verified Seller
+          </span>
+        <div class="seller-header">
+          <div class="seller-avatar"><i class="fa-solid fa-user"></i></div>
+          <div class="seller-info">
+           <div class="seller-rating">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            </div>
+            <span class="seller-name"></span>
+          </div>
+        </div>
+        <a href="#" class="view-listings-link">View more listings</a>
+        <button class="product-card__chat-btn"><i class="fa-brands fa-whatsapp"></i> Whatsapp</button>
+      </div>
+    </div>
+
+    <div class="description-section">
+      <p id="productDescription"></p>
+    </div>
+
+    <div class="specifications-section">
+      <h2>Product Specifications</h2>
+      <ul class="specs-list"></ul>
+    </div>
+
+    <div class="logistics-section"></div>
+
+  </div>
+
+</div>
+
+<div class="show-toggle-wrap">
+  <button class="btn-see-more" id="showToggle">
+    Show more <i class="fa-solid fa-chevron-down"></i>
+  </button>
+</div>
+
+
+
+
+<section class="similar-products">
+
+  <div class="similar-products__header">
+    <h2 class="similar-products__title">Similar Products</h2>
+    <a href="#" class="similar-products__link">View All</a>
+  </div>
+
+  <div class="similar-products__grid">
+  </div>
+</section>
+
+<section class="similar-products best-sellers">
+  <div class="similar-products__header">
+    <h2 class="similar-products__title">Best sellers in reference</h2>
+    <a href="#" class="similar-products__link">View All</a>
+  </div>
+
+  <div class="similar-products__grid">
+  </div>
+</section>
+
+<section class="recommendations-banner">
+  <div class="container recommendations-banner__inner">
+    <h2>Get Personalized Recommendations</h2>
+    <p>Sign up to save products and discover items tailored to your interests.</p>
+    <button class="recommendations-banner__btn">Sign up</button>
+  </div>
+</section>
+
+
+</main>
+<footer class="footer-placeholder">
+  <div class="container footer-placeholder__inner">
+
+    <div class="footer-placeholder__brand">
+      <h2 class="brand-logo">
+       <div class="footer-placeholder__icon">
+         <img src="../assets/images/logos/icon-dark.svg" alt="ED">
+         </div>
+        EasyDeal
+      </h2>
+      <p>Buy and sell products easily. Connect directly with sellers through WhatsApp.</p>
+      
+      <div class="footer-placeholder__socials">
+        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" aria-label="X"><i class="fab fa-twitter"></i></a>
+        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" aria-label="Website"><i class="fas fa-globe"></i></a>
+      </div>
+    </div>
+
+    <div class="footer-placeholder__links">
+      <h4>Marketplace</h4>
+      <a href="#">Browse Products</a>
+      <a href="#">Categories</a>
+      <a href="#">Saved Items</a>
+      <a href="#">Sell a Product</a>
+    </div>
+
+    <div class="footer-placeholder__links">
+      <h4>Company</h4>
+      <a href="#">About</a>
+      <a href="#">Contact</a>
+      <a href="#">Careers</a>
+    </div>
+
+    <div class="footer-placeholder__links">
+      <h4>Support</h4>
+      <a href="#">Help Center</a>
+      <a href="#">Contact Us</a>
+      <a href="#">FAQs</a>
+    </div>
+
+  </div>
+
+  <div class="container footer-placeholder__bottom">
+    <p class="copyright">© 2026 EasyDeal. All rights reserved.</p>
+    <div class="footer-placeholder__legal">
+      <a href="#">Privacy policy</a>
+      <a href="#">Terms of service</a>
+      <a href="#">Cookies settings</a>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="./details.js"></script>
+
+</body>
+</html>

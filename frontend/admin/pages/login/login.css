@@ -1,0 +1,229 @@
+/* ============================================================
+   EASYDEAL — ADMIN LOGIN PAGE
+   Purpose: Admin-only login screen
+   ============================================================ */
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg);
+  padding: var(--space-4);
+  position: relative;
+}
+
+/* ── Theme Toggle ──────────────────────────────────────────── */
+.login-page__theme-btn {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  transition: var(--transition-colors);
+  cursor: pointer;
+}
+
+.login-page__theme-btn:hover {
+  background-color: var(--color-surface-hover);
+  color: var(--color-text-primary);
+}
+
+.login-page__theme-btn .icon--sun,
+.login-page__theme-btn .icon--moon {
+  display: none;
+}
+
+[data-theme="light"] .login-page__theme-btn .icon--moon,
+:root:not([data-theme]) .login-page__theme-btn .icon--moon,
+html:not([data-theme]) .login-page__theme-btn .icon--moon {
+  display: inline-flex;
+}
+
+[data-theme="dark"] .login-page__theme-btn .icon--sun {
+  display: inline-flex;
+}
+
+/* ── Login Card ────────────────────────────────────────────── */
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6) var(--space-5);
+  box-shadow: var(--shadow-soft);
+}
+
+@media (min-width: 768px) {
+  .login-card {
+    padding: var(--space-7) var(--space-6);
+  }
+}
+
+/* ── Brand ─────────────────────────────────────────────────── */
+.login-card__brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
+}
+
+.login-card__logo {
+  width: 2.5rem;
+  height: 2.5rem;
+  object-fit: contain;
+}
+
+.login-card__title {
+  font-family: var(--font-heading);
+  font-weight: var(--font-bold);
+  font-size: 1.5rem;
+  color: var(--color-text-primary);
+}
+
+.login-card__title-accent {
+  color: var(--color-primary);
+}
+
+/* ── Headings ──────────────────────────────────────────────── */
+.login-card__heading {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-bold);
+  text-align: center;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.login-card__subheading {
+  font-size: var(--font-size-small);
+  text-align: center;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-5);
+}
+
+/* ── Alert ─────────────────────────────────────────────────── */
+.login-card__alert {
+  margin-bottom: var(--space-4);
+}
+
+/* ── Form ──────────────────────────────────────────────────── */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.login-form__field {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-form__password-wrap {
+  position: relative;
+}
+
+.login-form__password-wrap .form-input {
+  padding-right: var(--space-10);
+}
+
+.login-form__toggle-password {
+  position: absolute;
+  right: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-tertiary);
+  background: transparent;
+  border: none;
+  padding: var(--space-1);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-form__toggle-password:hover {
+  color: var(--color-text-primary);
+}
+
+.login-form__options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.login-form__checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.login-form__checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.login-form__submit {
+  width: 100%;
+  margin-top: var(--space-2);
+}
+
+.login-form__submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.login-form__spinner {
+  display: inline-flex;
+}
+
+/* ── Footer ────────────────────────────────────────────────── */
+.login-card__footer {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+  text-align: center;
+}
+
+.login-card__back-link {
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+  transition: color var(--duration-normal) var(--ease-out);
+}
+
+.login-card__back-link:hover {
+  color: var(--color-primary);
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .login-page {
+    padding: var(--space-3);
+  }
+
+  .login-card {
+    padding: var(--space-5) var(--space-4);
+    border-radius: var(--radius-lg);
+  }
+
+  .login-card__heading {
+    font-size: var(--font-size-h4);
+  }
+}

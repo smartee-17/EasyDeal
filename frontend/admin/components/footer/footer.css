@@ -1,0 +1,202 @@
+/* ============================================================
+   EASYDEAL — SHARED FOOTER
+   Purpose: Reusable footer for public and admin pages
+   ============================================================ */
+
+.footer {
+  width: 100%;
+  background-color: var(--color-text, #000000);
+  color: var(--color-white, #ffffff);
+  padding: var(--space-8) var(--space-4) var(--space-5);
+}
+
+@media (min-width: 768px) {
+  .footer {
+    padding-inline: var(--space-6);
+  }
+}
+
+@media (min-width: 1024px) {
+  .footer {
+    padding-inline: var(--space-8);
+  }
+}
+
+.footer__content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+  justify-content: space-between;
+  max-width: var(--container-xl);
+  margin-inline: auto;
+}
+
+/* ── Brand Section ─────────────────────────────────────────── */
+.footer__brand {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  flex: 1 1 280px;
+  max-width: 400px;
+}
+
+.footer__logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-heading);
+  font-weight: var(--font-bold);
+  font-size: 1.25rem;
+  color: var(--color-white);
+}
+
+.footer__logo img {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
+}
+
+.footer__tagline {
+  font-size: var(--font-size-small);
+  color: var(--color-footer-muted);
+  line-height: var(--leading-relaxed);
+  max-width: 320px;
+}
+
+/* ── Social Links ──────────────────────────────────────────── */
+.footer__socials {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.footer__social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background-color: rgba(255, 255, 255, 0.06);
+  color: var(--color-footer-muted);
+  transition: var(--transition-colors);
+}
+
+.footer__social-link:hover {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+/* ── Navigation Sections ───────────────────────────────────── */
+.footer__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+  flex: 2 1 400px;
+  justify-content: flex-end;
+}
+
+@media (max-width: 767px) {
+  .footer__nav {
+    justify-content: flex-start;
+  }
+}
+
+.footer__nav-section {
+  min-width: 120px;
+}
+
+.footer__nav-title {
+  font-size: var(--font-size-small);
+  font-weight: var(--font-semibold);
+  color: var(--color-white);
+  margin-bottom: var(--space-3);
+}
+
+.footer__nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.footer__nav-link {
+  font-size: var(--font-size-small);
+  color: var(--color-footer-muted);
+  transition: color var(--duration-normal) var(--ease-out);
+}
+
+.footer__nav-link:hover {
+  color: var(--color-white);
+}
+
+/* ── Bottom Bar ────────────────────────────────────────────── */
+.footer__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-8);
+  padding-top: var(--space-5);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  max-width: var(--container-xl);
+  margin-inline: auto;
+}
+
+.footer__copyright {
+  font-size: var(--font-size-small);
+  color: var(--color-footer-muted);
+}
+
+.footer__legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.footer__legal-link {
+  font-size: var(--font-size-small);
+  color: var(--color-footer-muted);
+  transition: color var(--duration-normal) var(--ease-out);
+}
+
+.footer__legal-link:hover {
+  color: var(--color-white);
+}
+
+/* ── Admin Footer Variant ──────────────────────────────────── */
+.footer--admin {
+  background-color: var(--color-surface);
+  color: var(--color-text-secondary);
+  border-top: 1px solid var(--color-border);
+  padding-block: var(--space-4);
+}
+
+.footer--admin .footer__bottom {
+  border-top: none;
+  margin-top: 0;
+  padding-top: 0;
+  justify-content: center;
+}
+
+.footer--admin .footer__copyright {
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .footer__content {
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .footer__nav {
+    gap: var(--space-5);
+  }
+
+  .footer__bottom {
+    flex-direction: column;
+    text-align: center;
+  }
+}

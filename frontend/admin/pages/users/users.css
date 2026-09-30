@@ -1,0 +1,101 @@
+/* ============================================================
+   EASYDEAL — USERS PAGE STYLES
+   ============================================================ */
+
+/* Action buttons */
+.table-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+.table-actions__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition-colors);
+}
+
+.table-actions__btn:hover {
+  background-color: var(--color-surface-hover);
+  color: var(--color-text-primary);
+}
+
+.table-actions__btn--danger:hover {
+  background-color: var(--color-danger-light);
+  color: var(--color-danger);
+}
+
+.table-actions__btn--warning:hover {
+  background-color: var(--color-warning-light);
+  color: var(--color-warning);
+}
+
+/* Status badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-tiny);
+  font-weight: var(--font-semibold);
+  line-height: 1;
+}
+
+.status-badge--active {
+  background-color: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.status-badge--blocked {
+  background-color: var(--color-danger-light);
+  color: var(--color-danger);
+}
+
+.status-badge--deleted {
+  background-color: var(--color-warning-light);
+  color: var(--color-warning);
+}
+
+/* Table empty state */
+.table-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-16) var(--space-4);
+  text-align: center;
+}
+
+.table-empty__icon {
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-4);
+}
+
+.table-empty__title {
+  font-size: var(--font-size-h5);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.table-empty__text {
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+  .table-actions__btn {
+    width: 28px;
+    height: 28px;
+  }
+}

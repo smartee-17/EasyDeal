@@ -5,6 +5,8 @@ import User from '../models/user.model.js';
 import cloudinary, { upload } from '../../config/cloudinary.js';
 import { generateAltText } from '../library/visionAi.js';
 import { CATEGORY_ATTRIBUTES } from '../library/constants/categoryAttributes.constants.js';
+import { cacheWrapper, cacheDelete } from '../cache/cache.wrapper.js';
+import { CacheKeys } from '../cache/cache.keys.js';
 
 /**
  * Parses tags from the request body into a clean array of tag name strings.
@@ -137,14 +139,8 @@ const normalizeSpecifications = (category, specifications = []) => {
 
 export const getAllProducts = async (req, res) => {
   try {
-    const {
-      category, // comma-separated, e.g. "electronics,fashion"
-      minPrice,
-      maxPrice,
-      condition, // comma-separated, e.g. "Brand new,Like new"
-      location, // comma-separated, e.g. "Delhi,Noida"
-    } = req.query;
-
+    const { category, minPrice, maxPrice, condition, location, owner } =
+      req.query;
     const filter = {};
 
     if (category) {
@@ -157,13 +153,11 @@ export const getAllProducts = async (req, res) => {
           categories.length > 1 ? { $in: categories } : categories[0];
       }
     }
-
     if (minPrice || maxPrice) {
       filter.price = {};
       if (minPrice) filter.price.$gte = Number(minPrice);
       if (maxPrice) filter.price.$lte = Number(maxPrice);
     }
-
     if (condition) {
       const conditions = condition
         .split(',')
@@ -175,7 +169,6 @@ export const getAllProducts = async (req, res) => {
         };
       }
     }
-
     if (location) {
       const locations = location
         .split(',')
@@ -184,6 +177,17 @@ export const getAllProducts = async (req, res) => {
       if (locations.length > 0) {
         filter.location = { $in: locations };
       }
+    }
+
+    if (owner === 'me') {
+      if (!req.user) {
+        return res.status(401).json({
+          success: false,
+          message: 'Must be logged in to view your own products',
+          data: null,
+        });
+      }
+      filter.seller = req.user.id;
     }
 
     const products = await Product.find(filter)
@@ -199,7 +203,8 @@ export const getAllProducts = async (req, res) => {
     );
   } catch (error) {
     console.error(`Error in getAllProducts: ${error.message}`);
-    return res.status(500).json({ message: 'Internal server error' });
+    return sendResponse(res, 500, false, 'Internal server error');
+    // return res.status(500).json({ message: 'Internal server error' });
   }
 };
 
@@ -207,12 +212,20 @@ export const getProductById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const product = await Product.findById(id)
-      .populate('category', 'name')
-      .populate('seller', 'name whatsappNumber');
+    const product = await cacheWrapper({
+      key: CacheKeys.product(id),
+      ttl: 3600,
+      fetchFunction: async () => {
+        return await Product.findById(id)
+          .populate('category', 'name')
+          .populate('seller', 'name whatsappNumber')
+          .lean();
+      },
+    });
 
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+      return sendResponse(res, 404, false, 'Product not found');
+      // return res.status(404).json({ message: 'Product not found' });
     }
 
     return sendResponse(
@@ -224,7 +237,8 @@ export const getProductById = async (req, res) => {
     );
   } catch (error) {
     console.error(`Error in getProduct: ${error.message}`);
-    return res.status(500).json({ message: 'Internal server error' });
+    return sendResponse(res, 500, false, 'Internal server error');
+    // return res.status(500).json({ message: 'Internal server error' });
   }
 };
 
@@ -242,13 +256,14 @@ export const createProduct = async (req, res) => {
     } = req.body;
 
     if (req.files && req.files.length > 5) {
-      return res.status(400).json({ message: 'Maximum of 5 images allowed' });
+      return sendResponse(res, 400, false, 'Maximum of 5 images allowed');
+      // return res.status(400).json({ message: 'Maximum of 5 images allowed' });
     }
 
     const tagNames = parseTagNames(tags);
-
     if (tagNames.length > 5) {
-      return res.status(400).json({ message: 'Maximum of 5 tags allowed' });
+      return sendResponse(res, 400, false, 'Maximum of 5 tags allowed');
+      // return res.status(400).json({ message: 'Maximum of 5 tags allowed' });
     }
 
     const tagIds = await resolveTagIds(tagNames);
@@ -261,9 +276,10 @@ export const createProduct = async (req, res) => {
             ? JSON.parse(specifications)
             : specifications;
       } catch (parseError) {
-        return res
-          .status(400)
-          .json({ message: 'Invalid specifications format' });
+        return sendResponse(res, 400, false, 'Invalid specifications format');
+        // return res
+        //   .status(400)
+        //   .json({ message: 'Invalid specifications format' });
       }
     }
 
@@ -272,7 +288,8 @@ export const createProduct = async (req, res) => {
       parsedSpecifications,
     );
     if (!specValidation.valid) {
-      return res.status(400).json({ message: specValidation.message });
+      return sendResponse(res, 400, false, specValidation.message);
+      // return res.status(400).json({ message: specValidation.message });
     }
 
     const normalizedSpecifications = normalizeSpecifications(
@@ -280,28 +297,11 @@ export const createProduct = async (req, res) => {
       parsedSpecifications,
     );
 
-    const images = await Promise.all(
-      (req.files || []).map(async (file, index) => {
-        const cloudinaryUrl = file.path;
-
-        let aiDescription = null;
-        try {
-          aiDescription = await generateAltText(cloudinaryUrl, description);
-        } catch (visionError) {
-          console.error(`generateAltText failed: ${visionError.message}`);
-          aiDescription = null;
-        }
-
-        return {
-          url: cloudinaryUrl,
-          publicId: file.filename,
-          alt:
-            aiDescription !== null
-              ? `${title} - ${aiDescription.detailed}`
-              : `${title} - Image ${index + 1}`,
-        };
-      }),
-    );
+    const images = (req.files || []).map((file, index) => ({
+      url: file.path,
+      publicId: file.filename,
+      alt: `${title} - Image ${index + 1}`,
+    }));
 
     const product = new Product({
       title,
@@ -316,22 +316,52 @@ export const createProduct = async (req, res) => {
     });
 
     await product.save();
-    return sendResponse(
-      res,
-      201,
-      true,
-      'Product created successfully',
-      product,
-    );
+
+    // Respond immediately — user isn't stuck waiting on AI
+    sendResponse(res, 201, true, 'Product created successfully', product);
+
+    // Fire-and-forget: generate real AI alt text in the background,
+    // then patch the saved product afterward
+    (async () => {
+      try {
+        const updatedImages = await Promise.all(
+          product.images.map(async (image) => {
+            try {
+              const aiDescription = await generateAltText(
+                image.url,
+                description,
+              );
+              return {
+                ...image.toObject(),
+                alt: aiDescription
+                  ? `${title} - ${aiDescription.detailed}`
+                  : image.alt,
+              };
+            } catch (visionError) {
+              console.error(`generateAltText failed: ${visionError.message}`);
+              return image; // keep fallback alt on failure
+            }
+          }),
+        );
+
+        product.images = updatedImages;
+        await product.save();
+
+        // Cache was never set for a brand-new product, so nothing to invalidate here.
+        // But if you're caching getAllProducts later, invalidate that here too.
+      } catch (bgError) {
+        console.error(`Background alt-text update failed: ${bgError.message}`);
+      }
+    })();
   } catch (error) {
     console.error(`Error in createProduct: ${error.message}`);
-    return res.status(500).json({ message: 'Internal server error' });
+    return sendResponse(res, 500, false, 'Internal server error');
+    // return res.status(500).json({ message: 'Internal server error' });
   }
 };
 
 export const updateProduct = async (req, res) => {
   try {
-    const { _id: userId } = req.user;
     const { id } = req.params;
     const {
       title,
@@ -343,20 +373,16 @@ export const updateProduct = async (req, res) => {
       specifications,
     } = req.body;
 
-    const product = await Product.findById(id);
+    const product = req.product;
 
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+      return sendResponse(res, 404, false, 'Product not found');
+      // return res.status(404).json({ message: 'Product not found' });
     }
 
     if (req.files && req.files.length > 5) {
-      return res.status(400).json({ message: 'Maximum of 5 images allowed' });
-    }
-
-    if (product.seller.toString() !== userId.toString()) {
-      return res
-        .status(403)
-        .json({ message: 'Not authorized to update this product' });
+      return sendResponse(res, 400, false, 'Maximum of 5 images allowed');
+      // return res.status(400).json({ message: 'Maximum of 5 images allowed' });
     }
 
     if (req.files && req.files.length > 0) {
@@ -381,9 +407,10 @@ export const updateProduct = async (req, res) => {
             ? JSON.parse(specifications)
             : specifications;
       } catch (parseError) {
-        return res
-          .status(400)
-          .json({ message: 'Invalid specifications format' });
+        return sendResponse(res, 400, false, 'Invalid specifications format');
+        // return res
+        //   .status(400)
+        //   .json({ message: 'Invalid specifications format' });
       }
 
       const effectiveCategory = category || product.category;
@@ -392,7 +419,8 @@ export const updateProduct = async (req, res) => {
         parsedSpecifications,
       );
       if (!specValidation.valid) {
-        return res.status(400).json({ message: specValidation.message });
+        return sendResponse(res, 400, false, specValidation.message);
+        // return res.status(400).json({ message: specValidation.message });
       }
 
       product.specifications = normalizeSpecifications(
@@ -410,6 +438,8 @@ export const updateProduct = async (req, res) => {
 
     await product.save();
 
+    await cacheDelete(CacheKeys.product(id));
+
     return sendResponse(
       res,
       200,
@@ -419,7 +449,8 @@ export const updateProduct = async (req, res) => {
     );
   } catch (error) {
     console.error(`Error in updateProduct: ${error.message}`);
-    return res.status(500).json({ message: 'Internal server error' });
+    return sendResponse(res, 500, false, 'Internal server error');
+    // return res.status(500).json({ message: 'Internal server error' });
   }
 };
 
@@ -430,8 +461,12 @@ export const deleteProduct = async (req, res) => {
     const product = await Product.findByIdAndDelete(id);
 
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+      return sendResponse(res, 404, false, 'Product not found');
+      // return res.status(404).json({ message: 'Product not found' });
     }
+
+    // Invalidate cache — product no longer exists
+    await cacheDelete(CacheKeys.product(id));
 
     if (product.images && product.images.length > 0) {
       for (const image of product.images) {
@@ -448,6 +483,7 @@ export const deleteProduct = async (req, res) => {
     );
   } catch (error) {
     console.error(`Error in deleteProduct: ${error.message}`);
-    return res.status(500).json({ message: 'Internal server error' });
+    return sendResponse(res, 500, false, 'Internal server error');
+    // return res.status(500).json({ message: 'Internal server error' });
   }
 };

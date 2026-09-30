@@ -1,0 +1,8 @@
+/* ============================================================
+   EASYDEAL — GLOBAL STYLE ENTRY POINT
+   Purpose: Single import for all global styles
+   ============================================================ */
+
+@import "./reset.css";
+@import "./theme.css";
+@import "./styles.css";
