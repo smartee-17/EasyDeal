@@ -43,11 +43,18 @@
   overflow: hidden;
 }
 
+/* --ease-in is not defined in theme.css (only --ease-linear/--ease-out/
+   --ease-in-out/--ease-bounce are). An undefined var() inside the animation
+   shorthand invalidates it entirely, so animation-name became "none", no exit
+   animation ever ran, and dismissToast()'s animationend listener never fired
+   — leaving dismissed toasts stuck in the DOM. --ease-in-out is the existing
+   token that matches the intended easing direction. */
 .toast.is-exiting {
-  animation: toast-slide-out var(--duration-normal) var(--ease-in) forwards;
+  animation: toast-slide-out var(--duration-normal) var(--ease-in-out) forwards;
 }
 
 /* ── Toast Variants ────────────────────────────────────────── */
+/* Light mode: tinted background + matching border. */
 .toast--success {
   border-color: var(--color-success);
   background-color: var(--color-success-light);
@@ -66,6 +73,27 @@
 .toast--info {
   border-color: var(--color-info);
   background-color: var(--color-info-light);
+}
+
+/* Dark mode: theme.css remaps --color-text-* to near-white but leaves
+   --color-*-light as light pastels, so the variants above would paint
+   near-white text on a near-white background. Rebuild the background by
+   mixing the semantic colour into the dark surface token instead; the
+   border and icon colours already adapt correctly. */
+[data-theme="dark"] .toast--success {
+  background-color: color-mix(in srgb, var(--color-success) 16%, var(--color-surface));
+}
+
+[data-theme="dark"] .toast--error {
+  background-color: color-mix(in srgb, var(--color-danger) 16%, var(--color-surface));
+}
+
+[data-theme="dark"] .toast--warning {
+  background-color: color-mix(in srgb, var(--color-warning) 16%, var(--color-surface));
+}
+
+[data-theme="dark"] .toast--info {
+  background-color: color-mix(in srgb, var(--color-info) 16%, var(--color-surface));
 }
 
 /* ── Toast Icon ────────────────────────────────────────────── */
@@ -110,11 +138,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  margin-top: -2px;
-  margin-right: -4px;
-  color: var(--color-text-tertiary);
+  width: 36px;
+  height: 36px;
+  padding: var(--space-1);
+  color: var(--color-text-secondary);
   background: transparent;
   border: none;
   border-radius: var(--radius-md);
@@ -122,9 +149,20 @@
   transition: var(--transition-colors);
 }
 
-.toast__close:hover {
+.toast__close:hover,
+.toast__close:focus {
   background-color: var(--color-surface-hover);
   color: var(--color-text-primary);
+  outline: none;
+}
+
+.toast__close:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+.toast__close svg {
+  width: 18px;
+  height: 18px;
 }
 
 /* ── Toast Progress Bar ──────────────────────────────────────── */

@@ -110,7 +110,7 @@ function createToastElement({ type, title, message, duration, dismissible }) {
     : '';
 
   const closeHtml = dismissible
-    ? `<button type="button" class="toast__close" aria-label="Dismiss notification">${iconClose({ size: 16 })}</button>`
+    ? `<button type="button" class="toast__close" aria-label="Dismiss notification">${iconClose({ size: 18 })}</button>`
     : '';
 
   const titleHtml = title ? `<div class="toast__title">${escapeHtml(title)}</div>` : '';
@@ -129,7 +129,10 @@ function createToastElement({ type, title, message, duration, dismissible }) {
   // Bind close button
   if (dismissible) {
     const closeBtn = toast.querySelector('.toast__close');
-    closeBtn.addEventListener('click', () => dismissToast(toast));
+    closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dismissToast(toast);
+    });
   }
 
   // Store creation time for pause/resume

@@ -2,13 +2,230 @@
    EASYDEAL — PRODUCTS PAGE STYLES
    ============================================================ */
 
-/* Reuse data-table-wrap and table styles from dashboard.css */
+/* ── Page Header ────────────────────────────────────────────── */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
 
-/* Action buttons */
+.page-header__left {
+  flex: 1;
+  min-width: 0;
+}
+
+.page-header__right {
+  flex-shrink: 0;
+}
+
+.page-header__title {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  line-height: var(--leading-tight);
+}
+
+.page-header__subtitle {
+  font-size: var(--font-size-body);
+  color: var(--color-text-muted);
+  margin-top: var(--space-1);
+}
+
+.products-add-btn {
+  white-space: nowrap;
+}
+
+/* ── Filters Toolbar ────────────────────────────────────────── */
+.products-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.products-filters__dropdowns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.products-filters__select-wrap {
+  position: relative;
+}
+
+.products-filters__select {
+  appearance: none;
+  -webkit-appearance: none;
+  height: var(--input-height-md);
+  padding: var(--space-3) var(--space-8) var(--space-3) var(--space-4);
+  font-family: var(--font-body);
+  font-size: var(--font-size-small);
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-input);
+  min-width: 120px;
+  flex: 1;
+}
+
+.products-filters__select:hover {
+  border-color: var(--color-border-strong);
+}
+
+.products-filters__select:focus {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-focus);
+  outline: none;
+}
+
+.products-filters__select-icon {
+  position: absolute;
+  right: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-tertiary);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+
+/* ── Product Cell ───────────────────────────────────────────── */
+.product-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.product-cell__img {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  flex-shrink: 0;
+  background-color: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
+}
+
+.product-cell__img-placeholder {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+  background-color: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-tertiary);
+}
+
+.product-cell__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.product-cell__title {
+  font-size: var(--font-size-small);
+  font-weight: var(--font-medium);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .product-cell__title {
+    max-width: 100%;
+  }
+}
+
+.product-cell__description {
+  font-size: var(--font-size-tiny);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* ── Tags Cell ──────────────────────────────────────────────── */
+.tags-cell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  max-width: 100%;
+  overflow: hidden;
+}
+
+@media (min-width: 1024px) {
+  .tags-cell {
+    max-width: 100%;
+  }
+}
+
+.tag-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: var(--font-medium);
+  white-space: nowrap;
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-600);
+  border: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .tag-badge {
+  background-color: var(--color-surface-subtle);
+  color: var(--color-text-secondary);
+  border-color: var(--color-border);
+}
+
+/* ── Availability Cell ──────────────────────────────────────── */
+.availability-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  white-space: nowrap;
+}
+
+.availability-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.availability-dot--available {
+  background-color: var(--color-success);
+}
+
+.availability-dot--unavailable {
+  background-color: var(--color-danger);
+}
+
+.availability-text {
+  font-size: var(--font-size-small);
+  color: var(--color-text-primary);
+}
+
+/* ── Action Buttons ─────────────────────────────────────────── */
 .table-actions {
   display: flex;
   justify-content: flex-end;
-  gap: var(--space-2);
+  gap: var(--space-1);
 }
 
 .table-actions__btn {
@@ -35,7 +252,7 @@
   color: var(--color-danger);
 }
 
-/* Table empty state */
+/* ── Table Empty State ──────────────────────────────────────── */
 .table-empty {
   display: flex;
   flex-direction: column;
@@ -62,10 +279,986 @@
   color: var(--color-text-muted);
 }
 
-/* Responsive */
+/* ── Pagination ─────────────────────────────────────────────── */
+.products-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-4) 0;
+}
+
+.products-pagination__label {
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+}
+
+.products-pagination__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.products-pagination__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: var(--transition-colors);
+}
+
+.products-pagination__btn:hover:not(:disabled):not(.products-pagination__btn--active) {
+  background-color: var(--color-surface-hover);
+  color: var(--color-text-primary);
+  border-color: var(--color-border-strong);
+}
+
+.products-pagination__btn--active {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+}
+
+.products-pagination__btn:disabled {
+  opacity: var(--disabled-opacity);
+  cursor: var(--disabled-cursor);
+}
+
+.products-pagination__ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+}
+
+/* ── Table Adjustments ──────────────────────────────────────── */
+.products-table .data-table__cell[data-label="Product"] {
+  min-width: 0;
+}
+
+/* Column sizing - using min-width only for fixed table layout.
+   Percentages removed to prevent sum > 100% causing overlap.
+   Table will expand to fit content, .table-scroll provides horizontal scroll. */
+.products-table .data-table__th[data-label="Product"],
+.products-table .data-table__cell[data-label="Product"] {
+  min-width: 240px;
+}
+
+.products-table .data-table__th[data-label="Category"],
+.products-table .data-table__cell[data-label="Category"] {
+  min-width: 100px;
+}
+
+.products-table .data-table__th[data-label="Price"],
+.products-table .data-table__cell[data-label="Price"] {
+  min-width: 90px;
+}
+
+.products-table .data-table__th[data-label="Seller"],
+.products-table .data-table__cell[data-label="Seller"] {
+  min-width: 130px;
+}
+
+.products-table .data-table__th[data-label="Location"],
+.products-table .data-table__cell[data-label="Location"] {
+  min-width: 130px;
+}
+
+.products-table .data-table__th[data-label="Tags"],
+.products-table .data-table__cell[data-label="Tags"] {
+  min-width: 100px;
+}
+
+.products-table .data-table__th[data-label="Availability"],
+.products-table .data-table__cell[data-label="Availability"] {
+  min-width: 110px;
+}
+
+.products-table .data-table__th[data-label="Updated"],
+.products-table .data-table__cell[data-label="Updated"] {
+  min-width: 120px;
+}
+
+.products-table .data-table__th[data-label="Actions"],
+.products-table .data-table__cell[data-label="Actions"] {
+  min-width: 120px;
+}
+
+/* Ensure table has a minimum width to prevent over-compression when it has data.
+   Sum of min-widths: 240+100+90+130+130+100+110+120+120 = 1140px */
+.products-table.has-data {
+  min-width: 1140px;
+  width: auto;
+  table-layout: auto;
+}
+
+/* When table is empty, allow it to shrink to fit the container */
+.products-table:not(.has-data) {
+  min-width: 100%;
+  width: 100%;
+}
+
+/* Seller/Location cell content - ensure proper truncation within fixed columns */
+.seller-cell,
+.location-cell {
+  display: block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+/* Category cell - ensure proper truncation */
+.products-table .data-table__cell[data-label="Category"] {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* Price cell */
+.products-table .data-table__cell[data-label="Price"] {
+  white-space: nowrap;
+}
+
+/* Updated cell - ensure date stays contained */
+.products-table .data-table__cell[data-label="Updated"] {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* Tags cell - prevent overflow, allow wrapping of tag badges */
+.tags-cell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Ensure all table cells can truncate properly */
+.products-table .data-table__cell {
+  min-width: 0;
+}
+
+/* Availability cell */
+.availability-cell {
+  white-space: nowrap;
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 1023px) {
+  .products-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .products-filters__dropdowns {
+    flex-wrap: wrap;
+  }
+
+  /* ── Tablet/mobile: disable desktop table horizontal scrolling ──
+     The desktop .products-table.has-data min-width (1140px) must not
+     apply here. The table fits the viewport and compresses instead;
+     the global card layout takes over at <=767px. */
+  .table-scroll {
+    overflow-x: hidden;
+  }
+
+  .products-table.has-data {
+    min-width: 0;
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  .products-table .data-table__th[data-label],
+  .products-table .data-table__cell[data-label] {
+    min-width: 0;
+  }
+}
+
 @media (max-width: 767px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .page-header__title {
+    font-size: var(--font-size-h4);
+  }
+
+  .products-filters__dropdowns {
+    width: 100%;
+  }
+
+  .products-filters__select {
+    flex: 1;
+    min-width: 0;
+  }
+
   .table-actions__btn {
     width: 28px;
     height: 28px;
+  }
+
+  .product-cell__title,
+  .product-cell__description {
+    max-width: 100%;
+  }
+
+  .tags-cell {
+    max-width: 100%;
+  }
+
+  .seller-cell,
+  .location-cell {
+    max-width: 100%;
+  }
+
+  .products-pagination {
+    justify-content: center;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   EDIT PRODUCT MODAL (Custom Content for Unified Modal)
+   ═══════════════════════════════════════════════════════════════ */
+
+.edit-modal__custom {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.edit-modal__custom .edit-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.edit-modal__custom .edit-modal__title {
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+}
+
+.edit-modal__custom .edit-modal__id {
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+  font-weight: var(--font-medium);
+  flex-shrink: 0;
+}
+
+.edit-modal__custom .edit-modal__body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-5) var(--space-6);
+}
+
+.edit-modal__custom .edit-modal__section {
+  margin-bottom: var(--space-5);
+}
+
+.edit-modal__custom .edit-modal__label {
+  display: block;
+  font-size: var(--font-size-small);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.edit-modal__custom .edit-modal__hint {
+  font-size: var(--font-size-tiny);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-3);
+}
+
+.edit-modal__custom .edit-modal__input,
+.edit-modal__custom .edit-modal__textarea,
+.edit-modal__custom .edit-modal__select {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: var(--font-size-small);
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: var(--transition-input);
+}
+
+.edit-modal__custom .edit-modal__input {
+  height: var(--input-height-md);
+  padding: var(--space-3) var(--space-4);
+}
+
+.edit-modal__custom .edit-modal__textarea {
+  padding: var(--space-3) var(--space-4);
+  resize: vertical;
+  min-height: 80px;
+}
+
+.edit-modal__custom .edit-modal__input::placeholder,
+.edit-modal__custom .edit-modal__textarea::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.edit-modal__custom .edit-modal__input:hover,
+.edit-modal__custom .edit-modal__textarea:hover,
+.edit-modal__custom .edit-modal__select:hover {
+  border-color: var(--color-border-strong);
+}
+
+.edit-modal__custom .edit-modal__input:focus,
+.edit-modal__custom .edit-modal__textarea:focus,
+.edit-modal__custom .edit-modal__select:focus {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-focus);
+  outline: none;
+}
+
+/* ── Row Layout ──────────────────────────────────────────────── */
+.edit-modal__custom .edit-modal__row {
+  display: grid;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.edit-modal__custom .edit-modal__row--4 {
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.edit-modal__custom .edit-modal__field {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Select ──────────────────────────────────────────────────── */
+.edit-modal__custom .edit-modal__select-wrap {
+  position: relative;
+}
+
+.edit-modal__custom .edit-modal__select {
+  appearance: none;
+  -webkit-appearance: none;
+  height: var(--input-height-md);
+  padding: var(--space-3) var(--space-8) var(--space-3) var(--space-4);
+  cursor: pointer;
+  width: 100%;
+}
+
+.edit-modal__custom .edit-modal__select-icon {
+  position: absolute;
+  right: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-tertiary);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+
+/* ── Toggle Switch ───────────────────────────────────────────── */
+.edit-modal__custom .edit-modal__toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  margin-top: var(--space-1);
+}
+
+.edit-modal__custom .edit-modal__toggle input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.edit-modal__custom .edit-modal__toggle-slider {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  background-color: var(--color-neutral-300);
+  border-radius: var(--radius-full);
+  transition: background-color var(--duration-normal) var(--ease-out);
+  flex-shrink: 0;
+}
+
+.edit-modal__custom .edit-modal__toggle-slider::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background-color: var(--color-white);
+  border-radius: var(--radius-full);
+  transition: transform var(--duration-normal) var(--ease-out);
+  box-shadow: var(--shadow-xs);
+}
+
+.edit-modal__custom .edit-modal__toggle input:checked + .edit-modal__toggle-slider {
+  background-color: var(--color-success-light);
+}
+
+.edit-modal__custom .edit-modal__toggle input:checked + .edit-modal__toggle-slider::after {
+  transform: translateX(18px);
+  background-color: var(--color-success);
+}
+
+.edit-modal__custom .edit-modal__toggle input:focus-visible + .edit-modal__toggle-slider {
+  box-shadow: var(--shadow-focus);
+}
+
+.edit-modal__custom .edit-modal__toggle-label {
+  font-size: var(--font-size-small);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.edit-modal__custom .edit-modal__toggle--sm .edit-modal__toggle-slider {
+  width: 36px;
+  height: 20px;
+}
+
+.edit-modal__custom .edit-modal__toggle--sm .edit-modal__toggle-slider::after {
+  width: 16px;
+  height: 16px;
+}
+
+.edit-modal__custom .edit-modal__toggle--sm .edit-modal__toggle input:checked + .edit-modal__toggle-slider {
+  background-color: var(--color-success-light);
+}
+
+.edit-modal__custom .edit-modal__toggle--sm .edit-modal__toggle input:checked + .edit-modal__toggle-slider::after {
+  transform: translateX(16px);
+  background-color: var(--color-success);
+}
+
+/* ── Tags ────────────────────────────────────────────────────── */
+.edit-modal__custom .edit-modal__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  min-height: var(--input-height-md);
+  align-items: center;
+  transition: var(--transition-input);
+}
+
+.edit-modal__custom .edit-modal__tags:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-focus);
+}
+
+.edit-modal__custom .edit-modal__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-2) 2px var(--space-3);
+  background-color: var(--color-neutral-100);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-tiny);
+  font-weight: var(--font-medium);
+  color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .edit-modal__custom .edit-modal__tag {
+  background-color: var(--color-surface-subtle);
+  color: var(--color-text-secondary);
+}
+
+.edit-modal__custom .edit-modal__tag-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 0;
+  transition: var(--transition-colors);
+}
+
+.edit-modal__custom .edit-modal__tag-remove:hover {
+  background-color: var(--color-danger-light);
+  color: var(--color-danger);
+}
+
+.edit-modal__custom .edit-modal__tag-input {
+  flex: 1;
+  min-width: 120px;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: var(--font-size-small);
+  color: var(--color-text-primary);
+  padding: var(--space-1) 0;
+}
+
+.edit-modal__custom .edit-modal__tag-input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+/* ── Images ──────────────────────────────────────────────────── */
+.edit-modal__custom .edit-modal__images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.edit-modal__custom .edit-modal__image-thumb {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+
+.edit-modal__custom .edit-modal__image-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.edit-modal__custom .edit-modal__image-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  border: none;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: background-color var(--duration-fast);
+}
+
+.edit-modal__custom .edit-modal__image-remove:hover {
+  background-color: var(--color-danger);
+}
+
+.edit-modal__custom .edit-modal__images-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.edit-modal__custom .edit-modal__btn-add-image {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-semibold);
+  color: var(--color-primary);
+  background-color: transparent;
+  border: 1px dashed var(--color-primary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-colors);
+}
+
+.edit-modal__custom .edit-modal__btn-add-image:hover {
+  background-color: var(--overlay-primary-10);
+}
+
+.edit-modal__custom .edit-modal__file-input {
+  display: none;
+}
+
+.edit-modal__custom .edit-modal__btn-alt-text {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-colors);
+}
+
+.edit-modal__custom .edit-modal__btn-alt-text:hover {
+  background-color: var(--color-surface-hover);
+  border-color: var(--color-border-strong);
+}
+
+/* ── Specifications ──────────────────────────────────────────── */
+.edit-modal__custom .edit-modal__specs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--space-4);
+}
+
+.edit-modal__custom .edit-modal__spec-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.edit-modal__custom .edit-modal__spec-label {
+  font-size: var(--font-size-tiny);
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-1);
+}
+
+.edit-modal__custom .edit-modal__no-specs {
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+/* ── Footer ──────────────────────────────────────────────────── */
+.edit-modal__custom .edit-modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--color-border);
+}
+
+.edit-modal__custom .edit-modal__footer .btn--ghost {
+  margin-right: auto;
+}
+
+.edit-modal__custom .btn--outline-danger {
+  background-color: transparent;
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+}
+
+.edit-modal__custom .btn--outline-danger:hover:not(:disabled) {
+  background-color: var(--color-danger-light);
+  color: var(--color-danger-dark);
+}
+
+/* ── Edit Modal Responsive ───────────────────────────────────── */
+@media (max-width: 767px) {
+  .edit-modal__custom .edit-modal__header {
+    padding: var(--space-4);
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .edit-modal__custom .edit-modal__body {
+    padding: var(--space-4);
+  }
+
+  .edit-modal__custom .edit-modal__row--4 {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .edit-modal__custom .edit-modal__footer {
+    padding: var(--space-4);
+    flex-wrap: wrap;
+  }
+
+  .edit-modal__custom .edit-modal__specs {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .edit-modal__custom .edit-modal__row--4 {
+    grid-template-columns: 1fr;
+  }
+
+  .edit-modal__custom .edit-modal__footer {
+    flex-direction: column;
+  }
+
+  .edit-modal__custom .edit-modal__footer .btn {
+    width: 100%;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   PREVIEW MODAL (Custom Content for Unified Modal)
+   ═══════════════════════════════════════════════════════════════ */
+
+.preview-modal__custom {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 90vh;
+}
+
+/* Post-save Preview is rendered inside the shared modal shell
+   (.modal > .modal__header + .modal__content), while the preview
+   template brings its own header/body/footer. Without these overrides
+   the result is a duplicated title bar and nested scroll areas.
+   Scope strictly to the preview backdrop so other modals are unaffected. */
+
+/* Single title: hide the redundant outer shell header; the preview
+   template's own header ("Product Updated" + id) remains the one title. */
+.modal-backdrop--preview .modal > .modal__header {
+  display: none;
+}
+
+/* Single scroll area: let the outer .modal__content own scrolling;
+   the inner preview body must not create a second scroll container. */
+.modal-backdrop--preview .preview-modal__custom {
+  height: auto;
+  max-height: none;
+}
+
+.modal-backdrop--preview .preview-modal__custom .preview-modal__body {
+  overflow-y: visible;
+}
+
+.preview-modal__custom .preview-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  flex-shrink: 0;
+}
+
+.preview-modal__custom .preview-modal__title {
+  font-size: var(--font-size-h5);
+  font-weight: var(--font-semibold);
+  color: var(--color-text);
+  margin: 0;
+}
+
+.preview-modal__custom .preview-modal__id {
+  font-size: var(--font-size-tiny);
+  font-weight: var(--font-mono);
+  color: var(--color-text-muted);
+  background-color: var(--color-bg);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+.preview-modal__custom .preview-modal__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-6);
+}
+
+.preview-modal__custom .preview-modal__image-wrapper {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background-color: var(--color-bg);
+  margin-bottom: var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-modal__custom .preview-modal__image-wrapper--empty {
+  border: 2px dashed var(--color-border);
+}
+
+.preview-modal__custom .preview-modal__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.preview-modal__custom .preview-modal__image-placeholder {
+  color: var(--color-text-muted);
+  opacity: 0.5;
+}
+
+.preview-modal__custom .preview-modal__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.preview-modal__custom .preview-modal__product-title {
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-semibold);
+  color: var(--color-text);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.preview-modal__custom .preview-modal__details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.preview-modal__custom .preview-modal__detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.preview-modal__custom .preview-modal__detail-label {
+  font-size: var(--font-size-tiny);
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.preview-modal__custom .preview-modal__detail-value {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-medium);
+  color: var(--color-text);
+}
+
+.preview-modal__custom .preview-modal__detail-value--price {
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-bold);
+  color: var(--color-primary);
+}
+
+.preview-modal__custom .preview-modal__availability {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-medium);
+}
+
+.preview-modal__custom .preview-modal__availability--available {
+  background-color: var(--color-success-light);
+  color: var(--color-success-dark);
+}
+
+.preview-modal__custom .preview-modal__availability--unavailable {
+  background-color: var(--color-danger-light);
+  color: var(--color-danger-dark);
+}
+
+.preview-modal__custom .preview-modal__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.preview-modal__custom .preview-modal__section-label {
+  font-size: var(--font-size-tiny);
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.preview-modal__custom .preview-modal__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.preview-modal__custom .preview-modal__description {
+  font-size: var(--font-size-body);
+  color: var(--color-text);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.preview-modal__custom .preview-modal__specs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.preview-modal__custom .preview-modal__spec-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-2) var(--space-3);
+  background-color: var(--color-bg);
+  border-radius: var(--radius-sm);
+}
+
+.preview-modal__custom .preview-modal__spec-label {
+  font-size: var(--font-size-small);
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
+}
+
+.preview-modal__custom .preview-modal__spec-value {
+  font-size: var(--font-size-small);
+  font-weight: var(--font-medium);
+  color: var(--color-text);
+}
+
+.preview-modal__custom .preview-modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  flex-shrink: 0;
+}
+
+/* ── Preview Modal Responsive ─────────────────────────────────── */
+@media (max-width: 767px) {
+  .preview-modal__custom .preview-modal__header {
+    padding: var(--space-4);
+  }
+
+  .preview-modal__custom .preview-modal__body {
+    padding: var(--space-4);
+  }
+
+  .preview-modal__custom .preview-modal__details-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .preview-modal__custom .preview-modal__footer {
+    padding: var(--space-4);
+  }
+}
+
+@media (max-width: 480px) {
+  .preview-modal__custom .preview-modal__details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .preview-modal__custom .preview-modal__footer .btn {
+    width: 100%;
   }
 }
