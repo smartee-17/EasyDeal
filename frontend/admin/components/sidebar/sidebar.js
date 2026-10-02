@@ -4,7 +4,7 @@
    ============================================================ */
 
 import { updateBodyScrollLock } from '../modal/modal.js';
-import { iconClose, iconDashboard, iconShoppingBag, iconUser, iconLogout } from '../icons/icons.js';
+import { iconClose, iconDashboard, iconShoppingBag, iconUser, iconTag, iconLogout } from '../icons/icons.js';
 import { logout, redirectToLogin } from '../../services/authService.js';
 
 export function initSidebar() {
@@ -36,6 +36,7 @@ function renderIcons() {
     'dashboard': () => iconDashboard({ size: 20 }),
     'product-management': () => iconShoppingBag({ size: 20 }),
     'users': () => iconUser({ size: 20 }),
+    'tags': () => iconTag({ size: 20 }),
     'logout': () => iconLogout({ size: 20 }),
   };
 

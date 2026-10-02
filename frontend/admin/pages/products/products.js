@@ -103,9 +103,9 @@ initSidebar();
 initFooter();
 
 const tableBody = document.getElementById('productsTableBody');
+const productsTable = document.getElementById('productsTable');
 const emptyState = document.getElementById('productsEmpty');
 const paginationControls = document.getElementById('paginationControls');
-const tableSearchInput = document.getElementById('tableSearchInput');
 const filterCategory = document.getElementById('filterCategory');
 const filterAvailability = document.getElementById('filterAvailability');
 const filterSeller = document.getElementById('filterSeller');
@@ -150,22 +150,12 @@ function populateFilterOptions() {
 }
 
 function applyFilters() {
-  const searchTerm = (tableSearchInput?.value || '').trim().toLowerCase();
   const categoryVal = filterCategory?.value || '';
   const availabilityVal = filterAvailability?.value || '';
   const sellerVal = filterSeller?.value || '';
   const locationVal = filterLocation?.value || '';
 
   filteredProducts = allProducts.filter(p => {
-    if (searchTerm) {
-      const title = (p.title || '').toLowerCase();
-      const cat = (p.category || '').toLowerCase();
-      const sellerName = (p.seller?.name || p.sellerName || '').toLowerCase();
-      if (!title.includes(searchTerm) && !cat.includes(searchTerm) && !sellerName.includes(searchTerm)) {
-        return false;
-      }
-    }
-
     if (categoryVal && p.category !== categoryVal) return false;
 
     if (availabilityVal) {
@@ -191,11 +181,13 @@ function applyFilters() {
 function renderProducts() {
   if (!filteredProducts || filteredProducts.length === 0) {
     tableBody.innerHTML = '';
+    productsTable.classList.remove('has-data');
     emptyState.classList.remove('hidden');
     renderPagination(0);
     return;
   }
   emptyState.classList.add('hidden');
+  productsTable.classList.add('has-data');
 
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
   if (currentPage > totalPages) currentPage = totalPages;
@@ -434,8 +426,18 @@ async function handleView(id) {
 
   function buildContent(p) {
     const imgUrl = getProductImageUrl(p);
+    const imgHtml = imgUrl
+      ? `<div class="modal__detail-image-wrapper" style="margin-bottom:var(--space-4);text-align:center">
+           <img src="${imgUrl}" alt="${escapeHtml(p.title || 'Product')}" class="modal__detail-image" 
+                style="max-width:100%;max-height:300px;width:auto;height:auto;border-radius:var(--radius-md);object-fit:contain;"
+                onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';" />
+           <span class="product-cell__img-placeholder" style="display:none;" title="${formatCategory(p.category)}">${getCategoryIcon(p.category)({ size: 64 })}</span>
+         </div>`
+      : `<div class="modal__detail-image-wrapper" style="margin-bottom:var(--space-4);text-align:center">
+           <span class="product-cell__img-placeholder" title="${formatCategory(p.category)}">${getCategoryIcon(p.category)({ size: 64 })}</span>
+         </div>`;
     return `
-      ${imgUrl ? `<div style="margin-bottom:var(--space-4);text-align:center"><img src="${imgUrl}" alt="" style="max-width:200px;max-height:200px;border-radius:var(--radius-md);object-fit:cover;" onerror="this.onerror=null;this.src='';this.outerHTML='<span class=product-cell__img-placeholder title=${formatCategory(p.category)}>${getCategoryIcon(p.category)({ size: 48 })}</span>'" /></div>` : ''}
+      ${imgHtml}
       <div class="modal__details-row">
         <span class="modal__details-label">Title</span>
         <span class="modal__details-value">${escapeHtml(p.title || '—')}</span>
@@ -502,7 +504,7 @@ async function handleView(id) {
 
   try {
     const response = await getProductFull(id);
-    const p = response.data;
+    const p = response.data?.product || response.product;
     // Only update if this modal is still active AND this is the latest request for this instance
     if (p && instance.element.isConnected && instance._viewRequestId === requestId) {
       const modalContent = instance.element.querySelector('.modal__content');
@@ -746,11 +748,15 @@ async function openEditModal(id) {
   initEditModalEvents(instance);
   renderEditSpecs(instance.element, product.category, existingSpecs);
 
+  // Track this request to prevent race conditions (Product A overwriting Product B)
+  const requestId = Symbol('edit-request');
+  instance._editRequestId = requestId;
+
   // Optionally fetch full product data in background to enrich the form
   try {
     const response = await getProductFull(id);
-    const p = response.data;
-    if (p && instance.element.isConnected) {
+    const p = response.data?.product || response.product;
+    if (p && instance.element.isConnected && instance._editRequestId === requestId) {
       // Update modal state with full data
       editModalState.product = p;
       const existingImages = (p.images || []).map(img => ({ url: img.url, publicId: img.publicId, alt: img.alt || '' }));
@@ -761,10 +767,11 @@ async function openEditModal(id) {
       editModalState.tags = existingTags.filter(Boolean);
       editModalState.specifications = existingSpecs;
       // Update form fields that might have been missing
+      // NOTE: use raw values for .value (not escapeHtml) to avoid double-escaping
       const descInput = instance.element.querySelector('#editDescription');
-      if (descInput) descInput.value = escapeHtml(p.description || '');
+      if (descInput) descInput.value = p.description || '';
       const locInput = instance.element.querySelector('#editLocation');
-      if (locInput) locInput.value = escapeHtml(p.location || '');
+      if (locInput) locInput.value = p.location || '';
       const availInput = instance.element.querySelector('#editAvailability');
       if (availInput) availInput.checked = p.isAvailable !== false;
       // Re-render tags, images, specs with full data
@@ -1205,14 +1212,6 @@ function formatRelativeTime(dateStr) {
   } catch {
     return '—';
   }
-}
-
-if (tableSearchInput) {
-  let searchTimer = null;
-  tableSearchInput.addEventListener('input', () => {
-    clearTimeout(searchTimer);
-    searchTimer = setTimeout(applyFilters, 300);
-  });
 }
 
 if (filterCategory) filterCategory.addEventListener('change', applyFilters);

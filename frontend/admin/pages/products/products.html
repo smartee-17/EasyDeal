@@ -39,6 +39,9 @@
           <a href="../users/users.html" class="sidebar__link" data-icon="users">
             <span data-render-icon="users"></span> User Management
           </a>
+          <a href="../tags/tags.html" class="sidebar__link" data-icon="tags">
+            <span data-render-icon="tags"></span> Tags
+          </a>
         </nav>
         <div class="sidebar__footer">
           <button type="button" class="sidebar__logout" data-icon="logout">
@@ -105,12 +108,6 @@
         </div>
 
         <div class="products-filters" id="productsFilters">
-          <div class="products-filters__search">
-            <span class="products-filters__search-icon" aria-hidden="true">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            </span>
-            <input type="search" class="products-filters__search-input" placeholder="Search" aria-label="Search products in table" id="tableSearchInput" />
-          </div>
           <div class="products-filters__dropdowns">
             <div class="products-filters__select-wrap">
               <select class="products-filters__select" id="filterCategory" aria-label="Filter by category">
@@ -165,16 +162,7 @@
                   <th class="data-table__th" data-label="Actions">Actions</th>
                 </tr>
               </thead>
-              <tbody id="productsTableBody">
-                <tr><td colspan="9" class="skeleton" style="height:56px"></td></tr>
-                <tr><td colspan="9" class="skeleton" style="height:56px"></td></tr>
-                <tr><td colspan="9" class="skeleton" style="height:56px"></td></tr>
-                <tr><td colspan="9" class="skeleton" style="height:56px"></td></tr>
-                <tr><td colspan="9" class="skeleton" style="height:56px"></td></tr>
-                <tr><td colspan="9" class="skeleton" style="height:56px"></td></tr>
-                <tr><td colspan="9" class="skeleton" style="height:56px"></td></tr>
-                <tr><td colspan="9" class="skeleton" style="height:56px"></td></tr>
-              </tbody>
+              <tbody id="productsTableBody"></tbody>
             </table>
           </div>
           <div class="table-empty hidden" id="productsEmpty">

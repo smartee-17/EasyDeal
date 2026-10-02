@@ -79,7 +79,9 @@
 .navbar__search-input {
   width: 100%;
   height: var(--button-height-sm);
-  padding-inline: var(--space-10) var(--space-4);
+  /* Left: icon offset (space-3) + icon width (16px) + comfortable gap (space-2).
+     Previously space-10 (128px), which pushed placeholder far from the icon. */
+  padding-inline: calc(var(--space-3) + 16px + var(--space-2)) var(--space-6);
   font-size: var(--font-size-small);
   background-color: var(--color-bg);
   border: 1px solid var(--color-border);
@@ -101,6 +103,25 @@
 .navbar__search-input:focus {
   box-shadow: var(--shadow-focus);
   outline: none;
+}
+
+/* Suppress the browser-native search cancel UI (Chrome/Edge/Safari) so only
+   the application's custom .navbar__search-clear button is visible.
+   The input stays type="search": keyboard, clearing, and behavior unchanged. */
+.navbar__search-input::-webkit-search-cancel-button,
+.navbar__search-input::-webkit-search-decoration,
+.navbar__search-input::-webkit-search-results-button,
+.navbar__search-input::-webkit-search-results-decoration {
+  display: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.navbar__search-input::-ms-clear,
+.navbar__search-input::-ms-reveal {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .navbar__search-icon {

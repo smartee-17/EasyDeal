@@ -91,14 +91,6 @@ function createBaseModal(options) {
   const closeBtn = backdrop.querySelector('.modal__close-btn');
   const modalEl = backdrop.querySelector('.modal');
 
-  const instance = {
-    element: backdrop,
-    modalEl,
-    closeBtn,
-    onClose,
-    abortController: new AbortController(),
-  };
-
   function close() {
     if (!instance.element.isConnected) return;
     instance.element.classList.remove('is-visible');
@@ -113,6 +105,15 @@ function createBaseModal(options) {
 
     setTimeout(cleanup, 200);
   }
+
+  const instance = {
+    element: backdrop,
+    modalEl,
+    closeBtn,
+    onClose,
+    abortController: new AbortController(),
+    close,
+  };
 
   if (closeBtn) {
     closeBtn.addEventListener('click', close, { signal: instance.abortController.signal });
@@ -190,12 +191,6 @@ export function openModal(options = {}) {
   if (cancelBtn) {
     cancelBtn.addEventListener('click', handleCancel, { signal: instance.abortController.signal });
   }
-
-  instance.close = (function(originalClose) {
-    return function() {
-      originalClose();
-    };
-  })(instance.close.bind(instance));
 
   return instance;
 }

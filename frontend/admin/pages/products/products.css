@@ -46,51 +46,6 @@
   margin-bottom: var(--space-4);
 }
 
-.products-filters__search {
-  position: relative;
-  flex: 1;
-  min-width: 0;
-  max-width: 320px;
-}
-
-.products-filters__search-icon {
-  position: absolute;
-  left: var(--space-3);
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--color-text-tertiary);
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-}
-
-.products-filters__search-input {
-  width: 100%;
-  height: var(--input-height-md);
-  padding: var(--space-3) var(--space-4) var(--space-3) var(--space-10);
-  font-family: var(--font-body);
-  font-size: var(--font-size-small);
-  color: var(--color-text-primary);
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  transition: var(--transition-input);
-}
-
-.products-filters__search-input::placeholder {
-  color: var(--color-text-tertiary);
-}
-
-.products-filters__search-input:hover {
-  border-color: var(--color-border-strong);
-}
-
-.products-filters__search-input:focus {
-  border-color: var(--color-primary);
-  box-shadow: var(--shadow-focus);
-  outline: none;
-}
-
 .products-filters__dropdowns {
   display: flex;
   flex-wrap: wrap;
@@ -393,64 +348,66 @@
   min-width: 0;
 }
 
-/* Explicit column widths for fixed table layout - sum to 100% */
+/* Column sizing - using min-width only for fixed table layout.
+   Percentages removed to prevent sum > 100% causing overlap.
+   Table will expand to fit content, .table-scroll provides horizontal scroll. */
 .products-table .data-table__th[data-label="Product"],
 .products-table .data-table__cell[data-label="Product"] {
-  width: 30%;
-  min-width: 200px;
+  min-width: 240px;
 }
 
 .products-table .data-table__th[data-label="Category"],
 .products-table .data-table__cell[data-label="Category"] {
-  width: 10%;
-  min-width: 80px;
+  min-width: 100px;
 }
 
 .products-table .data-table__th[data-label="Price"],
 .products-table .data-table__cell[data-label="Price"] {
-  width: 10%;
-  min-width: 80px;
+  min-width: 90px;
 }
 
 .products-table .data-table__th[data-label="Seller"],
 .products-table .data-table__cell[data-label="Seller"] {
-  width: 14%;
-  min-width: 100px;
+  min-width: 130px;
 }
 
 .products-table .data-table__th[data-label="Location"],
 .products-table .data-table__cell[data-label="Location"] {
-  width: 14%;
-  min-width: 100px;
+  min-width: 130px;
 }
 
 .products-table .data-table__th[data-label="Tags"],
 .products-table .data-table__cell[data-label="Tags"] {
-  width: 8%;
-  min-width: 80px;
+  min-width: 100px;
 }
 
 .products-table .data-table__th[data-label="Availability"],
 .products-table .data-table__cell[data-label="Availability"] {
-  width: 10%;
-  min-width: 90px;
+  min-width: 110px;
 }
 
 .products-table .data-table__th[data-label="Updated"],
 .products-table .data-table__cell[data-label="Updated"] {
-  width: 8%;
-  min-width: 90px;
+  min-width: 120px;
 }
 
 .products-table .data-table__th[data-label="Actions"],
 .products-table .data-table__cell[data-label="Actions"] {
-  width: 6%;
-  min-width: 90px;
+  min-width: 120px;
 }
 
-/* Ensure table has a minimum width to prevent over-compression */
-.products-table {
-  min-width: 920px;
+/* Ensure table has a minimum width to prevent over-compression when it has data.
+   Sum of min-widths: 240+100+90+130+130+100+110+120+120 = 1140px */
+.products-table.has-data {
+  min-width: 1140px;
+  width: auto;
+  table-layout: auto;
+}
+
+/* When table is empty, allow it to shrink to fit the container */
+.products-table:not(.has-data) {
+  min-width: 100%;
+  width: 100%;
 }
 
 /* Seller/Location cell content - ensure proper truncation within fixed columns */
@@ -477,13 +434,20 @@
   white-space: nowrap;
 }
 
-/* Updated cell */
+/* Updated cell - ensure date stays contained */
 .products-table .data-table__cell[data-label="Updated"] {
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
-/* Tags cell - prevent overflow */
+/* Tags cell - prevent overflow, allow wrapping of tag badges */
 .tags-cell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  max-width: 100%;
   overflow: hidden;
 }
 
@@ -504,12 +468,27 @@
     align-items: stretch;
   }
 
-  .products-filters__search {
-    max-width: none;
-  }
-
   .products-filters__dropdowns {
     flex-wrap: wrap;
+  }
+
+  /* ── Tablet/mobile: disable desktop table horizontal scrolling ──
+     The desktop .products-table.has-data min-width (1140px) must not
+     apply here. The table fits the viewport and compresses instead;
+     the global card layout takes over at <=767px. */
+  .table-scroll {
+    overflow-x: hidden;
+  }
+
+  .products-table.has-data {
+    min-width: 0;
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  .products-table .data-table__th[data-label],
+  .products-table .data-table__cell[data-label] {
+    min-width: 0;
   }
 }
 
@@ -1040,6 +1019,29 @@
   flex-direction: column;
   height: 100%;
   max-height: 90vh;
+}
+
+/* Post-save Preview is rendered inside the shared modal shell
+   (.modal > .modal__header + .modal__content), while the preview
+   template brings its own header/body/footer. Without these overrides
+   the result is a duplicated title bar and nested scroll areas.
+   Scope strictly to the preview backdrop so other modals are unaffected. */
+
+/* Single title: hide the redundant outer shell header; the preview
+   template's own header ("Product Updated" + id) remains the one title. */
+.modal-backdrop--preview .modal > .modal__header {
+  display: none;
+}
+
+/* Single scroll area: let the outer .modal__content own scrolling;
+   the inner preview body must not create a second scroll container. */
+.modal-backdrop--preview .preview-modal__custom {
+  height: auto;
+  max-height: none;
+}
+
+.modal-backdrop--preview .preview-modal__custom .preview-modal__body {
+  overflow-y: visible;
 }
 
 .preview-modal__custom .preview-modal__header {

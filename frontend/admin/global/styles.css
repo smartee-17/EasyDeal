@@ -305,11 +305,13 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  min-width: 0;
 }
 
 .admin-layout__content {
   flex: 1;
   padding: var(--space-5);
+  min-width: 0;
 }
 
 @media (max-width: 1023px) {
@@ -504,6 +506,9 @@
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .data-table {
@@ -903,6 +908,8 @@
 .table-scroll {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  width: 100%;
+  max-width: 100%;
 }
 
 .table-scroll::-webkit-scrollbar {

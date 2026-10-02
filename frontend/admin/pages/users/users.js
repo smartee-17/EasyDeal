@@ -42,7 +42,7 @@ function handleUserSearch(query) {
 
 function handleSearchResultClick(item) {
   if (item?._id || item?.id) {
-    window.location.href = `./users.html?id=${item._id || item.id}`;
+    handleView(item._id || item.id);
   }
 }
 
@@ -103,6 +103,7 @@ initSidebar();
 initFooter();
 
 const tableBody = document.getElementById('usersTableBody');
+const usersTable = document.getElementById('usersTable');
 const emptyState = document.getElementById('usersEmpty');
 let allUsers = [];
 
@@ -134,24 +135,28 @@ async function loadUsers() {
 function renderUsers(users) {
   if (!users || users.length === 0) {
     tableBody.innerHTML = '';
+    usersTable.classList.remove('has-data');
     emptyState.classList.remove('hidden');
     return;
   }
   emptyState.classList.add('hidden');
+  usersTable.classList.add('has-data');
 
   tableBody.innerHTML = users.map(u => {
     const id = u._id || u.id;
     const isBlocked = u.isBlocked;
     const isDeleted = u.isDeleted;
+    const userName = u.name || '—';
+    const userEmail = u.email || '—';
     return `
       <tr data-id="${id}">
-        <td class="data-table__cell">${escapeHtml(u.name || '—')}</td>
-        <td class="data-table__cell">${escapeHtml(u.email || '—')}</td>
-        <td class="data-table__cell"><span class="status-badge status-badge--active">${escapeHtml(u.role || 'user')}</span></td>
-        <td class="data-table__cell">${isBlocked ? '<span class="status-badge status-badge--blocked">Blocked</span>' : '<span class="status-badge status-badge--active">Active</span>'}</td>
-        <td class="data-table__cell">${isDeleted ? '<span class="status-badge status-badge--deleted">Deleted</span>' : '<span class="status-badge status-badge--active">Active</span>'}</td>
-        <td class="data-table__cell">${formatDate(u.createdAt)}</td>
-        <td class="data-table__cell">
+        <td class="data-table__cell" data-label="Name"><span class="user-cell" title="${escapeHtml(userName)}">${escapeHtml(userName)}</span></td>
+        <td class="data-table__cell" data-label="Email"><span class="user-cell" title="${escapeHtml(userEmail)}">${escapeHtml(userEmail)}</span></td>
+        <td class="data-table__cell" data-label="Role"><span class="status-badge status-badge--active">${escapeHtml(u.role || 'user')}</span></td>
+        <td class="data-table__cell" data-label="Blocked">${isBlocked ? '<span class="status-badge status-badge--blocked">Blocked</span>' : '<span class="status-badge status-badge--active">Active</span>'}</td>
+        <td class="data-table__cell" data-label="Deleted">${isDeleted ? '<span class="status-badge status-badge--deleted">Deleted</span>' : '<span class="status-badge status-badge--active">Active</span>'}</td>
+        <td class="data-table__cell" data-label="Created">${formatDate(u.createdAt)}</td>
+        <td class="data-table__cell" data-label="Actions">
           <div class="table-actions">
             <button type="button" class="table-actions__btn" data-action="view" data-id="${id}" aria-label="View user">
               ${iconEye({ size: 16 })}
