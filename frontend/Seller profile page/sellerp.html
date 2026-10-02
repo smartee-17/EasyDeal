@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EasyDeal - Seller Profile</title>
+    <link rel="stylesheet" href="sellerp.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header class="profile-header">
+        <div class="cover-image"></div>
+        <div class="profile-details">
+          <div class="avatar-wrapper">
+            <img
+              id="seller-avatar"
+              src="Assets/images/missed-opportunity.jpg"
+              alt="Seller Avatar"
+            />
+          </div>
+          <div class="seller-info">
+            <h1 class="seller-name" id="seller-name">
+              Loading Seller...
+              <span class="badge" id="verified-badge">
+                <img
+                  src="Assets/icons/correct-success-icon.svg"
+                  class="badge-icon"
+                  alt="Verified"
+                />
+                Verified Seller
+              </span>
+            </h1>
+            <p class="seller-meta" id="seller-meta">
+              <span class="star">★</span>
+              <span id="seller-rating">0.0</span> &bull;
+              <span id="seller-location">Addis Ababa, ET</span>
+            </p>
+          </div>
+          <div class="header-actions">
+            <button class="btn btn-secondary">Follow</button>
+            <button class="btn btn-primary">Contact Seller</button>
+          </div>
+        </div>
+
+        <div class="stats-bar">
+          <div class="stat-item">
+            <div class="stat-value" id="stat-sales">0</div>
+            <div class="stat-label">Sales Completed</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="stat-count">0</div>
+            <div class="stat-label">Active Items</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">&lt; 1 hr</div>
+            <div class="stat-label">Response Time</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">2026</div>
+            <div class="stat-label">Member Since</div>
+          </div>
+        </div>
+      </header>
+
+      <div class="main-grid">
+        <aside class="sidebar">
+          <div class="sidebar-card">
+            <h3 class="card-title">Search Store</h3>
+            <input
+              type="text"
+              id="seller-search"
+              class="search-box"
+              placeholder="Search this seller's items..."
+            />
+
+            <h3 class="card-title">Categories</h3>
+            <ul class="categories-list" id="seller-categories"></ul>
+          </div>
+        </aside>
+
+        <main class="content-area">
+          <div class="tabs-nav">
+            <button class="tab-btn active" data-tab="products">
+              Products (<span id="product-count-badge">0</span>)
+            </button>
+            <button class="tab-btn" data-tab="reviews">Reviews</button>
+          </div>
+
+          <div class="products" id="seller-products">
+            <p>Loading products...</p>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script src="sellerp.js"></script>
+  </body>
+</html>
