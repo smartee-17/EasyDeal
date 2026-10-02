@@ -192,7 +192,7 @@ export const getAllProducts = async (req, res) => {
 
     const products = await Product.find(filter)
       .populate('category', 'name')
-      .populate('seller', 'name whatsappNumber');
+      .populate('seller', 'name phone whatsappNumber');
 
     return sendResponse(
       res,

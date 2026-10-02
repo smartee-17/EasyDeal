@@ -9,7 +9,13 @@ import mongoose from 'mongoose';
 export const getSavedProducts = async (req, res) => {
   try {
     const userId = req.user.id;
-    const savedProducts = await Saved.find({ userId }).populate('productId');
+    const savedProducts = await Saved.find({ userId }).populate({
+      path: 'productId',
+      populate: {
+        path: 'seller',
+        select: 'name username email phone',
+      },
+    });
 
     return sendResponse(
       res,
