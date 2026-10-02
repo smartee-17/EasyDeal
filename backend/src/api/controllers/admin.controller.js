@@ -1,18 +1,21 @@
 import mongoose from 'mongoose';
+
 import { sendResponse } from '../library/utils.js';
+
 import Product from '../models/product.model.js';
+
 import User from '../models/user.model.js';
+
+import Tag from '../models/tag.model.js';
 
 const getAllProducts = async (req, res) => {
   try {
     const products = await Product.find()
       .populate('seller', 'name email')
-      .select('title price category seller createdAt')
+      .populate('tags', 'name')
+      .select('title description price category seller location tags images isAvailable createdAt updatedAt specifications')
       .sort({ createdAt: -1 });
     if (!products || products.length === 0) {
-      // return res.status(404).json({ message: 'No products found' });
-
-      // For consistency 
       return sendResponse(
         res,
         404,
@@ -20,9 +23,6 @@ const getAllProducts = async (req, res) => {
         'No products found'
       );
     }
-    // res.status(200).json(products);
-
-    // For consistency 
     return sendResponse(
       res,
       200,
@@ -31,9 +31,6 @@ const getAllProducts = async (req, res) => {
       { products }
     )
   } catch (error) {
-    // res.status(500).json({ message: 'Server error', error: error.message });
-
-    // For consistency 
     console.error("[Admin Dashboard]", error);
     return sendResponse(
       res,
@@ -59,7 +56,8 @@ const getSingleProduct = async (req, res) => {
 
     const product = await Product.findById(id)
     .populate("seller", "name email")
-    .select("title price category seller createdAt");
+    .populate("tags", "name")
+    .select("title description price category seller location tags images isAvailable createdAt updatedAt specifications");
 
       if (!product) {
         return sendResponse(
@@ -501,11 +499,20 @@ const getProductsBySearch = async (req, res) => {
 
     const searchQuery = search.trim();
 
-    // Escape special regex characters from user input
     const escapedSearchQuery = searchQuery.replace(
       /[.*+?^${}()|[\]\\]/g,
       "\\$&"
     );
+
+    // Find tags whose names match the search text
+    const matchingTags = await Tag.find({
+      name: {
+        $regex: escapedSearchQuery,
+        $options: "i"
+      }
+    }).select("_id");
+
+    const tagIds = matchingTags.map(tag => tag._id);
 
     const searchCondition = {
       $or: [
@@ -520,13 +527,21 @@ const getProductsBySearch = async (req, res) => {
             $regex: escapedSearchQuery,
             $options: "i"
           }
+        },
+        {
+          tags: {
+            $in: tagIds
+          }
         }
       ]
     };
 
     const products = await Product.find(searchCondition)
       .populate("seller", "name email")
-      .select("title price category tags seller createdAt")
+      .populate("tags", "name")
+      .select(
+        "title description price category seller location tags images isAvailable createdAt updatedAt specifications"
+      )
       .sort({ createdAt: -1 });
 
     if (products.length === 0) {
@@ -545,6 +560,7 @@ const getProductsBySearch = async (req, res) => {
       "Products retrieved successfully",
       { products }
     );
+
   } catch (error) {
     console.error("[Admin Dashboard]", error);
 

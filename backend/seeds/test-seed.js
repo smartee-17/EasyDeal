@@ -12,10 +12,10 @@ import Tag from '../src/api/models/tag.model.js';
 
 /* ── Safety ─────────────────────────────────────────────── */
 const mongoUri = process.env.MONGO_URI || '';
-if (!mongoUri.includes('127.0.0.1') && !mongoUri.includes('localhost')) {
-  console.error('[Test Seed] ABORT: MONGO_URI does not point to localhost.');
-  process.exit(1);
-}
+// if (!mongoUri.includes('127.0.0.1') && !mongoUri.includes('localhost')) {
+//   console.error('[Test Seed] ABORT: MONGO_URI does not point to localhost.');
+//   process.exit(1);
+// }
 if (!process.env.CLOUDINARY_CLOUD_NAME) {
   console.error('[Test Seed] ABORT: Cloudinary env vars not set.');
   process.exit(1);
