@@ -1,0 +1,577 @@
+/* ============================================================
+   EASYDEAL — TAGS PAGE STYLES
+   Purpose: Tag listing table presentation
+   ============================================================ */
+
+/* ── Page Header ──────────────────────────────────────────────
+   Page-scoped, mirroring the Products Management block. The
+   Users page references these classes without defining them, so
+   the block is repeated here rather than moved into the global
+   stylesheet (out of scope for this page). */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.page-header__left {
+  flex: 1;
+  min-width: 0;
+}
+
+.page-header__right {
+  flex-shrink: 0;
+}
+
+.page-header__title {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  line-height: var(--leading-tight);
+}
+
+.page-header__subtitle {
+  font-size: var(--font-size-body);
+  color: var(--color-text-muted);
+  margin-top: var(--space-1);
+}
+
+/* ── Tag Badge ────────────────────────────────────────────────
+   Reuses the Products Management .tag-badge visual pattern
+   (pill shape, neutral tokens, rounded-full radius) so tags look
+   identical in both places. */
+.tag-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: var(--font-medium);
+  white-space: nowrap;
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-600);
+  border: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .tag-badge {
+  background-color: var(--color-surface-subtle);
+  color: var(--color-text-secondary);
+  border-color: var(--color-border);
+}
+
+/* Slug renders as monospace-ish text and truncates with the full
+   value available on hover. */
+.tag-slug {
+  display: block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  color: var(--color-text-secondary);
+}
+
+/* ── Table row actions ───────────────────────────────────────
+   Mirrors the Users Management .table-actions block. */
+.table-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+.table-actions__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition-colors);
+}
+
+.table-actions__btn:hover {
+  background-color: var(--color-surface-hover);
+  color: var(--color-text-primary);
+}
+
+.table-actions__btn--danger:hover {
+  background-color: var(--color-danger-light);
+  color: var(--color-danger);
+}
+
+.tags-add-btn {
+  white-space: nowrap;
+}
+
+/* ── Table Toolbar Search ───────────────────────────────────── */
+.table-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.table-toolbar__search {
+  position: relative;
+  width: 280px;
+  max-width: 100%;
+}
+
+.table-toolbar__search-icon {
+  position: absolute;
+  left: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-tertiary);
+  pointer-events: none;
+  display: inline-flex;
+}
+
+.table-toolbar__search-input {
+  width: 100%;
+  height: 36px;
+  padding: 0 var(--space-10) 0 calc(var(--space-3) + 16px + var(--space-2));
+  font-size: var(--font-size-small);
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  transition: var(--transition-input);
+}
+
+.table-toolbar__search-input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.table-toolbar__search-input:hover,
+.table-toolbar__search-input:focus {
+  border-color: var(--color-border-strong);
+  background-color: var(--color-surface);
+}
+
+.table-toolbar__search-input:focus {
+  box-shadow: var(--shadow-focus);
+  outline: none;
+}
+
+.table-toolbar__search-clear {
+  position: absolute;
+  right: var(--space-2);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-tertiary);
+  padding: var(--space-1);
+  border-radius: var(--radius-sm);
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.table-toolbar__search-clear:hover {
+  background-color: var(--color-surface-hover);
+  color: var(--color-text-primary);
+}
+
+.table-toolbar__search-input:not(:placeholder-shown) ~ .table-toolbar__search-clear,
+.table-toolbar__search-input.has-value ~ .table-toolbar__search-clear,
+.table-toolbar__search-clear.is-visible {
+  display: inline-flex;
+}
+
+/* ── Sortable Headers ───────────────────────────────────────── */
+.data-table__th.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.data-table__th.sortable:hover {
+  background-color: var(--color-surface-hover);
+}
+
+.data-table__sort-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.data-table__sort-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--color-text-tertiary);
+  transition: var(--transition-colors);
+}
+
+.data-table__th.sorted .data-table__sort-icon {
+  color: var(--color-primary);
+}
+
+/* Admin ID cell - display truncated ObjectId with tooltip */
+.data-table__cell[data-label="Created By"],
+.data-table__cell[data-label="Updated By"] {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-tiny);
+}
+
+/* ── Pagination ─────────────────────────────────────────────── */
+.tags-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-4) 0;
+  margin-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.tags-pagination__label {
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+}
+
+.tags-pagination__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-inline-end: var(--space-2);
+}
+
+.tags-pagination__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: var(--transition-colors);
+}
+
+.tags-pagination__btn:hover:not(:disabled):not(.tags-pagination__btn--active) {
+  background-color: var(--color-surface-hover);
+  color: var(--color-text-primary);
+  border-color: var(--color-border-strong);
+}
+
+.tags-pagination__btn--active {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+}
+
+.tags-pagination__btn:disabled {
+  opacity: var(--disabled-opacity);
+  cursor: var(--disabled-cursor);
+}
+
+.tags-pagination__btn:focus-visible,
+.data-table__sort-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.tags-pagination__ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+}
+
+/* ── No Results State ───────────────────────────────────────── */
+.table-empty__actions {
+  margin-top: var(--space-3);
+}
+
+.table-empty__clear-search {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.table-empty__clear-search:hover {
+  color: var(--color-primary-dark);
+}
+
+/* ── Tags Table Adjustments ───────────────────────────────────
+   Mirrors the Users Management reference implementation:
+   reusable .data-table-wrap + .table-scroll (global) own the
+   horizontal scroll; per-column min-widths keep the fixed table
+   layout from squeezing content. */
+
+.tags-table .data-table__cell {
+  min-width: 0;
+}
+
+.tags-table .data-table__th[data-label="Tag"],
+.tags-table .data-table__cell[data-label="Tag"] {
+  min-width: 200px;
+}
+
+.tags-table .data-table__th[data-label="Slug"],
+.tags-table .data-table__cell[data-label="Slug"] {
+  min-width: 220px;
+}
+
+.tags-table .data-table__th[data-label="Created"],
+.tags-table .data-table__cell[data-label="Created"] {
+  min-width: 130px;
+  white-space: nowrap;
+}
+
+.tags-table .data-table__th[data-label="Updated"],
+.tags-table .data-table__cell[data-label="Updated"] {
+  min-width: 130px;
+  white-space: nowrap;
+}
+
+.tags-table .data-table__th[data-label="Created By"],
+.tags-table .data-table__cell[data-label="Created By"] {
+  min-width: 150px;
+}
+
+.tags-table .data-table__th[data-label="Created"],
+.tags-table .data-table__cell[data-label="Created"] {
+  min-width: 130px;
+  white-space: nowrap;
+}
+
+.tags-table .data-table__th[data-label="Updated By"],
+.tags-table .data-table__cell[data-label="Updated By"] {
+  min-width: 150px;
+}
+
+.tags-table .data-table__th[data-label="Updated"],
+.tags-table .data-table__cell[data-label="Updated"] {
+  min-width: 130px;
+  white-space: nowrap;
+}
+
+.tags-table .data-table__th[data-label="Actions"],
+.tags-table .data-table__cell[data-label="Actions"] {
+  min-width: 110px;
+}
+
+/* Populated table keeps a readable minimum width (sum of column
+   min-widths: 200+220+150+130+150+130+110 = 1090px). The wider content lives
+   inside .table-scroll, which owns the horizontal scroll. */
+.tags-table.has-data {
+  min-width: 1090px;
+  width: auto;
+  table-layout: auto;
+}
+
+/* Empty table shrinks to the container so the empty state stays
+   centered with no horizontal scrollbar. */
+.tags-table:not(.has-data) {
+  min-width: 100%;
+  width: 100%;
+}
+
+/* Table empty state */
+.table-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-16) var(--space-4);
+  text-align: center;
+}
+
+.table-empty__icon {
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-4);
+}
+
+.table-empty__title {
+  font-size: var(--font-size-h5);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.table-empty__text {
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+}
+
+/* ── Modals ──────────────────────────────────────────────────
+   Page-scoped, following the .edit-modal__* / .preview-modal__*
+   convention. The details variant widens the shared .modal box to
+   the width the shared stylesheet already reserves for it via
+   .modal--details, without editing the shared modal component. */
+.tags-modal {
+  display: flex;
+  flex-direction: column;
+}
+
+/* The shared modal component wraps .modal__title (which carries flex: 1) in a
+   plain <div>, so the flex child of .modal__header is that unstyled div and the
+   close button collapses next to the title instead of sitting at the far right.
+   Scoped to this page's backdrops so the shared component is left untouched. */
+.tags-modal-backdrop .modal__header > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.tags-modal__body {
+  padding: var(--space-4) var(--space-6);
+}
+
+.tags-modal__field {
+  margin-bottom: var(--space-4);
+}
+
+.tags-modal__field:last-child {
+  margin-bottom: 0;
+}
+
+.tags-modal__input {
+  width: 100%;
+}
+
+/* Slug is server-owned: readable and copyable, but not editable. */
+.tags-modal__input--readonly {
+  background-color: var(--color-surface-subtle);
+  color: var(--color-text-secondary);
+  cursor: not-allowed;
+}
+
+.tags-modal__required {
+  color: var(--color-danger);
+}
+
+.tags-modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  padding: var(--space-4) var(--space-6) var(--space-6);
+  border-top: 1px solid var(--color-border);
+}
+
+.tags-modal__footer .btn {
+  min-width: 100px;
+}
+
+/* Danger button style for Details modal delete action */
+.tags-modal__footer .btn--outline-danger {
+  background-color: transparent;
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+}
+
+.tags-modal__footer .btn--outline-danger:hover:not(:disabled) {
+  background-color: var(--color-danger-light);
+  color: var(--color-danger-dark);
+}
+
+/* Details: large tag chip reusing the table .tag-badge so the two
+   stay visually identical apart from scale. */
+.tags-modal-backdrop--details .modal {
+  max-width: 560px;
+}
+
+.tags-modal__chip-wrap {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-2) 0 var(--space-5);
+}
+
+.tags-modal__chip {
+  padding: var(--space-2) var(--space-5);
+  font-size: var(--font-size-h5);
+  font-weight: var(--font-semibold);
+}
+
+/* ── Tablet/mobile: disable desktop table horizontal scrolling ──
+   Mirrors the Users/Products responsive correction. The desktop
+   .tags-table.has-data min-width (790px) must not apply here. The
+   table fits the viewport and compresses instead; the global card
+   layout takes over at <=767px. */
+@media (max-width: 1023px) {
+  .table-scroll {
+    overflow-x: hidden;
+  }
+
+  .tags-table.has-data {
+    min-width: 0;
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  .tags-table .data-table__th[data-label],
+  .tags-table .data-table__cell[data-label] {
+    min-width: 0;
+  }
+}
+
+/* ── Responsive: modal ──────────────────────────────────────
+   Footer actions stack on narrow viewports, matching the shared
+   .modal__actions behaviour at <=480px. */
+@media (max-width: 767px) {
+  .table-actions__btn {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .table-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .table-toolbar__search {
+    width: 100%;
+  }
+  
+  .tags-pagination {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .tags-pagination__controls {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .tags-modal__body {
+    padding: var(--space-4);
+  }
+
+  .tags-modal__footer {
+    flex-direction: column-reverse;
+    padding: var(--space-3) var(--space-4) var(--space-4);
+  }
+
+  .tags-modal__footer .btn {
+    width: 100%;
+  }
+}

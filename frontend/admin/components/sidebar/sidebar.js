@@ -3,7 +3,8 @@
    Purpose: Sidebar navigation behavior
    ============================================================ */
 
-import { iconClose, iconDashboard, iconStore, iconShoppingBag, iconUser, iconLogout } from '../icons/icons.js';
+import { updateBodyScrollLock } from '../modal/modal.js';
+import { iconClose, iconDashboard, iconShoppingBag, iconUser, iconTag, iconLogout } from '../icons/icons.js';
 import { logout, redirectToLogin } from '../../services/authService.js';
 
 export function initSidebar() {
@@ -33,9 +34,9 @@ function renderIcons() {
   const iconMap = {
     'close': () => iconClose({ size: 20 }),
     'dashboard': () => iconDashboard({ size: 20 }),
-    'products': () => iconStore({ size: 20 }),
     'product-management': () => iconShoppingBag({ size: 20 }),
     'users': () => iconUser({ size: 20 }),
+    'tags': () => iconTag({ size: 20 }),
     'logout': () => iconLogout({ size: 20 }),
   };
 
@@ -57,7 +58,7 @@ function initCloseButton() {
   closeBtn.addEventListener('click', () => {
     sidebar.classList.remove('is-open');
     if (backdrop) backdrop.classList.remove('is-visible');
-    document.body.style.overflow = '';
+    updateBodyScrollLock();
   });
 }
 

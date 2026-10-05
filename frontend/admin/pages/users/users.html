@@ -34,14 +34,14 @@
           <a href="../dashboard/dashboard.html" class="sidebar__link" data-icon="dashboard">
             <span data-render-icon="dashboard"></span> Dashboard Overview
           </a>
-          <a href="../products/products.html" class="sidebar__link" data-icon="products">
-            <span data-render-icon="products"></span> Products
-          </a>
-          <a href="../product-management/product-management.html" class="sidebar__link" data-icon="product-management">
-            <span data-render-icon="product-management"></span> Product Management
+          <a href="../products/products.html" class="sidebar__link" data-icon="product-management">
+            <span data-render-icon="product-management"></span> Products Management
           </a>
           <a href="./users.html" class="sidebar__link" data-icon="users">
             <span data-render-icon="users"></span> User Management
+          </a>
+          <a href="../tags/tags.html" class="sidebar__link" data-icon="tags">
+            <span data-render-icon="tags"></span> Tags
           </a>
         </nav>
         <div class="sidebar__footer">
@@ -108,24 +108,24 @@
             <div class="table-toolbar__right" id="usersToolbarRight"></div>
           </div>
           <div class="table-scroll">
-            <table class="data-table" id="usersTable">
+            <table class="data-table users-table" id="usersTable">
               <thead>
                 <tr>
-                  <th class="data-table__th">Name</th>
-                  <th class="data-table__th">Email</th>
-                  <th class="data-table__th">Role</th>
-                  <th class="data-table__th">Blocked</th>
-                  <th class="data-table__th">Deleted</th>
-                  <th class="data-table__th">Created</th>
-                  <th class="data-table__th" style="width:160px;text-align:right">Actions</th>
+                  <th class="data-table__th" data-label="Name">Name</th>
+                  <th class="data-table__th" data-label="Email">Email</th>
+                  <th class="data-table__th" data-label="Role">Role</th>
+                  <th class="data-table__th" data-label="Blocked">Blocked</th>
+                  <th class="data-table__th" data-label="Deleted">Deleted</th>
+                  <th class="data-table__th" data-label="Created">Created</th>
+                  <th class="data-table__th" data-label="Actions">Actions</th>
                 </tr>
               </thead>
               <tbody id="usersTableBody">
-                <tr><td colspan="7" class="skeleton" style="height:48px"></td></tr>
-                <tr><td colspan="7" class="skeleton" style="height:48px"></td></tr>
-                <tr><td colspan="7" class="skeleton" style="height:48px"></td></tr>
-                <tr><td colspan="7" class="skeleton" style="height:48px"></td></tr>
-                <tr><td colspan="7" class="skeleton" style="height:48px"></td></tr>
+                <tr class="skeleton-row"><td colspan="7" class="skeleton" style="height:48px"></td></tr>
+                <tr class="skeleton-row"><td colspan="7" class="skeleton" style="height:48px"></td></tr>
+                <tr class="skeleton-row"><td colspan="7" class="skeleton" style="height:48px"></td></tr>
+                <tr class="skeleton-row"><td colspan="7" class="skeleton" style="height:48px"></td></tr>
+                <tr class="skeleton-row"><td colspan="7" class="skeleton" style="height:48px"></td></tr>
               </tbody>
             </table>
           </div>
