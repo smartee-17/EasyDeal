@@ -1,63 +1,653 @@
+/* ============================================================
+   EASYDEAL — AUTH VISUAL DESIGN
+   Purpose: Reproduces the approved Login/Signup split-screen design.
+
+   Source of truth
+   frontend/assets/designs/*.png (Figma export, 1230x660).
+
+   Colour strategy
+   Every value below is either an existing shared token or a single
+   design token declared here and derived from a sampled design colour.
+   The design's own sampled values were checked against WCAG AA on the
+   cream surface first:
+
+     sampled #F7433C error red   -> 2.49:1  FAIL, so --auth-error-text
+                                   darkens the same hue to #B3261E (4.51:1)
+     sampled #6B7280 secondary   -> 3.33:1  FAIL, so --auth-text-muted
+                                   uses #565B62 (4.72:1)
+     sampled #9B6D70 rose accent -> 3.01:1  FAIL, so --auth-accent-text
+                                   uses #76494D (5.12:1)
+
+   Border reds keep the design's #F16A60 family where only a 3:1
+   graphical threshold applies, so the visual matches while the text
+   stays legible. Errors are never signalled by colour alone: every
+   message has an icon, and every invalid field also carries
+   aria-invalid plus a described-by message.
+
+   Token strategy
+   - Colour: the universal shared system, frontend/shared/global.css,
+     for surfaces, borders and base text.
+   - Spacing / radius / typography / shadows: the shared design system,
+     frontend/shared/theme.css. The 4px scale is used throughout.
+   - Icons: frontend/shared/components/icons/icons.css.
+
+   Breakpoints follow the conventions already in the project:
+   1024px and 767px.
+
+   The Auth pages deliberately do not mount the universal site header or
+   footer. They are a focused split-screen experience, so the
+   .auth-page__header / .auth-page__footer mount points that used to hold
+   them have been removed along with the shared header/footer
+   stylesheets and the component loader.
+   ============================================================ */
+
+/* ── Design tokens ──────────────────────────────────────────── */
+
+/* The cream page surface and near-black ink of the approved design.
+   Declared here rather than in the shared palette because they are
+   specific to this surface treatment, not to the product at large. */
 :root {
-  --logo-url: url('../../assets/images/logos/logo-light-rect.svg');
-}
-[data-theme="dark"] {
-  --logo-url: url('../../assets/images/logos/logo-dark-rect.svg');
+  --auth-surface-cream: #e4d4c1;
+  --auth-ink: #000000;
+
+  /* Design hues darkened just enough to reach WCAG AA on the cream. */
+  --auth-text: #111111;
+  --auth-text-muted: #565b62;
+  --auth-accent-text: #76494d;
+  --auth-error-text: #b3261e;
+  --auth-error-border: #f16a60;
+
+  --auth-hero-image: url('../../assets/images/image 71.png');
+  --auth-logo: url('../../assets/images/logos/logo-dark-rect.svg');
 }
 
-/* Component styles */
-.page {
-  display: grid;
-  place-items: center;
-  min-height: 100vh;
+[data-theme='dark'] {
+  /* The cream surface is the brand's light-mode treatment. In dark mode
+     the page keeps the same hue but darkened so it stays in the Admin
+     dark palette rather than glaring against a near-black surround. */
+  --auth-surface-cream: #241f1a;
+  --auth-ink: #0b0b0c;
+
+  --auth-text: #f0f1f3;
+  --auth-text-muted: #b0a898;
+  --auth-accent-text: #d2baad;
+  --auth-error-text: #f88b83;
+  --auth-error-border: #b3261e;
+
+   /* Same relative form as the light-mode block above. This stylesheet is
+      linked from frontend/Auth/Login/ and frontend/Auth/Signup/, both two
+      levels below frontend/, so ../../assets resolves correctly. A
+      root-relative /assets path would resolve above frontend/ and 404. */
+  --auth-logo: url('../../assets/images/logos/logo-dark-rect.svg');
 }
-.main {
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  padding: 2rem;
-  border-radius: 0.5rem;
+
+/* ── Page shell ─────────────────────────────────────────────── */
+
+.auth-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--auth-surface-cream);
+  color: var(--auth-text);
+  font-family: var(--font-primary, system-ui, -apple-system, 'Segoe UI', sans-serif);
+}
+
+/* The header and footer mount points are gone: the Auth pages are a
+   single focused split-screen surface, and .auth-page__main is the only
+   child, so it takes the full height directly. */
+.auth-page__main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--space-6);
+}
+
+/* ── Split layout ───────────────────────────────────────────── */
+
+.auth-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-10);
+  width: 100%;
+  max-width: 1180px;
+  align-items: center;
+}
+
+/* ── Left: hero card ────────────────────────────────────────── */
+
+.auth-hero {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--auth-ink);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+}
+
+.auth-hero__image {
+  /* The approved asset, unmodified: frontend/assets/images/image 71.png */
+  width: 100%;
+  aspect-ratio: 550 / 338;
+  object-fit: cover;
+  display: block;
+}
+
+.auth-hero__brand {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2rem;
+  gap: var(--space-3);
+  padding: var(--space-8) var(--space-6);
+  color: var(--color-text-inverse);
+  text-align: center;
 }
+
+.auth-hero__logo {
+  width: 40px;
+  height: 40px;
+  background-image: var(--auth-logo);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.auth-hero__title {
+  margin: 0;
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: var(--leading-tight);
+}
+
+/* "Deal" carries the rose accent in the approved wordmark. Rendered as a
+   real text run rather than a second logo asset so it inherits the
+   surrounding type scale and stays selectable and translatable. */
+.auth-hero__title-accent,
+.auth-card__title-accent {
+  color: var(--auth-accent-text);
+}
+
+.auth-hero__copy {
+  max-width: 42ch;
+  margin: 0;
+  font-size: var(--font-size-body);
+  line-height: var(--leading-relaxed);
+  color: rgba(255, 255, 255, 0.82);
+}
+
+/* ── Right: form ────────────────────────────────────────────── */
+
+.auth-form {
+  width: 100%;
+  max-width: 440px;
+}
+
+.auth-form__logo {
+  width: 150px;
+  height: 40px;
+  margin: 0 auto var(--space-8);
+  background-image: var(--auth-logo);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.auth-form__title {
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: var(--leading-tight);
+  text-align: center;
+}
+
+.auth-form__subtitle {
+  margin: 0 0 var(--space-7);
+  font-size: var(--font-size-small);
+  color: var(--auth-text-muted);
+  text-align: center;
+}
+
 .form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--space-5);
+  margin: 0;
 }
-.logo {
-  width: 200px;
-  height: 50px;
-  background-image: var(--logo-url);
-  background-size: contain;
-  background-repeat: no-repeat;
-}
-.form__field {
+
+/* ── Fields ─────────────────────────────────────────────────── */
+
+.form-field {
   display: flex;
   flex-direction: column;
-  font-size: 0.875rem;
-  gap: 0.25rem;
+  gap: var(--space-2);
+}
+
+.form-field__label {
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--auth-text);
+}
+
+/* Label row that also carries the Forgot password link, matching the
+   approved design where the link sits on the Password label line. */
+.form-field__label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.form-field__input {
+  width: 100%;
+  height: 44px;
+  padding: var(--space-3) var(--space-4);
+  font-family: inherit;
+  font-size: var(--font-size-body);
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  transition: var(--transition-input);
+}
+
+.form-field__input::placeholder {
+  color: var(--auth-text-muted);
+}
+
+.form-field__input:hover:not(:disabled) {
+  border-color: var(--color-border-strong, var(--color-border));
+}
+
+.form-field__input:focus {
+  border-color: var(--color-text);
+  box-shadow: var(--shadow-focus);
+  outline: none;
+}
+
+.form-field__input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Invalid state: red border (the design's family) plus the icon and
+   message rendered below, so colour is never the only signal. */
+.form-field__input[aria-invalid='true'] {
+  border-color: var(--auth-error-border);
+}
+
+.form-field__input[aria-invalid='true']:focus {
+  border-color: var(--auth-error-border);
+  box-shadow: var(--shadow-error);
+}
+
+.form-field--password {
   position: relative;
 }
-.form__toggle-password {
+
+.form-field__input--password {
+  padding-right: var(--space-10);
+}
+
+.form-field__toggle {
+  position: absolute;
+  right: var(--space-4);
+  bottom: var(--space-2);
+  top: var(--space-6);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-6);
+  height: var(--space-6);
   padding: 0;
+  color: var(--auth-text-muted);
   background: none;
   border: none;
-  position: absolute;
-  right: 0.5rem;
-  bottom: 0;
-}
-.form__error-msg {
-  color: var(--color-error);
-  margin: 0;
-  font-size: 0.875rem;
-  height: 1rem; /* Reserve space for error messages to prevent layout shift */
-}
-.form__submit-button {
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  [data-submitting] & {
-    opacity: 0.8;
-    cursor: initial;
-  }	
+  transition: var(--transition-colors);
+}
+
+.form-field__toggle:hover {
+  color: var(--auth-text);
+}
+
+.form-field__toggle:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: 2px;
+}
+
+/* ── Messages ───────────────────────────────────────────────── */
+
+/* Row keeps an icon beside the text so the error is not colour-only. */
+.form-field__message {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin: 0;
+  font-size: var(--font-size-tiny);
+  line-height: var(--leading-snug);
+}
+
+.form-field__message-icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  margin-top: 1px;
+}
+
+.form-field__error {
+  color: var(--auth-error-text);
+}
+
+.form-field__hint {
+  color: var(--auth-text-muted);
+}
+
+.form-field__hint:empty,
+.form-field__error:empty {
+  display: none;
+}
+
+/* Form-level alert for failures that cannot be attributed to one field,
+   such as invalid credentials. */
+.form__alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-tiny);
+  line-height: var(--leading-snug);
+  color: var(--auth-error-text);
+  background-color: var(--color-surface);
+  border: 1px solid var(--auth-error-border);
+  border-radius: var(--radius-sm);
+}
+
+.form__alert[hidden] {
+  display: none;
+}
+
+.form__alert-icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  margin-top: 1px;
+}
+
+/* ── Remember me ────────────────────────────────────────────── */
+
+.form__remember {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-small);
+  color: var(--auth-text);
+  cursor: pointer;
+}
+
+/* The native checkbox is kept and visually restyled rather than
+   replaced, so keyboard behaviour and form semantics are unchanged. */
+.form__remember-input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--auth-ink);
+  cursor: pointer;
+}
+
+.form__remember-input:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: 2px;
+}
+
+/* ── Submit ─────────────────────────────────────────────────── */
+
+/* Matches the approved design: a compact black button that grows with
+   its label rather than a full-width block. */
+.form__submit {
+  align-self: flex-start;
+  height: var(--button-height-sm);
+  padding: var(--space-2) var(--space-6);
+  font-family: inherit;
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--color-text-inverse);
+  background-color: var(--auth-ink);
+  border: 1px solid var(--auth-ink);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition-all);
+}
+
+.form__submit:hover:not(:disabled) {
+  opacity: 0.88;
+}
+
+.form__submit:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: 2px;
+}
+
+.form__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Account type ───────────────────────────────────────────── */
+
+.form-field--group {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.form-field--group > .form-field__label {
+  display: block;
+  margin-bottom: var(--space-2);
+  padding: 0;
+}
+
+/* Native radios, visually replaced. Keyboard and form semantics are
+   untouched, and the selected state is styled through :checked so the
+   appearance cannot disagree with the real value. */
+.segmented__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.segmented {
+  display: inline-flex;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.segmented__option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 96px;
+  height: var(--button-height-sm);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-size-small);
+  color: var(--auth-text);
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition-colors);
+}
+
+.segmented__option:hover {
+  background-color: var(--color-surface);
+  border-color: var(--color-border-strong, var(--color-border));
+}
+
+.segmented__input:checked + .segmented__option {
+  color: var(--color-text-inverse);
+  background-color: var(--auth-ink);
+  border-color: var(--auth-ink);
+}
+
+.segmented__input:focus-visible + .segmented__option {
+  outline: 2px solid var(--color-text);
+  outline-offset: 2px;
+}
+
+/* ── Cross-links ────────────────────────────────────────────── */
+
+/* In the approved design the submit button and the cross-link sit on one
+   line, so they share a row rather than stacking. */
+.form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.form__link {
+  font-size: var(--font-size-small);
+  color: var(--auth-text);
+}
+
+.form__link--muted {
+  color: var(--auth-text);
+}
+
+.form__link-action {
+  color: var(--auth-text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.form__link-action:hover {
+  color: var(--auth-accent-text);
+}
+
+.form__link:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: 2px;
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+
+/* Below 1024px the two halves stop fitting side by side comfortably,
+   so the hero stacks above the form and keeps a shorter crop. */
+@media (max-width: 1023px) {
+  .auth-page__main {
+    padding: var(--space-6) var(--space-5);
+  }
+
+  .auth-split {
+    grid-template-columns: 1fr;
+    gap: var(--space-7);
+    max-width: 560px;
+  }
+
+  .auth-hero__image {
+    aspect-ratio: 16 / 9;
+  }
+
+  .auth-hero__brand {
+    padding: var(--space-6) var(--space-5);
+  }
+
+  .auth-hero__copy {
+    font-size: var(--font-size-small);
+  }
+
+  .auth-form {
+    max-width: 100%;
+  }
+
+  .auth-form__logo {
+    margin-bottom: var(--space-6);
+  }
+}
+
+@media (max-width: 767px) {
+  .auth-page__main {
+    padding: var(--space-5) var(--space-4);
+  }
+
+  /* The photo is decorative on a phone, so it is dropped entirely and
+     the brand block carries the identity instead. */
+  .auth-hero__image {
+    display: none;
+  }
+
+  .auth-hero {
+    background-color: var(--auth-ink);
+  }
+
+  .auth-hero__brand {
+    gap: var(--space-2);
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .auth-hero__logo {
+    width: 32px;
+    height: 32px;
+  }
+
+  .auth-hero__title {
+    font-size: var(--font-size-h5);
+  }
+
+  .auth-hero__copy {
+    font-size: var(--font-size-tiny);
+  }
+
+  .auth-form__title {
+    font-size: var(--font-size-h4);
+  }
+
+  .auth-form__logo {
+    width: 128px;
+    height: 32px;
+  }
+
+  /* Full-width controls stay comfortably tappable on a phone. */
+  .form__submit {
+    align-self: stretch;
+    width: 100%;
+    height: var(--button-height-md);
+  }
+
+  .form__actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-4);
+    text-align: center;
+  }
+
+  .segmented {
+    width: 100%;
+  }
+
+  .segmented__option {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .form-field__input {
+    height: var(--input-height-md);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .form-field__input,
+  .form__submit,
+  .form-field__toggle,
+  .form__link-action,
+  .segmented__option {
+    transition: none;
+  }
 }

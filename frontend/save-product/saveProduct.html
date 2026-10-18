@@ -4,10 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Saved Products · EasyDeal</title>
+    <!-- Same favicon asset and relative dot path as the Homepage, so the
+         two pages do not present different site icons. -->
+    <link rel="icon" type="image/svg+xml" href="../assets/images/logos/icon-light.svg" />
     <link rel="stylesheet" href="../shared/global.css" />
     <link rel="stylesheet" href="./saveProduct.css" />
     <link rel="stylesheet" href="../shared/components/footer/footer.css" />
-    <link rel="stylesheet" href="../shared/components/header/header.css" />
+    <link rel="stylesheet" href="../shared/components/navbar/navbar.css" />
   </head>
   <body>
     <div data-component="header"></div>
@@ -60,19 +63,10 @@
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-    <!-- Icon templates (referenced via <use>) -->
+    <!-- Icon templates (referenced via <use>).
+         The favourite heart is deliberately absent: it comes from the shared
+         icon library so this page and the Homepage render the same glyph. -->
     <svg width="0" height="0" style="position: absolute">
-      <symbol
-        id="icon-heart"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-      >
-        <path
-          d="M20.8 4.6c-1.9-1.9-5-1.9-6.9 0L12 5.5l-1.9-.9c-1.9-1.9-5-1.9-6.9 0-1.9 1.9-1.9 5 0 6.9L12 20.8l8.8-8.8c1.9-1.9 1.9-5 0-6.9z"
-        />
-      </symbol>
       <symbol id="icon-pin" viewBox="0 0 24 24" fill="currentColor">
         <path
           d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"
@@ -104,6 +98,11 @@
     <div data-component="footer"></div>
     <script src="../shared/config.js"></script>
     <script src="./saveProduct.js"></script>
-    <script src="../shared/components/components.js" defer></script>
+    <!-- Mounts the shared navbar and footer. Loaded as a module so it is
+         deferred and the mount points are guaranteed to exist; it builds both
+         components from JavaScript, so there is no fragment to fetch. It also
+         resolves the session and renders the real signed-in account dropdown
+         through authService.js, the same source the Homepage uses. -->
+    <script type="module" src="../shared/components/components.js"></script>
   </body>
 </html>

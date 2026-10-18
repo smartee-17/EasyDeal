@@ -1,0 +1,528 @@
+/* ============================================================
+   EASYDEAL — UNIVERSAL SITE HEADER
+
+   Layout follows the supplied design reference:
+   frontend/assets/designs/Navigation bar (Logged in).png
+   Measured from that 1230x52 image:
+     - bar background  #E4E5E7 / #F0F1F3 (light grey)
+     - search field    white, ~438 x 35, vertically centred
+     - account control right-aligned, circular avatar + name + chevron
+   Desktop values below are taken from those measurements; the mobile
+   block relaxes them for touch rather than shrinking the targets.
+   ============================================================ */
+
+/* ── Shell ──────────────────────────────────────────────────── */
+
+.header {
+  position: sticky;
+  top: 0;
+  /* Above the dropdown panel and page content, but below a modal
+     backdrop so a dialog can never appear trapped under the header. */
+  z-index: 300;
+  background: var(--color-nav-bg, #f0f1f3);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.header__inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* ── Logo ───────────────────────────────────────────────────── */
+
+.header__logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  flex-shrink: 0;
+  /* A 32px mark in a 52px bar leaves breathing room either side. */
+  min-height: 32px;
+}
+
+.header__logo-icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.header__logo-icon img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+.header__logo-text {
+  font-family: var(--font-primary);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-text, #111111);
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+}
+
+/* The maroon half of the wordmark, per the design. */
+.header__logo-deal {
+  color: var(--color-primary, #7e4246);
+}
+
+/* ── Search ─────────────────────────────────────────────────── */
+
+/* The design places the field left of centre, roughly a third of the
+   bar wide, with open space between it and the account control. */
+.header__search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 0 1 438px;
+  min-width: 0;
+  margin-left: 12px;
+}
+
+.header__search-icon {
+  position: absolute;
+  left: 14px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-text-secondary, #6b7280);
+  pointer-events: none;
+}
+
+.header__search-icon svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+/* One white field: the leading glyph and the submit button sit inside it,
+   so it reads as a single control rather than an icon plus a box. */
+.header__search-input {
+  width: 100%;
+  height: 35px;
+  padding: 0 40px 0 38px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: #ffffff;
+  font-family: var(--font-primary);
+  font-size: 0.88rem;
+  color: var(--color-text, #111111);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Hide the native clear affordance so the field matches the design's
+   single white rectangle on every browser. */
+.header__search-input::-webkit-search-cancel-button,
+.header__search-input::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.header__search-input::placeholder {
+  color: var(--color-text-secondary, #6b7280);
+}
+
+.header__search-input:focus {
+  border-color: var(--color-primary, #7e4246);
+  box-shadow: 0 0 0 3px rgba(126, 66, 70, 0.12);
+}
+
+.header__search-submit {
+  position: absolute;
+  right: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text-secondary, #6b7280);
+  cursor: pointer;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.header__search-submit svg {
+  display: block;
+  width: 15px;
+  height: 15px;
+}
+
+.header__search-submit:hover {
+  color: var(--color-primary, #7e4246);
+  background: var(--color-surface-hover, rgba(126, 66, 70, 0.06));
+}
+
+.header__search-submit:focus-visible {
+  outline: 2px solid var(--color-primary, #7e4246);
+  outline-offset: 1px;
+}
+
+/* ── Signed-out actions ─────────────────────────────────────── */
+
+.header__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+  /* Shrinkable: a long username must truncate rather than push the bar
+     past the viewport. min-width:0 is what lets the ellipsis engage
+     inside the shrinkable child. */
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+/* The signed-out buttons are short and should never squash, even while
+   the actions group is shrinking. */
+.header__login,
+.header__signup {
+  flex-shrink: 0;
+}
+
+.header__login,
+.header__signup {
+  padding: 7px 16px;
+  border-radius: 6px;
+  font-family: var(--font-primary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.header__login {
+  border: 1.5px solid var(--color-primary, #7e4246);
+  background: #ffffff;
+  color: var(--color-text, #111111);
+}
+
+.header__login:hover {
+  border-color: var(--color-text, #111111);
+}
+
+.header__signup {
+  border: 1.5px solid var(--color-primary, #7e4246);
+  background: var(--color-primary, #7e4246);
+  color: #ffffff;
+}
+
+.header__signup:hover {
+  background: var(--color-primary-hover, #6a3739);
+  border-color: var(--color-primary-hover, #6a3739);
+}
+
+/* ── Account trigger ────────────────────────────────────────── */
+
+.header__account[hidden] {
+  display: none;
+}
+
+.header__account {
+  position: relative;
+  min-width: 0;
+  /* Shrinkable, so an over-long name truncates instead of widening the bar. */
+  flex: 0 1 auto;
+}
+
+.header__account-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  /* Comfortable on touch without changing the desktop silhouette. */
+  min-height: 36px;
+  /* Never wider than the space the flex parent can actually give it. */
+  max-width: 100%;
+  padding: 3px 8px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  font-family: var(--font-primary);
+  font-size: 0.9rem;
+  color: var(--color-text, #111111);
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.header__account-trigger:hover {
+  background: var(--color-surface-hover, rgba(126, 66, 70, 0.06));
+}
+
+.header__account-trigger[aria-expanded="true"] {
+  background: var(--color-surface-hover, rgba(126, 66, 70, 0.06));
+  border-color: var(--color-border);
+}
+
+/* Circular outlined avatar, drawn in the brand maroon per the design. */
+.header__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border: 1.5px solid var(--color-primary, #7e4246);
+  border-radius: 50%;
+  color: var(--color-primary, #7e4246);
+}
+
+.header__avatar svg {
+  display: block;
+  width: 15px;
+  height: 15px;
+}
+
+.header__account-name {
+  font-weight: 500;
+  /* min-width:0 is what lets the ellipsis engage: without it a flex item
+     refuses to shrink below its text width. */
+  min-width: 0;
+  /* The name is user-supplied, so it is clamped rather than allowed to
+     stretch the bar past the viewport. */
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.header__account-chevron {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--color-text-secondary, #6b7280);
+  transition: transform 0.2s ease;
+}
+
+.header__account-chevron svg {
+  display: block;
+  width: 14px;
+  height: 14px;
+}
+
+.header__account-trigger[aria-expanded="true"] .header__account-chevron {
+  transform: rotate(180deg);
+}
+
+/* ── Dropdown panel ─────────────────────────────────────────── */
+
+.header__menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 310;
+  min-width: 232px;
+  max-width: calc(100vw - 32px);
+  padding: 6px;
+  background: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -4px rgba(0, 0, 0, 0.1);
+}
+
+.header__menu[hidden] {
+  display: none;
+}
+
+/* Subtle horizontal rule between groups, per the brief. */
+.header__menu-group + .header__menu-group {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--color-border);
+}
+
+.header__menu-label {
+  padding: 6px 10px 4px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted, rgba(0, 0, 0, 0.55));
+}
+
+.header__menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 40px;
+  padding: 9px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  font-family: var(--font-primary);
+  font-size: 0.875rem;
+  color: var(--color-text, #111111);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.header__menu-item:hover,
+.header__menu-item:focus-visible {
+  background: var(--color-surface-hover, rgba(126, 66, 70, 0.06));
+}
+
+.header__menu-item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  flex-shrink: 0;
+  color: var(--color-text-secondary, #6b7280);
+}
+
+.header__menu-item-icon svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+.header__menu-item--danger {
+  color: var(--color-danger, #ef4444);
+}
+
+.header__menu-item--danger .header__menu-item-icon {
+  color: var(--color-danger, #ef4444);
+}
+
+/* ── Focus and auth state ───────────────────────────────────── */
+
+.header__login:focus-visible,
+.header__signup:focus-visible,
+.header__account-trigger:focus-visible,
+.header__logo:focus-visible,
+.header__menu-item:focus-visible {
+  outline: 2px solid var(--color-primary, #7e4246);
+  outline-offset: 2px;
+}
+
+/* Menu items are reached with the arrow keys, where :focus-visible does
+   not always paint, so the active item gets the ring too. */
+.header__menu-item[data-active="true"] {
+  background: var(--color-surface-hover, rgba(126, 66, 70, 0.06));
+  box-shadow: inset 0 0 0 1px var(--color-primary, #7e4246);
+}
+
+/* Until the session resolves, nothing is offered, so the header cannot
+   briefly show "Login" and then swap. */
+.header__actions[data-auth-state="loading"] .header__login,
+.header__actions[data-auth-state="loading"] .header__signup,
+.header__actions[data-auth-state="loading"] .header__account {
+  visibility: hidden;
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+
+/* Tablet and below: the search drops to its own full-width row so the
+   logo and account control keep the single compact line the design
+   shows, and touch targets are not squeezed. */
+@media (max-width: 780px) {
+  .header__inner {
+    height: auto;
+    flex-wrap: wrap;
+    padding: 10px 16px;
+    gap: 10px;
+  }
+
+  .header__logo {
+    min-height: 32px;
+  }
+
+  .header__search {
+    order: 3;
+    flex: 1 0 100%;
+    margin-left: 0;
+  }
+
+  .header__search-input {
+    height: 40px;
+  }
+
+  .header__actions {
+    margin-left: auto;
+  }
+
+  /* Full-width touch targets for the signed-out controls. */
+  .header__login,
+  .header__signup {
+    padding: 9px 16px;
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .header__account-trigger {
+    min-height: 44px;
+  }
+
+  /* The panel stays right-aligned under the trigger. Its max-width is
+     already viewport-relative, so it cannot spill off-screen even on a
+     narrow phone, and keeping it in normal flow avoids the stacking
+     surprises of a fixed overlay. */
+  .header__menu {
+    min-width: 208px;
+  }
+}
+
+/* Narrow phones and small tablets. The tighter name clamp starts here
+   rather than at 380px because a long username overflows the bar well
+   before the viewport reaches phone widths. */
+@media (max-width: 480px) {
+  .header__inner {
+    padding: 10px 12px;
+  }
+
+  .header__logo-text {
+    font-size: 1.05rem;
+  }
+
+  .header__login,
+  .header__signup {
+    padding: 9px 12px;
+    font-size: 0.8rem;
+  }
+
+  .header__account-name {
+    max-width: 90px;
+  }
+}
+
+/* Auth state wins over layout.
+   The rules above set `display` on the signed-out controls, and an author
+   stylesheet beats the browser's default `[hidden] { display: none }`
+   regardless of specificity. Without this, a signed-in visitor kept seeing
+   Login and Sign up on narrow screens, next to the account dropdown.
+   `[hidden]` raises specificity, so one rule covers every breakpoint. */
+.header__login[hidden],
+.header__signup[hidden] {
+  display: none;
+}
+
+/* ── Screen-reader-only text ────────────────────────────────── */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

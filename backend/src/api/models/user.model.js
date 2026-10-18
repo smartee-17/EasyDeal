@@ -1,11 +1,19 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
+import { PASSWORD_MIN_LENGTH } from '../library/validation.js';
 
 const userSchema = new mongoose.Schema(
   {
     // Auth
     email: { type: String, required: true, unique: true, trim: true },
-    password: { type: String, required: true, select: false },
+    password: {
+      type: String,
+      required: true,
+      select: false,
+      // Defence in depth: the auth controller validates first, so this only
+      // catches a write that reaches the model by some other route.
+      minlength: PASSWORD_MIN_LENGTH,
+    },
     phone: { type: String, required: true },
 
     // Profile
@@ -76,7 +84,10 @@ userSchema.methods.toPublic = function () {
   delete obj.emailVerificationToken;
   delete obj.emailVerificationTokenExpire;
   delete obj.resetPasswordToken;
-  delete obj.resetPasswordExpire;
+  // Schema field is `resetPasswordExpires`. This previously deleted
+  // `resetPasswordExpire`, so the real expiry timestamp leaked into every
+  // login, registration and /api/user/me response.
+  delete obj.resetPasswordExpires;
 
   return obj;
 };

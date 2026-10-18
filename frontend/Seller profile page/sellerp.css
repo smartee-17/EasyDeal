@@ -12,13 +12,15 @@ body {
   background-color: #f8fafc;
   color: #0f172a;
   line-height: 1.5;
-  padding-bottom: 3rem;
 }
 
+/* Bottom padding separates the last card from the shared footer. It lives
+   here rather than on body, because the footer is a sibling of this
+   container: padding on body would open space below the footer instead. */
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 1rem 3rem;
 }
 
 .profile-header {

@@ -34,11 +34,7 @@ async function loadDashboard() {
   if (!authed) return;
 
   try {
-    const response = await getDashboardStats();
-
-    // Temporary development logging — remove once verified in production
-    console.log('[Dashboard] Overview response:', response);
-    console.log('[Dashboard] Overview data:', response.data);
+const response = await getDashboardStats();
 
     if (!response.success) {
       throw new Error(response.message || 'Failed to fetch dashboard stats');

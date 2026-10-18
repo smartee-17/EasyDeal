@@ -1,39 +1,43 @@
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EasyDeal — Buy & Sell Anything Instantly</title>
+
+  <!-- Universal favicon, matching the Admin and Auth pages. -->
+  <link rel="icon" type="image/svg+xml" href="../assets/images/logos/icon-light.svg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
       rel="stylesheet"
     />
+    <!-- Shared toast styles. Reuses the existing notification system
+         (shared/components/toast) rather than adding a Homepage-specific
+         one; the tokens it reads are declared in homepage.css. -->
+    <link rel="stylesheet" href="../shared/components/toast/toast.css" />
+    <!-- The navbar and footer are JavaScript components in
+         shared/components/, mounted by components.js into the empty
+         mount points below. They bring their own styles. -->
+    <link rel="stylesheet" href="../shared/components/navbar/navbar.css" />
+    <link rel="stylesheet" href="../shared/components/footer/footer.css" />
     <link rel="stylesheet" href="homepage.css" />
   </head>
   <body>
-    <header>
-      <div class="homepage-header-logo">
-        <img
-          src="Assets/icons/Easy deal icon black.png"
-          alt="EasyDeal logo black"
-        />
-        <h2>Easy</h2>
-        <span>Deal</span>
-      </div>
-      <div class="homepage-search-container">
-        <img src="Assets/icons/search-icon.svg" alt="Search icon" />
-        <input
-          class="homepage-header-search"
-          type="search"
-          placeholder=" Search products"
-        />
-      </div>
-      <div class="homepage-header-btn">
-        <button class="header-login">Login</button>
-        <button class="header-signup">Sign up</button>
-      </div>
-    </header>
+    <!-- Navbar.
+         The Homepage used to carry its own hand-written header: its own logo,
+         its own search field and its own Login / Sign up / Log out buttons.
+         That meant two different navbars shipped on the public site and the
+         two drifted apart. It now mounts the same shared component the Saved
+         Products and Product View pages use, so there is one navbar, one
+         search implementation and one account dropdown.
+
+         The shared header also resolves the session and owns logout. The
+         Homepage still resolves the session itself, because it needs to know
+         whether the visitor may save a product (the hearts are gated on it);
+         see initSession() in homepage.js. -->
+    <div data-component="header"></div>
 
     <section class="homepage-hero">
       <div class="homepage-hero-txt">
@@ -43,8 +47,10 @@
           buyers and sellers through WhatsApp.
         </p>
         <div class="hero-btns">
-          <button class="browse">Browse Products</button>
-          <button class="Sellitem">+ Sell an item</button>
+          <!-- Browsing stays public: the backend serves the product list
+               to guests. Selling is gated and handled in homepage.js. -->
+          <button class="browse" type="button">Browse Products</button>
+          <button class="Sellitem" type="button">+ Sell an item</button>
         </div>
       </div>
       <div class="homepage-hero-imgs">
@@ -56,16 +62,20 @@
         <img class="h6" src="Assets/images/3.png" alt="" />
       </div>
     </section>
-    <section class="homepage-categories">
+    <!-- The category rail is a real destination: the shared footer's
+         "Categories" link points at it. -->
+    <section class="homepage-categories" id="categories">
       <h2>Explore by Categories</h2>
       <div class="categories-scroll">
         <div class="categories-list"></div>
       </div>
-      <button class="slide-arrow-btn slide-arrow-btn--left" id="slideLeftBtn">
-        <img src="Assets/icons/arrow-right.svg" alt="" />
+      <button class="slide-arrow-btn slide-arrow-btn--left" id="slideLeftBtn"
+        type="button" aria-label="Scroll categories left">
+        <span data-icon="chevron-left" aria-hidden="true"></span>
       </button>
-      <button class="slide-arrow-btn slide-arrow-btn--right" id="slideRightBtn">
-        <img src="Assets/icons/arrow-right.svg" alt="" />
+      <button class="slide-arrow-btn slide-arrow-btn--right" id="slideRightBtn"
+        type="button" aria-label="Scroll categories right">
+        <span data-icon="chevron-right" aria-hidden="true"></span>
       </button>
     </section>
     <section class="cards">
@@ -88,72 +98,20 @@
       </div>
     </section>
 
-    <footer class="homepage-footer">
-      <div class="homepage-footer-content">
-        <div class="brands">
-          <div class="footer-logo">
-            <img
-              src="Assets/icons/Easy deal icon white.png"
-              alt="Easy Deal logo white"
-            />
-            <h3 class="logo-name">EasyDeal</h3>
-          </div>
-          <p class="brands-txt">
-            Buy and sell products easily. Connect directly with sellers through
-            WhatsApp.
-          </p>
-          <div class="footer-brand-logos">
-            <a href="#"
-              ><img src="Assets/icons/instagram-white.svg" alt=""
-            /></a>
-            <a href="#"
-              ><img src="Assets/icons/x-twitter-white.svg" alt=""
-            /></a>
-            <a href="#"><img src="Assets/icons/linkedin-white.svg" alt="" /></a>
-            <a href="#"><img src="Assets//icons/github-white.svg" alt="" /></a>
-          </div>
-        </div>
-        <div class="legalvs">
-          <div class="footer-content-nav">
-            <div class="marketplace-content">
-              <h4 class="mariketplace-content-title content-title">
-                Marketplace
-              </h4>
-              <div class="footer-links">
-                <a href="">Browse Products </a>
-                <a href="">Categories </a>
-                <a href="">Saved Items </a>
-                <a href="">Sell a Product</a>
-              </div>
-            </div>
-            <div class="company-content">
-              <h4 class="company-content-title content-title">Company</h4>
-              <div class="footer-links">
-                <a href="">About </a>
-                <a href="">Contact</a>
-                <a href="">Partners</a>
-              </div>
-            </div>
-            <div class="support-content">
-              <h4 class="Support-content-title content-title">Support</h4>
-              <div class="footer-links">
-                <a href="">Help Center </a>
-                <a href="">Contact Us</a>
-                <a href="">FAQs</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="footer-right">
-        <p class="copyright-txt">© 2026 EasyDeal. All rights reserved.</p>
-        <div class="legal">
-          <a href="#">Privacy policy</a>
-          <a href="#">Terms of service</a>
-          <a href="#">Cookies settings</a>
-        </div>
-      </div>
-    </footer>
-    <script src="homepage.js"></script>
+    <!-- Footer.
+         The Homepage used to carry its own hand-written copy, which meant
+         two different footers shipped on the public site. It now mounts
+         the same shared component every other page uses, so there is one
+         footer and one set of link targets to maintain. -->
+    <div data-component="footer"></div>
+    <!-- Shared API base URL and fetch defaults. Loaded before the module
+         below because homepage.js reads window.EasyDealAPI. -->
+    <script src="../shared/config.js"></script>
+    <script type="module" src="homepage.js"></script>
+    <!-- Mounts the shared navbar and footer into the mount points above.
+         Loaded as a module so it is deferred and the mount points are
+         guaranteed to exist; components.js builds both components from
+         JavaScript, so there is no fragment to fetch. -->
+    <script type="module" src="../shared/components/components.js"></script>
   </body>
 </html>

@@ -3,10 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>EasyDeal - Seller Profile</title>
-    <link rel="stylesheet" href="sellerp.css" />
+<title>EasyDeal - Seller Profile</title>
+  <!-- Universal favicon, matching the other frontend pages. Without it the
+       browser falls back to requesting /favicon.ico and logs a 404. -->
+  <link rel="icon" type="image/svg+xml" href="../assets/images/logos/icon-light.svg" />
+  <link rel="stylesheet" href="sellerp.css" />
+  <!-- The navbar and footer are the shared components, so they bring their
+       own styles. This page mounts the same ones as the Homepage, Saved
+       Products and Product View pages rather than a copy of either. -->
+  <link rel="stylesheet" href="../shared/components/navbar/navbar.css" />
+  <link rel="stylesheet" href="../shared/components/footer/footer.css" />
   </head>
   <body>
+    <!-- Universal navbar. Mounted outside .container so it spans the full
+         viewport width; the seller-specific header below is the profile
+         card and is not a site navbar. -->
+    <div data-component="header"></div>
+
     <div class="container">
       <header class="profile-header">
         <div class="cover-image"></div>
@@ -93,6 +106,16 @@
       </div>
     </div>
 
+    <!-- Footer. Mounted outside .container so it spans the full viewport
+         width, like on every other public page. -->
+    <div data-component="footer"></div>
+
+    <!-- Shared API base URL and fetch defaults, read by sellerp.js as
+         window.EasyDealAPI. Loaded first because sellerp.js is a classic
+         script and cannot import an ES module. -->
+    <script src="../shared/config.js"></script>
     <script src="sellerp.js"></script>
+    <!-- Mounts the shared navbar and footer into the mount points above. Loaded as a module so it is deferred and the mount points are guaranteed to exist; both components are built from JavaScript, so there is no fragment to fetch. -->
+    <script type="module" src="../shared/components/components.js"></script>
   </body>
 </html>

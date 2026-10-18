@@ -9,7 +9,16 @@ const targetSellerId = new URLSearchParams(window.location.search).get("id");
 
 async function fetchData() {
   try {
-    let res = await fetch("https://easydeal.onrender.com/api/products");
+    /* The base URL and fetch defaults come from the shared configuration
+       rather than a hardcoded host, so this page reaches the local API in
+       development and the deployed API in production. This file is a
+       classic script and cannot import an ES module, so it reads the same
+       helpers that shared/apiConfig.js exposes to modules, published by
+       shared/config.js as window.EasyDealAPI. */
+    let res = await fetch(
+      window.EasyDealAPI.buildUrl("/products"),
+      window.EasyDealAPI.defaultFetchOptions
+    );
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
 
     let result = await res.json();

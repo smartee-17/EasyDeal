@@ -1,51 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/images/favicons/favicon-32.png">
-  <link rel="stylesheet" href="../../shared/global.css">
-  <link rel="stylesheet" href="../Shared/style.css">
-  <script defer src="./login.js" type="module"></script>
-  <script defer src="../Shared/utils.js" type="module"></script>
-  <title>Log In</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Log In — EasyDeal</title>
+
+  <!-- Universal favicon, matching the Homepage. The asset is an SVG, so
+       the declared type is corrected to match rather than image/png. -->
+  <link rel="icon" type="image/svg+xml" href="../../assets/images/logos/icon-light.svg" />
+
+  <!-- Load order is deliberate:
+       1. Admin theme supplies spacing / typography / radius / shadow tokens
+          (4px-based scale, --space-*, --radius-*, --font-size-*).
+       2. The universal colour system then defines the colour tokens these
+          styles consume, so the shared palette wins the cascade and is
+          never duplicated in Auth CSS. -->
+  <link rel="stylesheet" href="../../shared/theme.css" />
+  <link rel="stylesheet" href="../../shared/global.css" />
+
+  <link rel="stylesheet" href="../../shared/components/icons/icons.css" />
+
+  <link rel="stylesheet" href="../Shared/style.css" />
 </head>
-<body class="page">
-  <main class="main">
-    <div class="logo" role="img" aria-label="Easy Deal Logo"></div>
-    <h1 class="title">Log In</h1>
-    <form class="form">
-      <section class="form__field">
-        <label for="email">Email</label>
-        <input type="email"
-               id="email"
-               name="email"
-               placeholder="Email"
-               autocomplete="email"
-               autofocus
-               required
-               class="form__email-input">
-    </section>
-      <section class="form__field">
-        <label for="password">Password</label>
-        <input type="password" 
-               id="password"
-               name="password"
-               placeholder="Password"
-               autocomplete="current-password"
-               required
-               class="form__password-input">
-        <button type="button" class="form__toggle-password" aria-label="Show password as plain text. Warning: this will display your password on the screen.">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
-            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
-            <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
-          </svg>
-        </button>
+<body class="auth-page">
+  <!-- The Auth pages deliberately do NOT mount the universal site header
+       or footer. They are a focused, self-contained split-screen
+       experience, and a site header would duplicate navigation and push
+       the form below the fold on small screens. -->
+
+  <main class="auth-page__main">
+    <div class="auth-split">
+      <!-- Left: the approved split-screen hero. The photo is decorative
+           marketing imagery, so it is marked decorative for screen
+           readers; the brand block carries the actual message. -->
+      <section class="auth-hero" aria-labelledby="heroTitle">
+        <img
+          class="auth-hero__image"
+          src="../../assets/images/image 71.png"
+          alt=""
+          aria-hidden="true"
+          width="550"
+          height="338"
+        />
+
+        <div class="auth-hero__brand">
+          <span class="auth-hero__logo" aria-hidden="true"></span>
+          <h2 class="auth-hero__title" id="heroTitle">
+            Welcome to Easy<span class="auth-hero__title-accent">Deal</span>
+          </h2>
+          <p class="auth-hero__copy">
+            Find great deals, save products for later, and connect directly
+            with sellers through WhatsApp.
+          </p>
+        </div>
       </section>
-      <button type="submit" class="form__submit-button">Login</button>
-      <p class="form__signup-link">Don't have an account? <a href="../Signup/signup.html">Sign Up</a></p>
-      <p class="form__error-msg" aria-live="polite"></p>
-    </form>
+
+      <!-- Right: the form. The ED mark is decorative here: the page
+           heading and the document title already name the product. -->
+      <section class="auth-form">
+        <div class="auth-form__logo" role="img" aria-label="EasyDeal"></div>
+
+        <form class="form" id="loginForm" novalidate>
+          <div class="form-field">
+            <label class="form-field__label" for="emailOrUsername">
+              Email or username
+            </label>
+            <input
+              type="text"
+              id="emailOrUsername"
+              name="emailOrUsername"
+              class="form-field__input"
+              autocomplete="username"
+              required
+            />
+            <p class="form-field__message form-field__error" id="emailOrUsername-error"></p>
+          </div>
+
+          <div class="form-field form-field--password">
+            <div class="form-field__label-row">
+              <label class="form-field__label" for="password">Password</label>
+              <!-- Password recovery UI arrives in a later stage; the link
+                   is present as the design requires. -->
+              <a class="form__link form__link-action" href="../Forgot-Password/forgot-password.html">
+                Forgot password
+              </a>
+            </div>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="form-field__input form-field__input--password"
+              autocomplete="current-password"
+              required
+            />
+            <button
+              type="button"
+              class="form-field__toggle"
+              id="togglePassword"
+              aria-label="Show password"
+              aria-pressed="false"
+            ></button>
+            <p class="form-field__message form-field__error" id="password-error"></p>
+          </div>
+
+          <!-- Remember Me maps directly to the backend's session length:
+               unchecked = 1 day, checked = 30 days. -->
+          <label class="form__remember" for="rememberMe">
+            <input
+              type="checkbox"
+              id="rememberMe"
+              name="rememberMe"
+              class="form__remember-input"
+            />
+            <span>Remember me</span>
+          </label>
+
+          <!-- Form-level feedback for failures that cannot be attributed
+               to a single field, such as invalid credentials. -->
+          <p class="form__alert" id="loginAlert" role="alert" hidden>
+            <span class="form__alert-icon" id="loginAlertIcon" aria-hidden="true"></span>
+            <span id="loginAlertMessage"></span>
+          </p>
+
+          <div class="form__actions">
+            <button type="submit" class="form__submit" id="loginSubmit">Log in</button>
+            <p class="form__link form__link--muted">
+              Don't have an account?
+              <a class="form__link form__link-action" href="../Signup/signup.html">Sign up</a>
+            </p>
+          </div>
+        </form>
+      </section>
+    </div>
   </main>
+
+  <script type="module" src="./login.js"></script>
 </body>
 </html>
