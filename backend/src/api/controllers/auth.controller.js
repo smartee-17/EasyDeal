@@ -2,12 +2,23 @@ import User from '../models/user.model.js';
 import {
   generateAccessToken,
   setAuthCookie,
+  clearAuthCookie,
   generateSecureToken,
   hashToken,
 } from '../library/token.js';
 import { sendResponse } from '../library/utils.js';
 import { sendEmail } from '../library/email/emailService/index.js';
 import EMAIL_TYPES from '../library/email/emailTypes/index.js';
+import { generateUniqueUsername } from '../library/username.js';
+import {
+  ALLOWED_REGISTRATION_ROLES,
+  FORBIDDEN_REGISTRATION_ROLE,
+  isAllowedRegistrationRole,
+  normalizeEmail,
+  normalizeLoginIdentifier,
+  normalizePhone,
+  validatePassword,
+} from '../library/validation.js';
 
 // Used incase of later update
 const sendVerifictionComms = async ({ email, type, payload }) => {
@@ -30,18 +41,27 @@ export const register = async (req, res) => {
       email,
       password,
       phone,
-      username,
       bio,
       whatsappNumber,
       rememberMe,
       role = 'user',
     } = req.body;
 
-    if (!name || !email || !password || !phone) {
+    // `username` is intentionally absent: the signup design no longer
+    // collects one, so any client-supplied value is ignored and the
+    // backend generates a unique username instead.
+
+    // Normalise before validating, so the duplicate check and the value
+    // we persist are the same string. Previously the check ran on raw
+    // input while the write lowercased, letting "Alice@x.com" slip past.
+    const normalizedEmail = normalizeEmail(email);
+    const normalizedPhone = normalizePhone(phone);
+
+    if (!name || !normalizedEmail || !password || !normalizedPhone) {
       return sendResponse(res, 400, false, 'Please fill all required fields');
     }
 
-    if (role === 'admin') {
+    if (role === FORBIDDEN_REGISTRATION_ROLE) {
       return sendResponse(
         res,
         403,
@@ -53,30 +73,45 @@ export const register = async (req, res) => {
       // });
     }
 
-    const validRoles = ['user', 'seller'];
-    if (!validRoles.includes(role)) {
+    if (!isAllowedRegistrationRole(role)) {
       return sendResponse(
         res,
         400,
         false,
-        `Invalid role. Must be one of: ${validRoles.join(', ')}`,
+        `Invalid role. Must be one of: ${ALLOWED_REGISTRATION_ROLES.join(', ')}`,
       );
       // return res.status(400).json({
       //   message: `Invalid role. Must be one of: ${validRoles.join(', ')}`,
       // });
     }
 
+    const passwordError = validatePassword(password);
+    if (passwordError) {
+      return sendResponse(res, 400, false, passwordError);
+    }
+
+    // Username is server-generated, so only email and phone can collide
+    // with an existing account.
     const existingUser = await User.findOne({
-      $or: [{ email }, { username }, { phone }],
+      $or: [{ email: normalizedEmail }, { phone: normalizedPhone }],
     });
+
     if (existingUser) {
       const field =
-        existingUser.email === email
+        normalizeEmail(existingUser.email) === normalizedEmail
           ? 'Email'
-          : existingUser.username === username
-            ? 'Username'
-            : 'Phone';
-      return sendResponse(res, 400, false, `${field} already in use`);
+          : normalizePhone(existingUser.phone) === normalizedPhone
+            ? 'Phone'
+            : null;
+
+      return sendResponse(
+        res,
+        400,
+        false,
+        field
+          ? `${field} already in use`
+          : 'An account with these details already exists',
+      );
       // return res.status(400).json({ message: `${field} already in use` });
     }
 
@@ -84,11 +119,13 @@ export const register = async (req, res) => {
     const { raw: rawEmailToken, hashed: hashedEmailToken } =
       generateSecureToken();
 
+    const username = await generateUniqueUsername(name);
+
     const user = await User.create({
       name,
-      email: email.toLowerCase(),
+      email: normalizedEmail,
       password,
-      phone,
+      phone: normalizedPhone,
       username,
       bio,
       whatsappNumber,
@@ -109,13 +146,27 @@ export const register = async (req, res) => {
     const token = generateAccessToken(user, rememberMe === true);
     setAuthCookie(res, token, rememberMe === true);
 
+    // Mirrors the login response: the JWT is delivered only via the
+    // HttpOnly cookie, never in the body for a browser to store.
     return sendResponse(res, 201, true, 'Account created', {
-      token,
       user: user.toPublic(),
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    // Two concurrent registrations can both pass the check above; the
+    // unique index is the real arbiter. Report it as the same controlled
+    // validation failure rather than leaking a 500 and an index name.
+    if (error?.code === 11000) {
+      return sendResponse(
+        res,
+        400,
+        false,
+        'An account with these details already exists',
+      );
+    }
+
+    console.error('[Auth] register error:', error.message);
+    return sendResponse(res, 500, false, 'Server error');
+    // return res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
 
@@ -124,7 +175,9 @@ export const login = async (req, res) => {
   try {
     const { emailOrUsername, password, rememberMe = false } = req.body;
 
-    if (!emailOrUsername || !password) {
+    const identifier = normalizeLoginIdentifier(emailOrUsername);
+
+    if (!identifier || !password) {
       return sendResponse(
         res,
         400,
@@ -136,10 +189,12 @@ export const login = async (req, res) => {
       //   .json({ message: 'email or username and password are required' });
     }
 
+    // Email is matched case-insensitively; usernames are stored lowercase
+    // and compared as submitted, preserving the existing contract.
     const user = await User.findOne({
       $or: [
-        { email: emailOrUsername.toLowerCase() },
-        { username: emailOrUsername },
+        { email: identifier.toLowerCase() },
+        { username: identifier },
       ],
     }).select('+password');
 
@@ -190,7 +245,7 @@ export const login = async (req, res) => {
 // Logout
 export const logout = async (req, res) => {
   try {
-    res.clearCookie('token');
+    clearAuthCookie(res);
 
     return sendResponse(res, 200, true, 'Logged out successfully', null);
   } catch (error) {
@@ -248,7 +303,7 @@ export const resendVerification = async (req, res) => {
       // return res.status(400).json({ message: 'email is required' });
     }
 
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const user = await User.findOne({ email: normalizeEmail(email) });
 
     if (!user) {
       return sendResponse(
@@ -306,7 +361,7 @@ export const forgotPassword = async (req, res) => {
     }
 
     const user = await User.findOne({
-      email: email.toLowerCase(),
+      email: normalizeEmail(email),
     });
 
     if (!user) {
@@ -352,16 +407,19 @@ export const resetPassword = async (req, res) => {
     const { token } = req.params;
     const { newPassword } = req.body;
 
-    if (!newPassword || newPassword.length < 6) {
+    // Shares the registration policy via PASSWORD_MIN_LENGTH so the two
+    // write paths cannot drift apart.
+    const passwordError = validatePassword(newPassword);
+    if (passwordError) {
       return sendResponse(
         res,
         400,
         false,
-        'New password must be at least 6 characters',
+        `New password: ${passwordError.charAt(0).toLowerCase()}${passwordError.slice(1)}`,
       );
       // return res
       //   .status(400)
-      //   .json({ message: 'New password must be at least 6 characters' });
+      //   .json({ message: 'New password must be at least 8 characters' });
     }
 
     const hashed = hashToken(token);

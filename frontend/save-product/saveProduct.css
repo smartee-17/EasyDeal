@@ -207,37 +207,62 @@
   flex: none;
 }
 
-/* Icon Buttons & Menus */
+/* Icon Buttons & Menus
+   Button metrics, colour tokens and interaction states mirror the Homepage's
+   favourite control so the two render the same shared heart identically. */
 
 .icon-btn {
   border: none;
-  background: rgba(255, 255, 255, 0.95);
-  width: 32px;
-  height: 32px;
+  background: rgba(255, 255, 255, 0.9);
+  width: 28px;
+  height: 28px;
+  padding: 0;
   border-radius: 50%;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: var(--color-text);
+  color: var(--color-primary, var(--color-text));
   flex-shrink: 0;
   transition:
-    transform 0.1s ease,
-    background-color 0.15s ease;
+    transform 0.15s var(--ease-out, ease),
+    color 0.15s var(--ease-out, ease),
+    background-color 0.15s var(--ease-out, ease);
 }
 
-.icon-btn:hover {
-  transform: scale(1.05);
+.icon-btn:hover:not(:disabled) {
+  background: var(--color-white, #ffffff);
+  transform: scale(1.08);
 }
 
-.icon-btn svg {
+.icon-btn .icon {
+  display: block;
+}
+
+/* The overflow menu still uses the inline sprite rather than the shared icon
+   library. Sized by its own class so it does not fight the width/height the
+   shared heart renders with. */
+.menu-btn > svg {
   width: 15px;
   height: 15px;
+  display: block;
 }
 
-.icon-btn.is-saved svg {
-  fill: var(--color-error);
-  color: var(--color-error);
+/* Saved state. The glyph is swapped to the solid heart in markup, so this rule
+   only supplies the colour and scale. */
+.icon-btn.is-saved {
+  color: var(--color-danger, var(--color-error, #ef4444));
+  transform: scale(1.08);
+}
+
+.icon-btn:disabled {
+  opacity: 0.55;
+  cursor: progress;
+}
+
+.icon-btn:focus-visible {
+  outline: 2px solid var(--color-primary, var(--color-accent));
+  outline-offset: 2px;
 }
 
 .menu-wrap {
@@ -575,8 +600,8 @@
   }
 }
 
-/* Focus accessibility */
-.icon-btn:focus-visible,
+/* Focus accessibility. `.icon-btn` is handled alongside the other icon buttons
+   above so the heart and the overflow menu share one ring style. */
 .whatsapp-btn:focus-visible,
 .search-input:focus-visible,
 .sort-select:focus-visible,

@@ -5,17 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Product Detail</title>
 
+    <!-- Same favicon asset and relative dot path as the Homepage. This
+         page mounts the shared header and footer, so it should present the
+         same site icon as every other page that does. -->
+    <link rel="icon" type="image/svg+xml" href="../assets/images/logos/icon-light.svg" />
+
     <link rel="stylesheet" href="../shared/global.css" />
     <link rel="stylesheet" href="./details.css" />
 
     <link rel="stylesheet" href="../shared/components/footer/footer.css" />
-    <link rel="stylesheet" href="../shared/components/header/header.css" />
+    <link rel="stylesheet" href="../shared/components/navbar/navbar.css" />
 
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
-  </head>
+    <!-- Resolves the theme before first paint so a reload does not flash the
+       default. Same contract as shared/services/theme.js: the stored choice
+       wins, the OS preference is only the fallback. -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('easydeal-theme');
+        var dark = (stored === 'dark' || stored === 'light')
+          ? stored === 'dark'
+          : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+      } catch (e) {}
+    })();
+  </script></head>
 
   <body>
     <div class="page-loader" id="loader">
@@ -176,6 +194,9 @@
     <div data-component="footer"></div>
 
     <script type="module" src="./details.js"></script>
-    <script src="../shared/components/components.js" defer></script>
+    <!-- Mounts the shared navbar and footer. Loaded as a module so it is
+         deferred and the mount points are guaranteed to exist; it builds both
+         components from JavaScript, so there is no fragment to fetch. -->
+    <script type="module" src="../shared/components/components.js"></script>
   </body>
 </html>

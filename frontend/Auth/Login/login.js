@@ -1,41 +1,123 @@
-import { loginUser } from "../Services/authService.js";
+/* ============================================================
+   EASYDEAL — LOGIN PAGE
+   Purpose: Wire the login form to the centralized auth service.
 
-/* Login form submission */
-const loginForm = document.querySelector('.form');
-loginForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
+   All network access goes through ../Services/authService.js. This
+   file never calls fetch(), never builds a URL and never touches
+   browser storage.
 
-  // If the form is already submitting, do nothing
-	if (loginForm.hasAttribute('data-submitting')) return;
+   Scope note: this is the functional foundation. The Figma
+   split-panel visual design lands in the later visual stage.
+   ============================================================ */
 
-  loginForm.setAttribute('data-submitting', 'true');
+import { login, getCurrentUser } from '../Services/authService.js';
+import {
+  initTheme,
+  mountThemeToggle,
+  initPasswordToggle,
+  showFieldError,
+  clearFieldError,
+  setSubmitting,
+} from '../Shared/utils.js';
+import { redirectAfterAuth } from '../Shared/redirect.js';
+import { iconAlertTriangle } from '../../shared/components/icons/icons.js';
 
-  // Clear any previous error messages
-  document.querySelector('.form__error-msg').textContent = '';
+const form = document.getElementById('loginForm');
+const identifierInput = document.getElementById('emailOrUsername');
+const passwordInput = document.getElementById('password');
+const rememberMeInput = document.getElementById('rememberMe');
+const toggleButton = document.getElementById('togglePassword');
+const submitButton = document.getElementById('loginSubmit');
+const alertBox = document.getElementById('loginAlert');
+const alertMessage = document.getElementById('loginAlertMessage');
+const alertIcon = document.getElementById('loginAlertIcon');
 
-  const formData = new FormData(loginForm);
-  const credentials = Object.fromEntries(formData);
+initTheme();
+mountThemeToggle(document.querySelector('[data-theme-toggle]'));
+initPasswordToggle({ toggleButton, passwordInput });
 
-  try {
-    const data = await loginUser(credentials);
-    
-    // Success: Store the JWT and redirect
-    // TODO: Consider using HttpOnly cookies for better security instead of localStorage, which is vulnerable to XSS attacks. If using cookies, the backend should set the cookie with the token and the frontend can just redirect without handling the token directly.
-    // TODO: Store user role and other necessary info in a secure way (e.g., HttpOnly cookies, or if using localStorage, ensure it's encrypted and has proper expiration handling).
-    localStorage.setItem('token', data.token);
+/* ── Feedback ───────────────────────────────────────────────── */
 
-	  loginForm.removeAttribute('data-submitting');
+function showAlert(message) {
+  alertMessage.textContent = message;
+  alertIcon.innerHTML = iconAlertTriangle({ size: 16 });
+  alertBox.hidden = false;
+}
 
-    if (data.user.role === 'admin') {
-      window.location.href = '../../Admin/admin.html';
-    } else {
-      window.location.href = '../../Homepage/homepage.html';
-    }
-  } catch (err) {
-    // UI Error Handling
-    document.querySelector('.form__error-msg').textContent = err.message;
+function hideAlert() {
+  alertBox.hidden = true;
+  alertMessage.textContent = '';
+}
+
+function clearErrors() {
+  clearFieldError(identifierInput);
+  clearFieldError(passwordInput);
+  hideAlert();
+}
+
+/* ── Validation ─────────────────────────────────────────────── */
+
+function validate() {
+  let firstInvalid = null;
+
+  if (!identifierInput.value.trim()) {
+    showFieldError(identifierInput, 'Email or username is required');
+    firstInvalid = firstInvalid ?? identifierInput;
   }
+
+  if (!passwordInput.value) {
+    showFieldError(passwordInput, 'Password is required');
+    firstInvalid = firstInvalid ?? passwordInput;
+  }
+
+  return firstInvalid;
+}
+
+/* ── Submit ─────────────────────────────────────────────────── */
+
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  clearErrors();
+
+  const firstInvalid = validate();
+  if (firstInvalid) {
+    firstInvalid.focus();
+    return;
+  }
+
+  const restore = setSubmitting(submitButton, 'Signing in…', 'Log in');
+
+  const result = await login({
+    emailOrUsername: identifierInput.value.trim(),
+    password: passwordInput.value,
+    // The backend issues the session cookie: unchecked is 1 day, checked
+    // is 30 days. Nothing is persisted in the browser either way.
+    rememberMe: rememberMeInput.checked,
+  });
+
+  if (!result.success) {
+    // The backend answers a bad email or password identically so it
+    // cannot be attributed to one field: shown at form level, matching
+    // the approved error state.
+    showAlert(result.message);
+    restore();
+    passwordInput.focus();
+    return;
+  }
+
+  // Left disabled on purpose: the page is navigating away.
+  redirectAfterAuth(result.user?.role);
 });
 
+/* ── Already signed in ──────────────────────────────────────── */
 
+// An authenticated visitor has no business on this page. /user/me reads the
+// HttpOnly cookie, so the decision comes from the backend rather than from
+// anything the browser is holding.
+(async () => {
+  const { user } = await getCurrentUser();
 
+  if (user) {
+    redirectAfterAuth(user.role);
+  }
+})();

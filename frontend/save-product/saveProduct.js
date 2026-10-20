@@ -1,13 +1,40 @@
 /* ==========================================================================
    Saved Products page logic (Using Global EasyDealAPI Config)
+
+   Saved state is owned by the server. This page reads it through the shared
+   savedService so the Homepage and this page speak to the backend the same
+   way, and it reacts to savedSync so a change made on the other page (or in
+   another tab) is picked up by re-reading GET /api/saved.
    ========================================================================== */
 
 const CONFIG = {
-  SAVED_ENDPOINT: '/saved',
   PRODUCTS_ENDPOINT: '/products',
   RECOMMENDED_COUNT: 4,
   CURRENCY_PREFIX: '$',
 };
+
+/* This file is a classic script (saveProduct.html loads it with a plain
+   <script src>), so it cannot use static import statements. The shared
+   modules are ES modules, and they are loaded once here through dynamic
+   import(). Every entry point awaits `modulesReady` before touching them, so
+   a click that arrives before the modules land waits rather than throwing. */
+let savedService = null;
+let savedSync = null;
+let icons = null;
+let SESSION_ENDED_EVENT = 'easydeal:session-ended';
+
+const modulesReady = (async () => {
+  const [savedMod, syncMod, iconMod, sessionMod] = await Promise.all([
+    import('/frontend/shared/services/savedService.js'),
+    import('/frontend/shared/services/savedSync.js'),
+    import('/frontend/shared/components/icons/icons.js'),
+    import('/frontend/shared/components/navbar/navbar.js'),
+  ]);
+  savedService = savedMod;
+  savedSync = syncMod;
+  icons = iconMod;
+  SESSION_ENDED_EVENT = sessionMod.SESSION_ENDED_EVENT;
+})();
 
 const state = {
   saved: [], // raw saved records from GET /api/saved
@@ -15,6 +42,8 @@ const state = {
   savedIds: new Set(), // productId strings currently saved
   search: '',
   sort: 'recent',
+  /** productIds with a write in flight, so one click cannot issue two writes. */
+  pendingWrites: new Set(),
 };
 
 // ---------------------------------------------------------------------------
@@ -107,7 +136,16 @@ function showToast(message, isError = false) {
 // Rendering
 // ---------------------------------------------------------------------------
 
+/* The heart is rendered from the shared icon library on both this page and the
+   Homepage, so the outline and solid glyphs cannot drift apart. The saved state
+   swaps to the solid glyph rather than relying on CSS to fill an outline icon:
+   `fill="none"` is a presentation attribute on the element, so it wins over an
+   inherited value and the fill cannot be forced from a stylesheet. */
 function heartButtonHtml(productId, isSaved) {
+  if (!icons) return '';
+  const glyph = isSaved
+    ? icons.iconHeartFilled({ size: 21 })
+    : icons.iconHeart({ size: 21 });
   return `
     <button
       class="icon-btn heart-btn ${isSaved ? 'is-saved' : ''}"
@@ -117,7 +155,7 @@ function heartButtonHtml(productId, isSaved) {
       aria-label="${isSaved ? 'Remove from saved' : 'Save product'}"
       title="${isSaved ? 'Remove from saved' : 'Save product'}"
     >
-      <svg><use href="#icon-heart"></use></svg>
+      ${glyph}
     </button>`;
 }
 
@@ -292,16 +330,31 @@ function renderRecommended() {
 // Data loading
 // ---------------------------------------------------------------------------
 
-async function loadSaved() {
+async function loadSaved({ quiet = false } = {}) {
+  await modulesReady;
   try {
-    const res = await api(CONFIG.SAVED_ENDPOINT);
-    state.saved = res.data || [];
+    /* The server is the authority for saved state. This is the single read
+       every other path funnels through, including the sync-driven
+       re-checks, so no page can end up holding a stale set. */
+    const { success, items, message } = await savedService.listSavedItems();
+
+    if (!success) {
+      throw new Error(message || 'Request failed');
+    }
+
+    state.saved = items;
     state.savedIds = new Set(
       state.saved.filter((r) => r.productId).map((r) => r.productId._id),
     );
     renderSaved();
     renderRecommended();
   } catch (err) {
+    if (quiet) {
+      /* A background re-check must not blow away a list that is already on
+         screen; the next check will pick the change up. */
+      console.warn('[Saved Products] re-check failed:', err.message);
+      return;
+    }
     const container = document.getElementById('savedList');
     if (container) {
       container.innerHTML = `
@@ -314,6 +367,7 @@ async function loadSaved() {
 }
 
 async function loadRecommended() {
+  await modulesReady;
   try {
     const res = await api(CONFIG.PRODUCTS_ENDPOINT);
     const all = res.data || [];
@@ -335,43 +389,89 @@ async function loadRecommended() {
 // Actions
 // ---------------------------------------------------------------------------
 
+/* Both writes go through the shared service, then re-read the server rather
+   than patching local state. A local edit before the request is what allowed
+   this page and the Homepage to disagree about the same product: this page
+   dropped the card immediately and rolled back on failure, while the Homepage
+   left the heart untouched. Following the server removes that divergence, and
+   the duplicate guard below keeps a double click from issuing two writes. */
 async function unsaveProduct(productId) {
-  const previous = state.saved;
-  state.saved = state.saved.filter((r) => r.productId?._id !== productId);
-  state.savedIds.delete(productId);
-  renderSaved();
-  renderRecommended();
+  await modulesReady;
+  if (state.pendingWrites.has(productId)) return;
+  state.pendingWrites.add(productId);
+  setControlBusy(productId, true);
 
   try {
-    await api(`${CONFIG.SAVED_ENDPOINT}/${productId}`, { method: 'DELETE' });
+    await savedService.unsaveProduct(productId);
+    savedSync.notifySavedChanged();
     showToast('Removed from saved products');
   } catch (err) {
-    state.saved = previous;
-    state.savedIds.add(productId);
-    renderSaved();
-    renderRecommended();
     showToast(err.message || 'Could not remove product', true);
+  } finally {
+    state.pendingWrites.delete(productId);
+    setControlBusy(productId, false);
+    await loadSaved({ quiet: true });
   }
 }
 
 async function saveProduct(productId) {
-  state.savedIds.add(productId);
-  renderRecommended();
+  await modulesReady;
+  if (state.pendingWrites.has(productId)) return;
+  state.pendingWrites.add(productId);
+  setControlBusy(productId, true);
 
   try {
-    await api(`${CONFIG.SAVED_ENDPOINT}/${productId}`, { method: 'POST' });
+    await savedService.saveProduct(productId);
+    savedSync.notifySavedChanged();
     showToast('Added to saved products');
-    await loadSaved();
   } catch (err) {
-    state.savedIds.delete(productId);
-    renderRecommended();
     showToast(err.message || 'Could not save product', true);
+  } finally {
+    state.pendingWrites.delete(productId);
+    setControlBusy(productId, false);
+    await loadSaved({ quiet: true });
   }
+}
+
+/** Disable both controls for a product while its write is in flight. */
+function setControlBusy(productId, busy) {
+  document
+    .querySelectorAll(
+      `.heart-btn[data-product-id="${productId}"], .remove-btn[data-product-id="${productId}"]`,
+    )
+    .forEach((el) => {
+      el.disabled = busy;
+    });
 }
 
 // ---------------------------------------------------------------------------
 // Event wiring
 // ---------------------------------------------------------------------------
+
+/* A saved product removed here used to stay shown as saved on a Homepage that
+   was already open, because that page had read the saved set once and never
+   heard about the removal. These subscriptions re-read the server: the signal
+   carries no state of its own, so a dropped or spurious ping costs a request
+   and never a wrong answer. Registered once the modules are in place. */
+let syncSubscribed = false;
+async function subscribeToSavedSync() {
+  await modulesReady;
+  if (syncSubscribed) return;
+  syncSubscribed = true;
+  savedSync.onSavedChanged(() => loadSaved({ quiet: true }));
+  savedSync.onSavedMayBeStale(() => loadSaved({ quiet: true }));
+}
+
+/* Sign-out lives in the shared navbar's account menu and does not reload the
+   page, so the saved list on screen would keep showing another account's
+   items. The shared header announces a confirmed sign-out; drop the state
+   rather than leave a stale list behind. */
+window.addEventListener(SESSION_ENDED_EVENT, () => {
+  state.saved = [];
+  state.savedIds = new Set();
+  renderSaved();
+  renderRecommended();
+});
 
 function closeAllMenus() {
   document
@@ -382,6 +482,7 @@ function closeAllMenus() {
 document.addEventListener('click', (e) => {
   const heartBtn = e.target.closest('.heart-btn');
   if (heartBtn) {
+    if (heartBtn.disabled) return;
     const productId = heartBtn.dataset.productId;
     const isSaved = heartBtn.dataset.saved === 'true';
     isSaved ? unsaveProduct(productId) : saveProduct(productId);
@@ -390,6 +491,7 @@ document.addEventListener('click', (e) => {
 
   const removeBtn = e.target.closest('.remove-btn');
   if (removeBtn) {
+    if (removeBtn.disabled) return;
     unsaveProduct(removeBtn.dataset.productId);
     closeAllMenus();
     return;
@@ -436,5 +538,7 @@ if (viewAllLink) {
 // ---------------------------------------------------------------------------
 
 (async function init() {
+  await modulesReady;
+  await subscribeToSavedSync();
   await Promise.allSettled([loadSaved(), loadRecommended()]);
 })();
