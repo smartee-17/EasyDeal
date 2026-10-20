@@ -10,29 +10,124 @@ import { initFooter } from '../../components/footer/footer.js';
 import { showToast } from '../../components/toast/toast.js';
 import { openModal, closeModal } from '../../components/modal/modal.js';
 import { initAuthGuard } from '../../services/authService.js';
-import { getAllUsers, getSingleUser, blockUser, unblockUser, deleteUser, restoreUser } from '../../services/dashboardService.js';
-import { iconEye, iconLock, iconUnlock, iconTrash2, iconRotateCcw } from '../../components/icons/icons.js';
+import { getAllUsers, getSingleUser, blockUser, unblockUser, deleteUser, restoreUser, searchUsers } from '../../services/dashboardService.js';
+import { iconEye, iconLock, iconUnlock, iconTrash2, iconRotateCcw, iconChevronRight } from '../../components/icons/icons.js';
 
 initTheme();
-initNavbar({ context: 'admin', searchPlaceholder: 'Search users...' });
+
+let searchDebounceTimer = null;
+
+function handleUserSearch(query) {
+  const navbar = document.querySelector('.navbar');
+  if (!navbar) return;
+
+  clearTimeout(searchDebounceTimer);
+  searchDebounceTimer = setTimeout(async () => {
+    if (!query.trim()) {
+      closeSearchResults(navbar);
+      return;
+    }
+
+    try {
+      const response = await searchUsers(query);
+      const users = response.data?.users || [];
+      renderSearchResults(navbar, users, handleSearchResultClick);
+    } catch (error) {
+      console.error('[Users] search error:', error);
+      showToast({ type: 'error', title: 'Search failed', message: error.message || 'Could not search users.' });
+      closeSearchResults(navbar);
+    }
+  }, 250);
+}
+
+function handleSearchResultClick(item) {
+  if (item?._id || item?.id) {
+    handleView(item._id || item.id);
+  }
+}
+
+function closeSearchResults(navbar) {
+  const results = navbar.querySelector('.navbar__search-results');
+  if (results) results.remove();
+}
+
+function renderSearchResults(navbar, users, onResultClick) {
+  const searchWrapper = navbar.querySelector('.navbar__search');
+  if (!searchWrapper) return;
+
+  const resultsContainer = document.createElement('div');
+  resultsContainer.className = 'navbar__search-results';
+  resultsContainer.setAttribute('role', 'listbox');
+  resultsContainer.setAttribute('aria-label', 'Search results');
+
+  if (!users || users.length === 0) {
+    resultsContainer.innerHTML = `
+      <div class="navbar__search-result-empty">
+        No users found
+      </div>
+    `;
+  } else {
+    resultsContainer.innerHTML = users.map((user, index) => `
+      <button type="button" class="navbar__search-result-item" data-index="${index}" role="option" tabindex="-1">
+        <span class="navbar__search-result-title">${escapeHtml(user.name || '—')}</span>
+        <span class="navbar__search-result-subtitle">${escapeHtml(user.email || '—')}</span>
+        <span class="navbar__search-result-icon" aria-hidden="true">${iconChevronRight({ size: 16 })}</span>
+      </button>
+    `).join('');
+
+    resultsContainer.querySelectorAll('.navbar__search-result-item').forEach((btn, index) => {
+      btn.addEventListener('click', () => {
+        const user = users[index];
+        if (user && onResultClick) {
+          onResultClick(user);
+        }
+        closeSearchResults(navbar);
+        const input = navbar.querySelector('.navbar__search-input');
+        if (input) input.value = '';
+      });
+    });
+  }
+
+  searchWrapper.appendChild(resultsContainer);
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+initNavbar({ context: 'admin', searchPlaceholder: 'Search users...', onSearch: handleUserSearch });
 initSidebar();
 initFooter();
 
 const tableBody = document.getElementById('usersTableBody');
+const usersTable = document.getElementById('usersTable');
 const emptyState = document.getElementById('usersEmpty');
 let allUsers = [];
 
+function clearSkeleton() {
+  const skeletons = tableBody.querySelectorAll('tr.skeleton-row');
+  skeletons.forEach(row => row.remove());
+}
+
 async function loadUsers() {
   const authed = await initAuthGuard();
-  if (!authed) return;
+  if (!authed) {
+    clearSkeleton();
+    return;
+  }
 
   try {
     const response = await getAllUsers();
     allUsers = response.data?.users || [];
+    clearSkeleton();
     renderUsers(allUsers);
   } catch (error) {
     console.error('[Users] load error:', error);
     showToast({ type: 'error', title: 'Failed to load', message: error.message || 'Could not fetch users.' });
+    clearSkeleton();
     renderUsers([]);
   }
 }
@@ -40,24 +135,28 @@ async function loadUsers() {
 function renderUsers(users) {
   if (!users || users.length === 0) {
     tableBody.innerHTML = '';
+    usersTable.classList.remove('has-data');
     emptyState.classList.remove('hidden');
     return;
   }
   emptyState.classList.add('hidden');
+  usersTable.classList.add('has-data');
 
   tableBody.innerHTML = users.map(u => {
     const id = u._id || u.id;
     const isBlocked = u.isBlocked;
     const isDeleted = u.isDeleted;
+    const userName = u.name || '—';
+    const userEmail = u.email || '—';
     return `
       <tr data-id="${id}">
-        <td class="data-table__cell">${escapeHtml(u.name || '—')}</td>
-        <td class="data-table__cell">${escapeHtml(u.email || '—')}</td>
-        <td class="data-table__cell"><span class="status-badge status-badge--active">${escapeHtml(u.role || 'user')}</span></td>
-        <td class="data-table__cell">${isBlocked ? '<span class="status-badge status-badge--blocked">Blocked</span>' : '<span class="status-badge status-badge--active">Active</span>'}</td>
-        <td class="data-table__cell">${isDeleted ? '<span class="status-badge status-badge--deleted">Deleted</span>' : '<span class="status-badge status-badge--active">Active</span>'}</td>
-        <td class="data-table__cell">${formatDate(u.createdAt)}</td>
-        <td class="data-table__cell">
+        <td class="data-table__cell" data-label="Name"><span class="user-cell" title="${escapeHtml(userName)}">${escapeHtml(userName)}</span></td>
+        <td class="data-table__cell" data-label="Email"><span class="user-cell" title="${escapeHtml(userEmail)}">${escapeHtml(userEmail)}</span></td>
+        <td class="data-table__cell" data-label="Role"><span class="status-badge status-badge--active">${escapeHtml(u.role || 'user')}</span></td>
+        <td class="data-table__cell" data-label="Blocked">${isBlocked ? '<span class="status-badge status-badge--blocked">Blocked</span>' : '<span class="status-badge status-badge--active">Active</span>'}</td>
+        <td class="data-table__cell" data-label="Deleted">${isDeleted ? '<span class="status-badge status-badge--deleted">Deleted</span>' : '<span class="status-badge status-badge--active">Active</span>'}</td>
+        <td class="data-table__cell" data-label="Created">${formatDate(u.createdAt)}</td>
+        <td class="data-table__cell" data-label="Actions">
           <div class="table-actions">
             <button type="button" class="table-actions__btn" data-action="view" data-id="${id}" aria-label="View user">
               ${iconEye({ size: 16 })}
@@ -263,13 +362,6 @@ async function reloadUser(id) {
     console.error('[Users] reload error:', error);
     loadUsers();
   }
-}
-
-function escapeHtml(str) {
-  if (!str) return '—';
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
 }
 
 function formatDate(d) {

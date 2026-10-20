@@ -79,7 +79,9 @@
 .navbar__search-input {
   width: 100%;
   height: var(--button-height-sm);
-  padding-inline: var(--space-10) var(--space-4);
+  /* Left: icon offset (space-3) + icon width (16px) + comfortable gap (space-2).
+     Previously space-10 (128px), which pushed placeholder far from the icon. */
+  padding-inline: calc(var(--space-3) + 16px + var(--space-2)) var(--space-6);
   font-size: var(--font-size-small);
   background-color: var(--color-bg);
   border: 1px solid var(--color-border);
@@ -101,6 +103,25 @@
 .navbar__search-input:focus {
   box-shadow: var(--shadow-focus);
   outline: none;
+}
+
+/* Suppress the browser-native search cancel UI (Chrome/Edge/Safari) so only
+   the application's custom .navbar__search-clear button is visible.
+   The input stays type="search": keyboard, clearing, and behavior unchanged. */
+.navbar__search-input::-webkit-search-cancel-button,
+.navbar__search-input::-webkit-search-decoration,
+.navbar__search-input::-webkit-search-results-button,
+.navbar__search-input::-webkit-search-results-decoration {
+  display: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.navbar__search-input::-ms-clear,
+.navbar__search-input::-ms-reveal {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .navbar__search-icon {
@@ -131,6 +152,90 @@
 .navbar__search-input:not(:placeholder-shown) ~ .navbar__search-clear,
 .navbar__search-input.has-value ~ .navbar__search-clear {
   display: inline-flex;
+}
+
+/* Search Results Dropdown */
+.navbar__search-results {
+  position: absolute;
+  top: calc(100% + var(--space-1));
+  left: 0;
+  right: 0;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  z-index: var(--z-dropdown);
+  max-height: 320px;
+  overflow-y: auto;
+  animation: navbar-search-results-in var(--duration-fast) var(--ease-out);
+}
+
+@keyframes navbar-search-results-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.navbar__search-result-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  text-align: left;
+  cursor: pointer;
+  transition: var(--transition-colors);
+}
+
+.navbar__search-result-item:last-child {
+  border-bottom: none;
+}
+
+.navbar__search-result-item:hover,
+.navbar__search-result-item:focus {
+  background-color: var(--color-surface-hover);
+  color: var(--color-text-primary);
+  outline: none;
+}
+
+.navbar__search-result-title {
+  flex: 1;
+  font-size: var(--font-size-small);
+  font-weight: var(--font-medium);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.navbar__search-result-subtitle {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+  flex-shrink: 0;
+}
+
+.navbar__search-result-icon {
+  color: var(--color-text-tertiary);
+  flex-shrink: 0;
+}
+
+.navbar__search-result-empty {
+  padding: var(--space-4) var(--space-3);
+  font-size: var(--font-size-small);
+  color: var(--color-text-tertiary);
+  text-align: center;
 }
 
 .navbar__search-mobile {

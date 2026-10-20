@@ -305,11 +305,13 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  min-width: 0;
 }
 
 .admin-layout__content {
   flex: 1;
   padding: var(--space-5);
+  min-width: 0;
 }
 
 @media (max-width: 1023px) {
@@ -350,7 +352,7 @@
 /* ── Stat Cards ────────────────────────────────────────────── */
 .stat-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: var(--space-4);
   margin-bottom: var(--space-6);
 }
@@ -369,6 +371,12 @@
 
 @media (min-width: 1280px) {
   .stat-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1440px) {
+  .stat-grid {
     grid-template-columns: repeat(6, 1fr);
   }
 }
@@ -377,12 +385,12 @@
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
-  padding: var(--space-5);
+  padding: var(--space-6);
   box-shadow: var(--shadow-sm);
   transition: var(--transition-card);
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-4);
 }
 
 .stat-card:hover {
@@ -393,19 +401,22 @@
 
 .stat-card__header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
+  gap: var(--space-3);
 }
 
 .stat-card__label {
   font-size: var(--font-size-small);
   font-weight: var(--font-medium);
   color: var(--color-text-muted);
+  flex-shrink: 0;
+  margin-top: 2px;
 }
 
 .stat-card__icon {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: var(--radius-lg);
   display: inline-flex;
   align-items: center;
@@ -495,12 +506,16 @@
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .data-table {
   width: 100%;
   border-collapse: collapse;
   font-size: var(--font-size-small);
+  table-layout: fixed;
 }
 
 .data-table thead {
@@ -523,6 +538,7 @@
   color: var(--color-text-primary);
   border-bottom: 1px solid var(--color-border);
   vertical-align: middle;
+  min-width: 0;
 }
 
 .data-table tbody tr {
@@ -892,6 +908,8 @@
 .table-scroll {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  width: 100%;
+  max-width: 100%;
 }
 
 .table-scroll::-webkit-scrollbar {

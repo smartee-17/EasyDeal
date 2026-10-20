@@ -107,17 +107,29 @@ export function redirectToDashboard() {
 }
 
 export async function initAuthGuard() {
-  const result = await getMe();
-  if (!result.success) {    
+  const user = getUser();
+  
+  if (!user) {
+    const result = await getMe();
+    if (!result.success) {    
+      clearAuthState();
+      redirectToLogin();
+      return false;
+    }
+    const freshUser = result.data?.user;
+    if (!freshUser || freshUser.role !== 'admin') {
+      clearAuthState();
+      redirectToLogin();
+      return false;
+    }
+    return true;
+  }
+
+  if (user.role !== 'admin') {
     clearAuthState();
     redirectToLogin();
     return false;
   }
-  const user = result.data?.user;
-  if (!user || user.role !== 'admin') {
-    clearAuthState();
-    redirectToLogin();
-    return false;
-  }
+
   return true;
 }

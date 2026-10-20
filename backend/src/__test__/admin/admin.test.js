@@ -8,10 +8,17 @@ jest.mock('../../api/models/product.model.js', () => {
   const mockProductInstance = {
     _id: '507f1f77bcf86cd799439022',
     title: 'Test Product',
+    description: 'Test product description',
     price: 99.99,
     category: 'electronics',
     seller: { name: 'Seller Name', email: 'seller@example.com' },
+    location: 'Test Location',
+    tags: [{ _id: 'tag1', name: 'tag1' }, { _id: 'tag2', name: 'tag2' }],
+    images: [{ url: 'https://example.com/image.jpg', publicId: 'img1', alt: 'Test image' }],
+    isAvailable: true,
     createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    specifications: [{ key: 'brand', label: 'Brand', value: 'TestBrand' }],
   };
 
   return {
@@ -62,6 +69,24 @@ jest.mock('../../api/models/user.model.js', () => {
   };
 });
 
+
+// ── 1c. Tag model ────────────────────────────────────────────────────────────
+jest.mock('../../api/models/tag.model.js', () => {
+  const mockTagInstance = {
+    _id: '507f1f77bcf86cd799439033',
+    name: 'Test Tag',
+  };
+
+  return {
+    __esModule: true,
+    default: {
+      find: jest.fn(),
+      _mockInstance: mockTagInstance,
+    },
+  };
+});
+
+
 // ── 1c. Auth middleware ──────────────────────────────────────────────────────
 jest.mock('../../api/middlewares/auth.middleware.js', () => {
   const _state = { simulateFail: false };
@@ -103,6 +128,7 @@ import adminRoutes from '../../api/routes/admin.route.js';
 import Product from '../../api/models/product.model.js';
 import User from '../../api/models/user.model.js';
 import protect from '../../api/middlewares/auth.middleware.js';
+import Tag from '../../api/models/tag.model.js';
 
 // ─── 3. MINIMAL TEST APP ─────────────────────────────────────────────────────
 
@@ -133,9 +159,36 @@ const resetMocks = () => {
   const prodInstance = Product._mockInstance;
   prodInstance._id = '507f1f77bcf86cd799439022';
   prodInstance.title = 'Test Product';
+  prodInstance.description = 'Test product description';
   prodInstance.price = 99.99;
+  prodInstance.category = 'electronics';
+  prodInstance.seller = { name: 'Seller Name', email: 'seller@example.com' };
+  prodInstance.location = 'Test Location';
+  prodInstance.tags = [{ _id: 'tag1', name: 'tag1' }, { _id: 'tag2', name: 'tag2' }];
+  prodInstance.images = [{ url: 'https://example.com/image.jpg', publicId: 'img1', alt: 'Test image' }];
+  prodInstance.isAvailable = true;
+  prodInstance.createdAt = new Date().toISOString();
+  prodInstance.updatedAt = new Date().toISOString();
+  prodInstance.specifications = [{ key: 'brand', label: 'Brand', value: 'TestBrand' }];
 
+  
   jest.clearAllMocks();
+
+  // Default tag-search mock for product search tests
+  Tag.find.mockReturnValue({
+    select: jest.fn().mockResolvedValue([]),
+  });
+
+  User._mockToPublic.mockReturnValue({
+    id: '507f1f77bcf86cd799439011',
+    name: 'Test User',
+    email: 'test@example.com',
+    role: 'user',
+    isBlocked: false,
+    isDeleted: false,
+  });
+
+
 
   User._mockToPublic.mockReturnValue({
     id: '507f1f77bcf86cd799439011',
@@ -171,6 +224,7 @@ const resetMocks = () => {
 
 describe('Admin Controller', () => {
   beforeEach(resetMocks);
+  
 
   // ── 5.1  Auth failures ────────────────────────────────────────────────────
 
@@ -664,7 +718,7 @@ describe('Admin Controller', () => {
   // ── 5.9  getAllProducts ───────────────────────────────────────────────────
 
   describe('getAllProducts', () => {
-    test('200 – returns all products', async () => {
+    test('200 – returns all products with required fields', async () => {
       Product.find.mockReturnValue({
         populate: jest.fn().mockReturnThis(),
         select: jest.fn().mockReturnThis(),
@@ -677,6 +731,62 @@ describe('Admin Controller', () => {
       expect(res.body.success).toBe(true);
       expect(res.body.message).toBe('Products retrieved successfully');
       expect(res.body.products).toHaveLength(1);
+      
+      const product = res.body.products[0];
+      expect(product).toMatchObject({
+        _id: '507f1f77bcf86cd799439022',
+        title: 'Test Product',
+        description: 'Test product description',
+        price: 99.99,
+        category: 'electronics',
+        location: 'Test Location',
+        isAvailable: true,
+        specifications: [{ key: 'brand', label: 'Brand', value: 'TestBrand' }],
+      });
+      expect(product.seller).toMatchObject({
+        name: 'Seller Name',
+        email: 'seller@example.com',
+      });
+      expect(product.tags).toEqual([
+        { _id: 'tag1', name: 'tag1' },
+        { _id: 'tag2', name: 'tag2' },
+      ]);
+      expect(product.images).toEqual([
+        { url: 'https://example.com/image.jpg', publicId: 'img1', alt: 'Test image' },
+      ]);
+      expect(product.createdAt).toBeDefined();
+      expect(product.updatedAt).toBeDefined();
+    });
+
+    test('200 – calls populate with seller and tags', async () => {
+      const populate = jest.fn().mockReturnThis();
+      
+      Product.find.mockReturnValue({
+        populate,
+        select: jest.fn().mockReturnThis(),
+        sort: jest.fn().mockResolvedValue([Product._mockInstance]),
+      });
+
+      await request(app).get('/api/admin/products');
+
+      expect(populate).toHaveBeenCalledWith('seller', 'name email');
+      expect(populate).toHaveBeenCalledWith('tags', 'name');
+    });
+
+    test('200 – selects the expected product fields', async () => {
+      const select = jest.fn().mockReturnThis();
+      
+      Product.find.mockReturnValue({
+        populate: jest.fn().mockReturnThis(),
+        select,
+        sort: jest.fn().mockResolvedValue([Product._mockInstance]),
+      });
+
+      await request(app).get('/api/admin/products');
+
+      expect(select).toHaveBeenCalledWith(
+        'title description price category seller location tags images isAvailable createdAt updatedAt specifications'
+      );
     });
 
     test('404 – no products found', async () => {
@@ -711,7 +821,7 @@ describe('Admin Controller', () => {
   // ── 5.10  getSingleProduct ────────────────────────────────────────────────
 
   describe('getSingleProduct', () => {
-    test('200 – returns single product', async () => {
+    test('200 – returns single product with complete information', async () => {
       Product.findById.mockReturnValue({
         populate: jest.fn().mockReturnThis(),
         select: jest.fn().mockResolvedValue(Product._mockInstance),
@@ -727,7 +837,26 @@ describe('Admin Controller', () => {
       expect(res.body.product).toMatchObject({
         _id: '507f1f77bcf86cd799439022',
         title: 'Test Product',
+        description: 'Test product description',
+        price: 99.99,
+        category: 'electronics',
+        location: 'Test Location',
+        isAvailable: true,
+        specifications: [{ key: 'brand', label: 'Brand', value: 'TestBrand' }],
       });
+      expect(res.body.product.seller).toMatchObject({
+        name: 'Seller Name',
+        email: 'seller@example.com',
+      });
+      expect(res.body.product.tags).toEqual([
+        { _id: 'tag1', name: 'tag1' },
+        { _id: 'tag2', name: 'tag2' },
+      ]);
+      expect(res.body.product.images).toEqual([
+        { url: 'https://example.com/image.jpg', publicId: 'img1', alt: 'Test image' },
+      ]);
+      expect(res.body.product.createdAt).toBeDefined();
+      expect(res.body.product.updatedAt).toBeDefined();
     });
 
     test('200 – queries DB with id from req.params', async () => {
@@ -737,6 +866,35 @@ describe('Admin Controller', () => {
         '507f1f77bcf86cd799439022'
       );
       expect(Product.findById).toHaveBeenCalledTimes(1);
+    });
+
+    test('200 – calls populate with seller and tags', async () => {
+      const populate = jest.fn().mockReturnThis();
+      
+      Product.findById.mockReturnValue({
+        populate,
+        select: jest.fn().mockResolvedValue(Product._mockInstance),
+      });
+
+      await request(app).get('/api/admin/products/507f1f77bcf86cd799439022');
+
+      expect(populate).toHaveBeenCalledWith('seller', 'name email');
+      expect(populate).toHaveBeenCalledWith('tags', 'name');
+    });
+
+    test('200 – selects the expected product fields', async () => {
+      const select = jest.fn().mockResolvedValue(Product._mockInstance);
+      
+      Product.findById.mockReturnValue({
+        populate: jest.fn().mockReturnThis(),
+        select,
+      });
+
+      await request(app).get('/api/admin/products/507f1f77bcf86cd799439022');
+
+      expect(select).toHaveBeenCalledWith(
+        'title description price category seller location tags images isAvailable createdAt updatedAt specifications'
+      );
     });
 
     test('400 – invalid product ID', async () => {
@@ -826,13 +984,13 @@ describe('Admin Controller', () => {
   // ── 5.12 getProductsBySearch ──────────────────────────────────────────────
 
   describe('getProductsBySearch', () => {
-    test('200 – returns products matching the search query', async () => {
+    test('200 – returns products matching the search query with required fields', async () => {
       const searchResults = [
         {
           ...Product._mockInstance,
           title: 'iPhone 15',
           category: 'electronics',
-          tags: ['phone', 'apple'],
+          tags: [{ _id: 'tag1', name: 'phone' }, { _id: 'tag2', name: 'apple' }],
         },
       ];
 
@@ -851,6 +1009,31 @@ describe('Admin Controller', () => {
       expect(res.body.message).toBe('Products retrieved successfully');
       expect(res.body.products).toEqual(searchResults);
       expect(res.body.products).toHaveLength(1);
+      
+      const product = res.body.products[0];
+      expect(product).toMatchObject({
+        _id: '507f1f77bcf86cd799439022',
+        title: 'iPhone 15',
+        description: 'Test product description',
+        price: 99.99,
+        category: 'electronics',
+        location: 'Test Location',
+        isAvailable: true,
+        specifications: [{ key: 'brand', label: 'Brand', value: 'TestBrand' }],
+      });
+      expect(product.seller).toMatchObject({
+        name: 'Seller Name',
+        email: 'seller@example.com',
+      });
+      expect(product.tags).toEqual([
+        { _id: 'tag1', name: 'phone' },
+        { _id: 'tag2', name: 'apple' },
+      ]);
+      expect(product.images).toEqual([
+        { url: 'https://example.com/image.jpg', publicId: 'img1', alt: 'Test image' },
+      ]);
+      expect(product.createdAt).toBeDefined();
+      expect(product.updatedAt).toBeDefined();
     });
 
     test('200 – searches products by title', async () => {
@@ -905,28 +1088,48 @@ describe('Admin Controller', () => {
       );
     });
 
-    test('200 – searches products by tags', async () => {
+
+    test('200 – searches products by matching tag IDs', async () => {
+      const matchingTags = [
+        { _id: 'tag1' },
+        { _id: 'tag2' },
+      ];
+
+      Tag.find.mockReturnValue({
+        select: jest.fn().mockResolvedValue(matchingTags),
+      });
+
       Product.find.mockReturnValue({
         populate: jest.fn().mockReturnThis(),
         select: jest.fn().mockReturnThis(),
-        sort: jest.fn().mockResolvedValue([Product._mockInstance]),
+        sort: jest.fn().mockResolvedValue([
+          Product._mockInstance,
+        ]),
       });
 
-      await request(app)
+      const res = await request(app)
         .get('/api/admin/products/search')
         .query({ search: 'apple' });
 
-      const searchCondition = Product.find.mock.calls[0][0];
+      expect(res.status).toBe(200);
 
-      expect(searchCondition.$or).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            tags: {
-              $regex: 'apple',
-              $options: 'i',
-            },
-          }),
-        ])
+      expect(Tag.find).toHaveBeenCalledWith({
+        name: {
+          $regex: 'apple',
+          $options: 'i',
+        },
+      });
+
+      expect(Product.find).toHaveBeenCalledWith(
+        expect.objectContaining({
+          $or: expect.arrayContaining([
+            expect.objectContaining({
+              tags: {
+                $in: ['tag1', 'tag2'],
+              },
+            }),
+          ]),
+        })
       );
     });
 
@@ -1044,7 +1247,7 @@ describe('Admin Controller', () => {
       expect(res.body.message).toBe('Server error');
     });
 
-    test('calls populate with seller name and email', async () => {
+    test('calls populate with seller name and email, and tags name', async () => {
       const populate = jest.fn().mockReturnThis();
 
       Product.find.mockReturnValue({
@@ -1060,6 +1263,10 @@ describe('Admin Controller', () => {
       expect(populate).toHaveBeenCalledWith(
         'seller',
         'name email'
+      );
+      expect(populate).toHaveBeenCalledWith(
+        'tags',
+        'name'
       );
     });
 
@@ -1077,7 +1284,7 @@ describe('Admin Controller', () => {
         .query({ search: 'phone' });
 
       expect(select).toHaveBeenCalledWith(
-        'title price category tags seller createdAt'
+        'title description price category seller location tags images isAvailable createdAt updatedAt specifications'
       );
     });
 

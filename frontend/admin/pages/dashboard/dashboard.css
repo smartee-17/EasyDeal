@@ -2,6 +2,19 @@
    EASYDEAL — DASHBOARD PAGE STYLES
    ============================================================ */
 
+/* ── Clickable Stat Cards ──────────────────────────────────── */
+.stat-card--link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.stat-card--link:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+}
+
 /* ── Quick Actions ─────────────────────────────────────────── */
 .quick-actions {
   padding: var(--space-2);

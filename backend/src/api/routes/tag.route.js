@@ -9,7 +9,9 @@ router.get('/search', controller.searchTags); // GET /api/tags/search?q=ele
 
 router.get('/', controller.getAllTags);
 
-router.post('/', protect, controller.createTag);
+router.post('/', protect, authorizeRoles('admin'), controller.createTag);
+
+router.put('/:id', protect, authorizeRoles('admin'), controller.updateTag);
 
 router.delete('/:id', protect, authorizeRoles('admin'), controller.deleteTag);
 

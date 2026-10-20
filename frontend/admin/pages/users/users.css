@@ -65,6 +65,78 @@
   color: var(--color-warning);
 }
 
+/* ── Users Table Adjustments ────────────────────────────────────
+   Mirrors the Products Management reference implementation:
+   reusable .data-table-wrap + .table-scroll (global) own the horizontal
+   scroll; per-column min-widths give each column breathing room so the
+   fixed table layout does not squeeze content into a narrow viewport. */
+
+.users-table .data-table__cell {
+  min-width: 0;
+}
+
+.users-table .data-table__th[data-label="Name"],
+.users-table .data-table__cell[data-label="Name"] {
+  min-width: 180px;
+}
+
+.users-table .data-table__th[data-label="Email"],
+.users-table .data-table__cell[data-label="Email"] {
+  min-width: 230px;
+}
+
+.users-table .data-table__th[data-label="Role"],
+.users-table .data-table__cell[data-label="Role"] {
+  min-width: 110px;
+}
+
+.users-table .data-table__th[data-label="Blocked"],
+.users-table .data-table__cell[data-label="Blocked"] {
+  min-width: 120px;
+}
+
+.users-table .data-table__th[data-label="Deleted"],
+.users-table .data-table__cell[data-label="Deleted"] {
+  min-width: 110px;
+}
+
+.users-table .data-table__th[data-label="Created"],
+.users-table .data-table__cell[data-label="Created"] {
+  min-width: 130px;
+  white-space: nowrap;
+}
+
+.users-table .data-table__th[data-label="Actions"],
+.users-table .data-table__cell[data-label="Actions"] {
+  min-width: 160px;
+}
+
+/* Populated table keeps a readable minimum width (sum of column
+   min-widths: 180+230+110+120+110+130+160 = 1040px). The wider content
+   lives inside .table-scroll, which owns the horizontal scroll. */
+.users-table.has-data {
+  min-width: 1040px;
+  width: auto;
+  table-layout: auto;
+}
+
+/* Empty table shrinks to the container so the empty state stays centered
+   with no horizontal scrollbar. */
+.users-table:not(.has-data) {
+  min-width: 100%;
+  width: 100%;
+}
+
+/* Long names/emails truncate cleanly with full value on hover (title). */
+.user-cell {
+  display: block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
 /* Table empty state */
 .table-empty {
   display: flex;
@@ -90,6 +162,28 @@
 .table-empty__text {
   font-size: var(--font-size-small);
   color: var(--color-text-muted);
+}
+
+/* ── Tablet/mobile: disable desktop table horizontal scrolling ──
+   Mirrors the Products Management responsive correction. The desktop
+   .users-table.has-data min-width (1040px) must not apply here. The
+   table fits the viewport and compresses instead; the global card
+   layout takes over at <=767px. */
+@media (max-width: 1023px) {
+  .table-scroll {
+    overflow-x: hidden;
+  }
+
+  .users-table.has-data {
+    min-width: 0;
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  .users-table .data-table__th[data-label],
+  .users-table .data-table__cell[data-label] {
+    min-width: 0;
+  }
 }
 
 /* Responsive */
