@@ -13,6 +13,7 @@
 import { login, getCurrentUser } from '../Services/authService.js';
 import {
   initTheme,
+  mountThemeToggle,
   initPasswordToggle,
   showFieldError,
   clearFieldError,
@@ -32,6 +33,7 @@ const alertMessage = document.getElementById('loginAlertMessage');
 const alertIcon = document.getElementById('loginAlertIcon');
 
 initTheme();
+mountThemeToggle(document.querySelector('[data-theme-toggle]'));
 initPasswordToggle({ toggleButton, passwordInput });
 
 /* ── Feedback ───────────────────────────────────────────────── */

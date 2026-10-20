@@ -1,46 +1,23 @@
 /* ============================================================
-   EASYDEAL — THEME SYSTEM
-   Purpose: Light/Dark mode toggle without page reload
+   EASYDEAL - THEME (Admin entry point)
+
+   Kept as the Admin's import path. The implementation now lives in the
+   shared theme module so the Admin app, the Auth pages and the shared
+   navbar cannot drift apart on the storage key or the default.
    ============================================================ */
 
-const STORAGE_KEY = 'easydeal-theme';
-const THEME_LIGHT = 'light';
-const THEME_DARK = 'dark';
+import {
+  applyTheme as applySharedTheme,
+  getCurrentTheme as getSharedTheme,
+  initTheme as initSharedTheme,
+  mountThemeToggles,
+} from '../../shared/services/theme.js';
 
 export function initTheme() {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const initialTheme = saved || (prefersDark ? THEME_DARK : THEME_LIGHT);
-
-  applyTheme(initialTheme);
-
-  document.addEventListener('click', (e) => {
-    const btn = e.target.closest('.navbar__theme-btn');
-    if (!btn) return;
-    const current = document.documentElement.getAttribute('data-theme') || THEME_LIGHT;
-    const next = current === THEME_DARK ? THEME_LIGHT : THEME_DARK;
-    applyTheme(next);
-    localStorage.setItem(STORAGE_KEY, next);
-  });
-
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-    if (!localStorage.getItem(STORAGE_KEY)) {
-      applyTheme(e.matches ? THEME_DARK : THEME_LIGHT);
-    }
-  });
+  initSharedTheme();
+  // The Admin navbar renders its own toggle button.
+  mountThemeToggles(document);
 }
 
-export function applyTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme);
-  let metaTheme = document.querySelector('meta[name="theme-color"]');
-  if (!metaTheme) {
-    metaTheme = document.createElement('meta');
-    metaTheme.name = 'theme-color';
-    document.head.appendChild(metaTheme);
-  }
-  metaTheme.content = theme === THEME_DARK ? '#1a1a1c' : '#ffffff';
-}
-
-export function getCurrentTheme() {
-  return document.documentElement.getAttribute('data-theme') || THEME_LIGHT;
-}
+export const applyTheme = applySharedTheme;
+export const getCurrentTheme = getSharedTheme;

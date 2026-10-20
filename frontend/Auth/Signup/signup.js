@@ -20,6 +20,7 @@
 import { register, getCurrentUser, ACCOUNT_TYPES } from '../Services/authService.js';
 import {
   initTheme,
+  mountThemeToggle,
   initPasswordToggle,
   showFieldError,
   clearFieldError,
@@ -41,6 +42,7 @@ const alertMessage = document.getElementById('signupAlertMessage');
 const alertIcon = document.getElementById('signupAlertIcon');
 
 initTheme();
+mountThemeToggle(document.querySelector('[data-theme-toggle]'));
 initPasswordToggle({ toggleButton, passwordInput });
 
 /* ── Feedback ───────────────────────────────────────────────── */

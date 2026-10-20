@@ -21,42 +21,18 @@ export const PASSWORD_MIN_LENGTH = 8;
 
 /* ── Theme ──────────────────────────────────────────────────── */
 
-/**
- * Apply the colour theme.
- *
- * Colours come from the universal shared system
- * (frontend/shared/global.css), which defines tokens under
- * :root and [data-theme="dark"]. Previously this file set
- * data-theme from the OS preference on every page, which fought
- * with the Admin app's theme.js localStorage contract. The stored
- * value is now honoured, and the OS preference is only the initial
- * fallback.
- */
-export function initTheme() {
-  const STORAGE_KEY = 'easydeal-theme';
-
-  const saved = safeStorageGet(STORAGE_KEY);
-  const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
-
-  applyTheme(saved ?? (prefersDark ? 'dark' : 'light'));
-}
-
-export function applyTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme);
-}
-
-export function getCurrentTheme() {
-  return document.documentElement.getAttribute('data-theme') || 'light';
-}
-
-function safeStorageGet(key) {
-  try {
-    return window.localStorage.getItem(key);
-  } catch {
-    // Private browsing or a blocked storage partition.
-    return null;
-  }
-}
+/* The theme contract lives in the shared module so the Auth pages, the
+   shared navbar and the Admin app all read the same stored preference and
+   default. Re-exported here because the Auth pages already import these
+   names from this file. */
+export {
+  applyTheme,
+  getCurrentTheme,
+  initTheme,
+  mountThemeToggle,
+  mountThemeToggles,
+  toggleTheme,
+} from '../../shared/services/theme.js';
 
 /* ── Password visibility ────────────────────────────────────── */
 

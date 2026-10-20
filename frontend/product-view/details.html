@@ -20,7 +20,20 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
-  </head>
+    <!-- Resolves the theme before first paint so a reload does not flash the
+       default. Same contract as shared/services/theme.js: the stored choice
+       wins, the OS preference is only the fallback. -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('easydeal-theme');
+        var dark = (stored === 'dark' || stored === 'light')
+          ? stored === 'dark'
+          : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+      } catch (e) {}
+    })();
+  </script></head>
 
   <body>
     <div class="page-loader" id="loader">

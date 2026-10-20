@@ -6,7 +6,21 @@
   <title>Log In — EasyDeal</title>
 
   <!-- Universal favicon, matching the Homepage. The asset is an SVG, so
-       the declared type is corrected to match rather than image/png. -->
+       the declared type is corrected to match rather than image/png. -->    <!-- Applies the stored theme before first paint, so a reload does not
+         flash the default before the module loads. Mirrors the contract in
+         shared/services/theme.js: the stored choice wins, the OS preference
+         is only the fallback. -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('easydeal-theme');
+          var dark = stored === 'dark' || stored === 'light'
+            ? stored === 'dark'
+            : window.matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+        } catch (e) {}
+      })();
+    </script>
   <link rel="icon" type="image/svg+xml" href="../../assets/images/logos/icon-light.svg" />
 
   <!-- Load order is deliberate:
@@ -23,6 +37,14 @@
   <link rel="stylesheet" href="../Shared/style.css" />
 </head>
 <body class="auth-page">
+<!-- Theme toggle, placed at the top of the page. login.js wires it through the
+     shared theme module, so it stays in step with the navbar toggle. -->
+<button
+  type="button"
+  class="auth-theme-toggle"
+  data-theme-toggle
+  aria-label="Switch to dark theme"
+></button>
   <!-- The Auth pages deliberately do NOT mount the universal site header
        or footer. They are a focused, self-contained split-screen
        experience, and a site header would duplicate navigation and push

@@ -20,6 +20,7 @@ import { iconChevronDown, iconSearch, iconUser } from '../icons/icons.js';
 import { attachAccountMenu, renderMenu } from './account-menu.js';
 import { confirmLogout } from '../modal/modal.js';
 import { showToast } from '../toast/toast.js';
+import { initTheme, mountThemeToggle } from '../../services/theme.js';
 
 /** Where the search is answered. See resolveSearchHref() for why. */
 export const HOMEPAGE_URL = '/frontend/Homepage/homepage.html';
@@ -117,6 +118,15 @@ export function createNavbar() {
     ]),
   ]);
 
+  /* Theme toggle. Sits after the search control and before the auth
+     actions, so it stays near the right-hand end without displacing the
+     account dropdown on narrow screens. */
+  const themeToggle = el('button', {
+    class: 'header__theme-toggle',
+    'data-theme-toggle': true,
+    'aria-label': 'Switch to dark theme',
+  });
+
   const actions = el('div', {
     class: 'header__actions',
     id: 'headerActions',
@@ -157,7 +167,7 @@ export function createNavbar() {
   ]);
 
   return el('header', { class: 'header' }, [
-    el('div', { class: 'header__inner' }, [logo, searchForm, actions]),
+    el('div', { class: 'header__inner' }, [logo, searchForm, themeToggle, actions]),
   ]);
 }
 
@@ -319,6 +329,13 @@ export function initNavbarSession(header) {
   }
 
   initSearch(header);
+
+  /* Resolve the theme before anything paints, using the same shared contract
+     as the Admin app and the Auth pages. Without this a page that mounts the
+     navbar had no data-theme at all, so its toggle could switch the theme but
+     nothing had chosen an initial one. */
+  initTheme();
+  mountThemeToggle(header.querySelector('[data-theme-toggle]'));
 
   /* ── Identity ──────────────────────────────────────────────── */
 

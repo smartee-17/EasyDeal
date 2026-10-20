@@ -502,6 +502,43 @@
   }
 }
 
+/* Theme toggle, sized and spaced like the other navbar controls so the bar
+   reads as one row of equal-weight buttons. */
+.header__theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin-left: auto;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text, #1f2937);
+  cursor: pointer;
+  flex: none;
+  transition: background-color 150ms var(--ease-out, ease),
+    color 150ms var(--ease-out, ease);
+}
+
+.header__actions {
+  margin-left: 10px;
+}
+
+.header__theme-toggle:hover:not(:disabled) {
+  background: var(--color-surface, #f3f4f6);
+}
+
+.header__theme-toggle:focus-visible {
+  outline: 2px solid var(--color-primary, #2563eb);
+  outline-offset: 2px;
+}
+
+.header__theme-toggle svg {
+  display: block;
+}
+
 /* Auth state wins over layout.
    The rules above set `display` on the signed-out controls, and an author
    stylesheet beats the browser's default `[hidden] { display: none }`

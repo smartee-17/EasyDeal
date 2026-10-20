@@ -59,6 +59,11 @@
 
   --auth-hero-image: url('../../assets/images/image 71.png');
   --auth-logo: url('../../assets/images/logos/logo-dark-rect.svg');
+
+  /* Text drawn on top of --auth-ink. Needed because --color-text-inverse
+     inverts with the page and becomes near-black in dark mode, which put
+     near-black text on the near-black button. */
+  --auth-on-ink: #ffffff;
 }
 
 [data-theme='dark'] {
@@ -66,19 +71,67 @@
      the page keeps the same hue but darkened so it stays in the Admin
      dark palette rather than glaring against a near-black surround. */
   --auth-surface-cream: #241f1a;
-  --auth-ink: #0b0b0c;
+  --auth-ink: #504942;
 
   --auth-text: #f0f1f3;
   --auth-text-muted: #b0a898;
   --auth-accent-text: #d2baad;
   --auth-error-text: #f88b83;
   --auth-error-border: #b3261e;
+  --auth-on-ink: black;
 
    /* Same relative form as the light-mode block above. This stylesheet is
       linked from frontend/Auth/Login/ and frontend/Auth/Signup/, both two
       levels below frontend/, so ../../assets resolves correctly. A
       root-relative /assets path would resolve above frontend/ and 404. */
   --auth-logo: url('../../assets/images/logos/logo-dark-rect.svg');
+}
+
+/* ── Theme toggle ────────────────────────────────────────────── */
+
+/* Pinned to the top-right so it is reachable in both themes and on small
+   screens without disturbing the split layout. */
+.auth-theme-toggle,
+.theme-toggle {
+  position: fixed;
+  top: var(--space-4, 1rem);
+  right: var(--space-4, 1rem);
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--auth-error-border, var(--color-border));
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--auth-text);
+  cursor: pointer;
+  transition: var(--transition-all);
+}
+
+[data-theme='dark'] .auth-theme-toggle,
+[data-theme='dark'] .theme-toggle {
+  background: rgba(11, 11, 12, 0.9);
+  border-color: var(--auth-text-muted);
+}
+
+.auth-theme-toggle:hover,
+.theme-toggle:hover {
+  background: var(--auth-text);
+  color: var(--auth-on-ink, #ffffff);
+}
+
+.auth-theme-toggle:focus-visible,
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--auth-text);
+  outline-offset: 2px;
+}
+
+.auth-theme-toggle svg,
+.theme-toggle svg {
+  display: block;
 }
 
 /* ── Page shell ─────────────────────────────────────────────── */
@@ -139,7 +192,7 @@
   align-items: center;
   gap: var(--space-3);
   padding: var(--space-8) var(--space-6);
-  color: var(--color-text-inverse);
+  color: var(--color-neutral-100);
   text-align: center;
 }
 
@@ -410,7 +463,7 @@
   font-family: inherit;
   font-size: var(--font-size-small);
   font-weight: var(--font-weight-semibold, 600);
-  color: var(--color-text-inverse);
+  color: var(--color-neutral-100);
   background-color: var(--auth-ink);
   border: 1px solid var(--auth-ink);
   border-radius: var(--radius-sm);
@@ -491,7 +544,7 @@
 }
 
 .segmented__input:checked + .segmented__option {
-  color: var(--color-text-inverse);
+  color: var(--color-neutral-100);
   background-color: var(--auth-ink);
   border-color: var(--auth-ink);
 }
