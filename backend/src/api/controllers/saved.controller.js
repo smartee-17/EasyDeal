@@ -9,7 +9,13 @@ import mongoose from 'mongoose';
 export const getSavedProducts = async (req, res) => {
   try {
     const userId = req.user.id;
-    const savedProducts = await Saved.find({ userId }).populate('productId');
+    const savedProducts = await Saved.find({ userId }).populate({
+      path: 'productId',
+      populate: {
+        path: 'seller',
+        select: 'name username email phone',
+      },
+    });
 
     return sendResponse(
       res,
@@ -37,7 +43,8 @@ export const addProductToSaved = async (req, res) => {
     const userId = req.user.id;
 
     if (!mongoose.Types.ObjectId.isValid(productId)) {
-      return res.status(400).json({ message: 'Invalid product ID format' });
+      return sendResponse(res, 400, false, 'Invalid product ID format');
+      // return res.status(400).json({ message: 'Invalid product ID format' });
     }
 
     const existingSavedProduct = await Saved.findOne({ productId, userId });
@@ -55,7 +62,8 @@ export const addProductToSaved = async (req, res) => {
     return sendResponse(res, 201, true, 'Product added to saved', savedProduct);
   } catch (error) {
     console.error(`Error adding product to saved: ${error.message}`);
-    return res.status(500).json({ message: 'Internal Server Error' });
+    return sendResponse(res, 500, false, 'Internal server error');
+    // return res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -70,7 +78,8 @@ export const removeProductFromSaved = async (req, res) => {
     const userId = req.user.id;
 
     if (!mongoose.Types.ObjectId.isValid(productId)) {
-      return res.status(400).json({ message: 'Invalid product ID format' });
+      return sendResponse(res, 400, false, 'Invalid product ID format');
+      // return res.status(400).json({ message: 'Invalid product ID format' });
     }
 
     const savedProduct = await Saved.findOneAndDelete({ productId, userId });
@@ -99,7 +108,8 @@ export const checkProductInSaved = async (req, res) => {
     const userId = req.user.id;
 
     if (!mongoose.Types.ObjectId.isValid(productId)) {
-      return res.status(400).json({ message: 'Invalid product ID format' });
+      return sendResponse(res, 400, false, 'Invalid product ID format');
+      // return res.status(400).json({ message: 'Invalid product ID format' });
     }
 
     const savedProduct = await Saved.findOne({ productId, userId });

@@ -1,20 +1,89 @@
 # Dependencies
 node_modules/
+**/node_modules/
 
-# Environment variables
+# Environment files
 .env
-*.env*
+.env.*
+**/.env
+**/.env.*
+**/.env.example
+!.env.example
 .env.test
 
 # Logs
+logs/
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Database (if using sqlite or local db)
-*.db
-*.sqlite
+# Build folders
+dist/
+build/
+.next/
+.nuxt/
+out/
+coverage/
+
+# Cache
+.cache/
+.parcel-cache/
+.vite/
+.eslintcache
 
 # OS files
 .DS_Store
 Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Firebase
+.firebase/
+
+# Uploads (if user-generated)
+uploads/
+public/uploads/
+
+# Large media files (optional)
+*.psd
+*.ai
+*.zip
+*.rar
+
+# Local databases
+*.sqlite
+*.db
+
+# Runtime
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Ignore all images
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.svg
+
+# Doc files 
+docs/
+**/docs/
+
+# Test outputs
+**/ci/
+coverage/
+html-report/
+junit/
+*.lcov
+**/**/http/

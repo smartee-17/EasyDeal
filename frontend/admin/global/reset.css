@@ -1,0 +1,97 @@
+/* ============================================================
+   EASYDEAL — GLOBAL RESET
+   Purpose: Consistent base styles across all pages
+   ============================================================ */
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-body, "Inter", system-ui, -apple-system, sans-serif);
+  font-size: var(--font-size-body, 1rem);
+  line-height: var(--leading-normal, 1.5);
+  color: var(--color-text, #000000);
+  background-color: var(--color-bg, #f0f1f3);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+input, button, textarea, select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: var(--font-semibold, 600);
+  line-height: var(--leading-snug, 1.35);
+  color: var(--color-text, #000000);
+}
+
+p {
+  color: var(--color-text-muted, rgba(0,0,0,0.7));
+}
+
+/* Focus visible for accessibility */
+:focus-visible {
+  outline: var(--focus-ring, 2px solid var(--color-primary, #7e4246));
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+/* Selection */
+::selection {
+  background-color: var(--color-primary, #7e4246);
+  color: var(--color-white, #ffffff);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: var(--scrollbar-width, 8px);
+}
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track, var(--color-border, #ededee));
+}
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb, var(--color-border-soft, #bc9c9c));
+  border-radius: var(--radius-full, 9999px);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover, var(--color-primary, #7e4246));
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

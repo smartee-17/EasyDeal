@@ -1,0 +1,342 @@
+/* ============================================================
+   EASYDEAL — SHARED NAVBAR
+   Purpose: Reusable navbar for public and admin pages
+   ============================================================ */
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  width: 100%;
+  height: var(--navbar-height);
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  padding-inline: var(--space-4);
+  gap: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .navbar {
+    padding-inline: var(--space-6);
+  }
+}
+
+.navbar__left,
+.navbar__right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.navbar__left {
+  min-width: 0;
+}
+
+.navbar__right {
+  margin-left: auto;
+}
+
+.navbar__center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  max-width: 480px;
+  margin-inline: auto;
+}
+
+.navbar__logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-heading);
+  font-weight: var(--font-bold);
+  font-size: 1.25rem;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.navbar__logo img {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
+}
+
+.navbar__logo-accent {
+  color: var(--color-primary);
+}
+
+.navbar__search {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.navbar__search-input {
+  width: 100%;
+  height: var(--button-height-sm);
+  /* Left: icon offset (space-3) + icon width (16px) + comfortable gap (space-2).
+     Previously space-10 (128px), which pushed placeholder far from the icon. */
+  padding-inline: calc(var(--space-3) + 16px + var(--space-2)) var(--space-6);
+  font-size: var(--font-size-small);
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  transition: var(--transition-input);
+}
+
+.navbar__search-input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.navbar__search-input:hover,
+.navbar__search-input:focus {
+  border-color: var(--color-border-strong);
+  background-color: var(--color-surface);
+}
+
+.navbar__search-input:focus {
+  box-shadow: var(--shadow-focus);
+  outline: none;
+}
+
+/* Suppress the browser-native search cancel UI (Chrome/Edge/Safari) so only
+   the application's custom .navbar__search-clear button is visible.
+   The input stays type="search": keyboard, clearing, and behavior unchanged. */
+.navbar__search-input::-webkit-search-cancel-button,
+.navbar__search-input::-webkit-search-decoration,
+.navbar__search-input::-webkit-search-results-button,
+.navbar__search-input::-webkit-search-results-decoration {
+  display: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.navbar__search-input::-ms-clear,
+.navbar__search-input::-ms-reveal {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.navbar__search-icon {
+  position: absolute;
+  left: var(--space-3);
+  color: var(--color-text-tertiary);
+  pointer-events: none;
+  display: inline-flex;
+}
+
+.navbar__search-clear {
+  position: absolute;
+  right: var(--space-2);
+  color: var(--color-text-tertiary);
+  padding: var(--space-1);
+  border-radius: var(--radius-sm);
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.navbar__search-clear:hover {
+  background-color: var(--color-surface-hover);
+  color: var(--color-text-primary);
+}
+
+.navbar__search-input:not(:placeholder-shown) ~ .navbar__search-clear,
+.navbar__search-input.has-value ~ .navbar__search-clear {
+  display: inline-flex;
+}
+
+/* Search Results Dropdown */
+.navbar__search-results {
+  position: absolute;
+  top: calc(100% + var(--space-1));
+  left: 0;
+  right: 0;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  z-index: var(--z-dropdown);
+  max-height: 320px;
+  overflow-y: auto;
+  animation: navbar-search-results-in var(--duration-fast) var(--ease-out);
+}
+
+@keyframes navbar-search-results-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.navbar__search-result-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  text-align: left;
+  cursor: pointer;
+  transition: var(--transition-colors);
+}
+
+.navbar__search-result-item:last-child {
+  border-bottom: none;
+}
+
+.navbar__search-result-item:hover,
+.navbar__search-result-item:focus {
+  background-color: var(--color-surface-hover);
+  color: var(--color-text-primary);
+  outline: none;
+}
+
+.navbar__search-result-title {
+  flex: 1;
+  font-size: var(--font-size-small);
+  font-weight: var(--font-medium);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.navbar__search-result-subtitle {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+  flex-shrink: 0;
+}
+
+.navbar__search-result-icon {
+  color: var(--color-text-tertiary);
+  flex-shrink: 0;
+}
+
+.navbar__search-result-empty {
+  padding: var(--space-4) var(--space-3);
+  font-size: var(--font-size-small);
+  color: var(--color-text-tertiary);
+  text-align: center;
+}
+
+.navbar__search-mobile {
+  display: none;
+  position: fixed;
+  top: var(--navbar-height);
+  left: 0;
+  right: 0;
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+  z-index: var(--z-dropdown);
+  transform: translateY(-8px);
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--transition-all);
+}
+
+.navbar__search-mobile.is-open {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+.navbar__icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  transition: var(--transition-colors);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.navbar__icon-btn:hover {
+  background-color: var(--color-surface-hover);
+  color: var(--color-text-primary);
+}
+
+.navbar__icon-btn:active {
+  background-color: var(--color-surface-active);
+}
+
+.navbar__theme-btn .icon--sun,
+.navbar__theme-btn .icon--moon {
+  display: none;
+}
+
+[data-theme="light"] .navbar__theme-btn .icon--moon,
+:root:not([data-theme]) .navbar__theme-btn .icon--moon,
+html:not([data-theme]) .navbar__theme-btn .icon--moon {
+  display: inline-flex;
+}
+
+[data-theme="dark"] .navbar__theme-btn .icon--sun {
+  display: inline-flex;
+}
+
+.navbar__hamburger {
+  display: none;
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 1023px) {
+  .navbar--admin .navbar__center {
+    display: none;
+  }
+
+  .navbar__hamburger {
+    display: inline-flex;
+  }
+
+  .navbar__search-mobile {
+    display: block;
+  }
+}
+
+@media (max-width: 767px) {
+  .navbar {
+    height: var(--navbar-height-mobile);
+    padding-inline: var(--space-3);
+    gap: var(--space-2);
+  }
+
+  .navbar__logo {
+    font-size: 1.1rem;
+  }
+
+  .navbar__logo img {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+
+  .navbar__icon-btn {
+    width: 36px;
+    height: 36px;
+  }
+}
