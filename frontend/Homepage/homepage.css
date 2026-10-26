@@ -28,7 +28,10 @@ body {
 .hidden {
   display: none;
 }
-
+header {
+  position: fixed;
+  z-index: 999;
+}
 .homepage-search-container img,
 .slide-arrow-btn img,
 .product-card__button img,
