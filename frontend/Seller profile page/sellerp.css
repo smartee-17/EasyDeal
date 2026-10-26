@@ -263,6 +263,14 @@ body {
   background: #7e4246;
 }
 
+.tab-content {
+  display: none;
+}
+
+.tab-content.active-content {
+  display: block;
+}
+
 .products {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -379,4 +387,46 @@ body {
 .product-card__button .icon {
   width: 16px;
   height: 16px;
+}
+
+.reviews-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.review-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.reviewer-name {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.review-stars {
+  color: #f59e0b;
+  font-size: 0.9rem;
+}
+
+.review-text {
+  font-size: 0.9rem;
+  color: #475569;
+  margin-bottom: 0.75rem;
+}
+
+.review-date {
+  font-size: 0.75rem;
+  color: #94a3b8;
 }

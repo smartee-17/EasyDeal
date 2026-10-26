@@ -1,6 +1,8 @@
 const productsContainer = document.querySelectorAll(".products");
 const categoriesContainer = document.getElementById("seller-categories");
 const searchInput = document.getElementById("seller-search");
+const tabButtons = document.querySelectorAll(".tab-btn");
+const tabContents = document.querySelectorAll(".tab-content");
 
 let allProductsData = [];
 let sellerProductsData = [];
@@ -172,6 +174,24 @@ function bindHeartEvents() {
     });
   });
 }
+
+tabButtons.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    tabButtons.forEach((b) => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    const targetTab = btn.getAttribute("data-tab");
+    tabContents.forEach((content) => {
+      content.classList.remove("active-content");
+    });
+
+    if (targetTab === "products") {
+      document.getElementById("products-tab").classList.add("active-content");
+    } else if (targetTab === "reviews") {
+      document.getElementById("reviews-tab").classList.add("active-content");
+    }
+  });
+});
 
 searchInput?.addEventListener("input", (e) => {
   const activeCategoryBtn = categoriesContainer?.querySelector(
