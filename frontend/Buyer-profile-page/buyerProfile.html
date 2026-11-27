@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Profile | EasyDeal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="buyerProfile.css" />
+  </head>
+  <body>
+    <header class="top-bar">
+      <a href="../Homepage/homepage.html" class="top-bar__logo">
+        <h2>Easy<span>Deal</span></h2>
+      </a>
+      <div class="top-bar__actions">
+        <a href="../Homepage/homepage.html" class="top-bar__link">Home</a>
+        <button class="top-bar__logout" id="logoutBtn">Log out</button>
+      </div>
+    </header>
+
+    <main class="profile-page">
+      <section class="user-card">
+        <div class="avatar-box">
+          <div class="user-card__avatar" id="userAvatar">?</div>
+          <button class="avatar-box__btn" id="changePhotoBtn">
+            Change photo
+          </button>
+          <button
+            class="avatar-box__btn avatar-box__btn--remove hidden"
+            id="removePhotoBtn"
+          >
+            Remove
+          </button>
+          <input type="file" id="avatarInput" accept="image/*" class="hidden" />
+        </div>
+        <div class="user-card__info">
+          <h1 class="user-card__name" id="userName"></h1>
+          <p class="user-card__line" id="userEmail"></p>
+          <p class="user-card__line" id="userPhone"></p>
+          <p class="user-card__line" id="userCity"></p>
+          <p class="user-card__joined" id="userJoined"></p>
+        </div>
+        <div class="user-card__stats">
+          <div class="stat-box">
+            <span class="stat-box__number" id="cartCount">0</span>
+            <span class="stat-box__label">In cart</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-box__number" id="favCount">0</span>
+            <span class="stat-box__label">Favorites</span>
+          </div>
+        </div>
+        <button class="user-card__edit" id="editProfileBtn">
+          Edit profile
+        </button>
+      </section>
+
+      <nav class="profile-tabs">
+        <button class="profile-tabs__btn active" data-tab="cart">
+          My Cart
+        </button>
+        <button class="profile-tabs__btn" data-tab="favorites">
+          Favorites
+        </button>
+      </nav>
+
+      <section class="tab-panel" id="cartPanel">
+        <div class="cart-layout">
+          <ul class="cart-list" id="cartList"></ul>
+          <aside class="cart-summary">
+            <h3>Order summary</h3>
+            <div class="cart-summary__row">
+              <span>Items</span>
+              <span id="summaryItems">0</span>
+            </div>
+            <div class="cart-summary__row cart-summary__row--total">
+              <span>Total</span>
+              <span id="summaryTotal">0</span>
+            </div>
+            <button class="cart-summary__btn" id="checkoutBtn">
+              <img src="assets/whatsapp-icon.svg" alt="" />
+              Order on WhatsApp
+            </button>
+          </aside>
+        </div>
+      </section>
+
+      <section class="tab-panel hidden" id="favoritesPanel">
+        <div class="fav-grid" id="favGrid"></div>
+      </section>
+    </main>
+
+    <dialog class="edit-modal" id="editModal">
+      <form class="edit-modal__form" id="editForm" method="dialog">
+        <h3>Edit profile</h3>
+        <label>
+          Full name
+          <input type="text" name="name" required />
+        </label>
+        <label>
+          Email
+          <input type="email" name="email" required />
+        </label>
+        <label>
+          Phone
+          <input type="tel" name="phone" />
+        </label>
+        <label>
+          City
+          <input type="text" name="city" />
+        </label>
+        <div class="edit-modal__btns">
+          <button type="button" class="edit-modal__cancel" id="cancelEdit">
+            Cancel
+          </button>
+          <button type="submit" class="edit-modal__save">Save</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="buyerProfile.js"></script>
+  </body>
+</html>
